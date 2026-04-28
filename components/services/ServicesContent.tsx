@@ -24,6 +24,7 @@ const structuredServices = [
     id: "C2", category: "Seating Arrangements", icon: Rows3,
     desc: "Comfortable and organized seating for graduates, faculty, VIPs, and guests with proper numbering.",
     items: [
+      "Sesath Holders",
       "Student Procession (Perahara) Arrangement", 
       "Award Receiving Arrangements & Time Management"
     ],
@@ -68,16 +69,16 @@ const structuredServices = [
   {
     id: "C5", category: "Master of Ceremony & Compere", icon: Mic,
     desc: "Professional announcers and comperes to guide the event smoothly in multiple languages.",
-    hideSelectAll: true, // Hides the Select All button for this category
+    hideSelectAll: true,
     items: ["Sinhala Compere", "English Compere", "Tamil Compere"],
     nestedGroups: [
       {
         title: "Compere",
-        options: ["Male", "Female", "Male & Female"]
+        options: ["Male", "Female"]
       },
       {
-        title: "Review Interview Host",
-        options: ["Male", "Female", "Male & Female"]
+        title: "Review & Testimonial video Host ",
+        options: ["Male", "Female"]
       }
     ]
   },
@@ -91,16 +92,18 @@ const structuredServices = [
         nestedGroups: [
           {
             title: "Stage Decoration",
+            singleSelect: true,
             options: ["Fresh Flowers", "Artificial Flowers"]
           }
         ]
       },
       { 
         name: "LED Video Wall", 
-        items: ["55' LED TV on Stage", "Digital Podium", "Welcome Panel LED Video Wall"],
+        items: ["55' LED TV on Stage", "Digital Podium", "Welcome Panadol - Digital"],
         nestedGroups: [
           {
             title: "LED Video Wall",
+            singleSelect: true,
             options: ["50’x12’", "40’x10’", "30’x10’", "20’x10’"]
           }
         ]
@@ -111,19 +114,13 @@ const structuredServices = [
     id: "C7", category: "Entertainment", icon: Music,
     desc: "Cultural, traditional, and modern entertainment acts to captivate your audience.",
     hideSelectAll: true, // Hides the Select All button for this category
-    items: ["Light Performance Dance", "Traditional Welcome Dance (Wes Dance)", "Sesath Holders", "Puja Dance (Girls)", "Comedian Act"],
+    items: ["Traditional Welcome Dance (Wes Dance)", "Puja Dance (Girls)", "Light Performance Dance", "Latin Dance", "Indian Dance Act", "Comedian Act", "Solo Dance", "Belly Dance", "Mask Dance Act"],
     subCategories: [
-      { name: "Girls' Dance Items", items: ["Solo Dance", "Latin Dance", "Belly Dance", "Indian Dance Act", "Mask Dance Act"] },
       { name: "Instrumental Items", items: ["Drum Orchestra", "Indian Doll Act with Dancers"] }
     ]
   },
   {
-    id: "C8", category: "Sound & Lighting Systems", icon: Speaker,
-    desc: "Clear audio equipment and atmospheric stage lighting to enhance visibility and atmosphere.",
-    items: ["Professional Sound System Setup", "Dynamic Stage Lighting Setup"]
-  },
-  {
-    id: "C9", category: "Printing & Certificates", icon: Printer,
+    id: "C8", category: "Printing & Certificates", icon: Printer,
     desc: "Official certificates, secure folders, flags, and promotional materials.",
     items: ["Promo Flag Printing", "Promo Flag Poles"],
     subCategories: [
@@ -131,7 +128,7 @@ const structuredServices = [
     ]
   },
   {
-    id: "C10", category: "Graduation Items", icon: GraduationCap,
+    id: "C9", category: "Graduation Items", icon: GraduationCap,
     desc: "Premium graduation cloaks, ceremonial gowns, and beautiful garlands for your special day.",
     hideSelectAll: true, // Hides the Select All button for this category
     subCategories: [
@@ -140,7 +137,12 @@ const structuredServices = [
       { name: "Garlands", items: ["Purple", "Red", "Yellow", "Pink"] },
       { name: "Scrolls", items: ["Red", "Blue", "Maroon", "Black", "Green", "Gold", "Silver"] },
      ]
-  }
+  },
+  {
+    id: "C10", category: "Sound & Lighting Systems", icon: Speaker,
+    desc: "Clear audio equipment and atmospheric stage lighting to enhance visibility and atmosphere.",
+    items: ["Professional Sound System Setup", "Dynamic Stage Lighting Setup"]
+  },
 ];
 
 export default function ServicesContent() {
@@ -158,8 +160,19 @@ export default function ServicesContent() {
     localStorage.setItem("skd_services_cart", JSON.stringify(cart));
   }, [cart]);
 
-  const toggleCart = (itemFullString: string) => {
-    setCart(prev => prev.includes(itemFullString) ? prev.filter(i => i !== itemFullString) : [...prev, itemFullString]);
+  const toggleCart = (itemFullString: string, isSingleSelect: boolean = false, categoryPrefix: string = "") => {
+    setCart(prev => {
+      if (prev.includes(itemFullString)) {
+        return prev.filter(i => i !== itemFullString);
+      }
+      let newCart = [...prev];
+      if (isSingleSelect && categoryPrefix) {
+         newCart = newCart.filter(item => !item.startsWith(categoryPrefix));
+      }
+
+      newCart.push(itemFullString);
+      return newCart;
+    });
   };
 
   const clearCart = () => {
@@ -178,12 +191,14 @@ export default function ServicesContent() {
       });
     }
 
-    // Direct nested groups (e.g. Compere options)
+    // Direct nested groups (Skip singleSelect items)
     if (cat.nestedGroups) {
       cat.nestedGroups.forEach((nested: any) => {
-        nested.options.forEach((opt: string) => {
-          allItems.push(`${cat.category}: ${nested.title} - ${opt}`);
-        });
+        if (!nested.singleSelect) {
+          nested.options.forEach((opt: string) => {
+            allItems.push(`${cat.category}: ${nested.title} - ${opt}`);
+          });
+        }
       });
     }
 
@@ -195,12 +210,14 @@ export default function ServicesContent() {
             allItems.push(`${cat.category} - ${sub.name}: ${item}`);
           });
         }
-        // Nested groups inside sub-categories
+        // Nested groups inside sub-categories (Skip singleSelect items)
         if (sub.nestedGroups) {
           sub.nestedGroups.forEach((nested: any) => {
-            nested.options.forEach((opt: string) => {
-              allItems.push(`${cat.category} - ${sub.name}: ${nested.title} - ${opt}`);
-            });
+            if (!nested.singleSelect) {
+              nested.options.forEach((opt: string) => {
+                allItems.push(`${cat.category} - ${sub.name}: ${nested.title} - ${opt}`);
+              });
+            }
           });
         }
       });
@@ -210,16 +227,20 @@ export default function ServicesContent() {
 
   // Select/Deselect All Handler
   const handleSelectAllCategory = (cat: any) => {
+    // Get all items EXCEPT singleSelect ones
     const allItems = getAllItemsInCategory(cat);
     
-    // Check if ALL items in this category are currently in the cart
-    const areAllSelected = allItems.every((item) => cart.includes(item));
+    // Check if ALL allowable items in this category are currently in the cart
+    const areAllSelected = allItems.length > 0 && allItems.every((item) => cart.includes(item));
 
     if (areAllSelected) {
-      // If all are selected, DESELECT them
-      setCart((prev) => prev.filter((cartItem) => !allItems.includes(cartItem)));
+      // If all are selected, DESELECT EVERYTHING in this category (including manually selected single options)
+      setCart((prev) => prev.filter((cartItem) => 
+        !cartItem.startsWith(`${cat.category}:`) && 
+        !cartItem.startsWith(`${cat.category} - `)
+      ));
     } else {
-      // If not all are selected, SELECT all of them (avoiding duplicates)
+      // If not all are selected, SELECT all allowable items (avoiding duplicates)
       setCart((prev) => {
         const newCart = [...prev];
         allItems.forEach((item) => {
@@ -232,14 +253,15 @@ export default function ServicesContent() {
     }
   };
 
-  const SelectablePill = ({ label, categoryName }: { label: string, categoryName: string }) => {
+  const SelectablePill = ({ label, categoryName, isSingleSelect = false, groupPrefix = "" }: { label: string, categoryName: string, isSingleSelect?: boolean, groupPrefix?: string }) => {
     const fullString = `${categoryName}: ${label}`;
     const isSelected = cart.includes(fullString);
-    
+    const prefixToClear = groupPrefix ? `${categoryName}: ${groupPrefix}` : `${categoryName}:`;
+
     return (
       <motion.button
         whileTap={{ scale: 0.95 }}
-        onClick={() => toggleCart(fullString)}
+        onClick={() => toggleCart(fullString, isSingleSelect, prefixToClear)}
         className={`flex items-start sm:items-center gap-2.5 px-4 sm:px-5 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 border transform-gpu text-left w-full sm:w-auto h-auto ${
           isSelected 
             ? "bg-[#a40049] text-white border-[#a40049] shadow-md" 
@@ -324,7 +346,12 @@ export default function ServicesContent() {
                       {cat.items && cat.items.length > 0 && (
                         <div className="flex flex-wrap gap-2.5">
                           {cat.items.map(item => (
-                            <SelectablePill key={item} label={item} categoryName={cat.category} />
+                            <SelectablePill 
+                              key={item} 
+                              label={item} 
+                              categoryName={cat.category} 
+                              isSingleSelect={(cat as any).singleSelect} /* <-- FIXED TS ERROR */
+                            />
                           ))}
                         </div>
                       )}
@@ -346,6 +373,8 @@ export default function ServicesContent() {
                                     key={opt} 
                                     label={`${nested.title} - ${opt}`} 
                                     categoryName={cat.category} 
+                                    isSingleSelect={nested.singleSelect} 
+                                    groupPrefix={`${nested.title} -`} 
                                   />
                                 ))}
                               </div>
@@ -387,6 +416,8 @@ export default function ServicesContent() {
                                             key={opt} 
                                             label={`${nested.title} - ${opt}`} 
                                             categoryName={`${cat.category} - ${sub.name}`} 
+                                            isSingleSelect={nested.singleSelect} 
+                                            groupPrefix={`${nested.title} -`} 
                                           />
                                         ))}
                                       </div>

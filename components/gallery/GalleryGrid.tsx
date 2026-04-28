@@ -2,37 +2,36 @@
 
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Maximize2, Image as ImageIcon, Filter, PlayCircle, ChevronDown, ChevronRight, X, SlidersHorizontal } from "lucide-react";
+import { Maximize2, Image as ImageIcon, Filter, PlayCircle, ChevronDown, ChevronRight, X, SlidersHorizontal,
+  LayoutGrid, ClipboardCheck, Users, Camera, Video, Mic, Theater, Music, Printer, GraduationCap 
+} from "lucide-react";
 import { s } from "framer-motion/client";
 
 // --- DYNAMIC CATEGORIES WITH OPTIONAL SUB-CATEGORIES ---
 const categoriesConfig = [
-  { name: "All" },
-
-  { name: "Registration" },
+  { name: "All" ,icon: LayoutGrid },
+  { name: "Registration" ,icon: ClipboardCheck },
 
   { 
-    name: "Seating Arrangements", 
-    subCategories: ["Auditorium", "Procession (Perahara)", "Award Receiving"] 
+    name: "Seating Arrangements" , icon: Users,
+    subCategories: ["Procession (Perahara)", "Sesath Holders", "Auditorium", "Award Receiving and Time Management"] 
   },
   
-  { name: "Event Photography",
+  { name: "Event Photography",icon: Camera,
     subCategories: ["Highlights Photos", "Stage Photos", "Full & Bust Photos", "Family Photos", "Couple Photos", "Group Photos", "Backdrop Photos"]
    },
 
-  { name: "Event Videography" },
-
-  { name: "Master of Ceremony & Compere" },
+  { name: "Event Videography" , icon: Video },
+  { name: "Master of Ceremony & Compere" , icon: Mic },
 
   { 
-    name: "Stage Arrangements",
-    subCategories: ["Stage Flower Decorations", "LED Video Wall", "Oil Lamps Decorations", "Podium Decorations", "Digital Podium", "Welcome Wall", "55_ LED TV", "Head Table Decorations", "Flower Garlands & Baskets"] 
+    name: "Stage Arrangements", icon: Theater,
+    subCategories: ["Welcome Panadol- Digital", "Stage Flower Decorations", "LED Video Wall", "Podium Decorations", "Oil Lamps Decorations", "Digital Podium", "55_ LED TV", "Head Table Decorations", "Flower Garlands & Baskets"] 
   },
   
-  { name: "Entertainment", subCategories: ["Light Dance", "Wes Dance", "Latin Dance", "Indian Classical Dance", "Sesath Holders", "Puja Dancers"] },
-  { name: "Sound & Lighting Systems" },
-  { name: "Printing & Certificates" , subCategories: ["Flags", "TokenOfAppreciation", "Suvourniers"]},
-  { name: "Graduation Items" , subCategories: ["Garlands", "Scrolls", "Hoods", "Cloaks", "Stoles", "Certificate Pouches", "Hats"]},
+  { name: "Entertainment", icon: Music, subCategories: ["Wes Dance", "Puja Dancers", "Light Dance", "Latin Dance", "Indian Classical Dance"] },
+  { name: "Printing & Certificates" , icon: Printer, subCategories: ["Flags", "Token Of Appreciation", "Suvourniers" , "Certificate Pouches"]},
+  { name: "Graduation Items" , icon: GraduationCap, subCategories: ["Cloaks", "Ceremonial Cloaks", "Hats", "Scrolls", "Garlands", "Stoles", "Hoods",]},
 ];
 
 const galleryData = [
@@ -62,13 +61,12 @@ const galleryData = [
   { id: "seat-12", src: "/gallery/seating/seating/12.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
 
   // Award Receiving
-  { id: "award-1", src: "/gallery/seating/award/1.jpg", category: "Seating Arrangements", subCategory: "Award Receiving", title: "Award Receiving Management" },
-  { id: "award-2", src: "/gallery/seating/award/2.jpg", category: "Seating Arrangements", subCategory: "Award Receiving", title: "Award Receiving Management" },
-  { id: "award-3", src: "/gallery/seating/award/3.jpg", category: "Seating Arrangements", subCategory: "Award Receiving", title: "Award Receiving Management" },
-  { id: "award-4", src: "/gallery/seating/award/4.jpg", category: "Seating Arrangements", subCategory: "Award Receiving", title: "Award Receiving Management" },
-  { id: "award-5", src: "/gallery/seating/award/5.jpg", category: "Seating Arrangements", subCategory: "Award Receiving", title: "Award Receiving Management" },
-  { id: "award-6", src: "/gallery/seating/award/6.jpg", category: "Seating Arrangements", subCategory: "Award Receiving", title: "Award Receiving Management" },
-
+  { id: "award-1", src: "/gallery/seating/award/1.jpg", category: "Seating Arrangements", subCategory: "Award Receiving and Time Management", title: "Award Receiving and Time Management" },
+  { id: "award-2", src: "/gallery/seating/award/2.jpg", category: "Seating Arrangements", subCategory: "Award Receiving and Time Management", title: "Award Receiving and Time Management" },
+  
+    // Sesath Holders
+  { id: "ent-sesath-7", src: "/gallery/entertainment/sesath/1.jpg", category: "Seating Arrangements", subCategory: "Sesath Holders", title: "Sesath Holders" },
+  
   // Procession 
   { id: "proc-1", src: "/gallery/seating/procession/1.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-2", src: "/gallery/seating/procession/2.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
@@ -82,7 +80,6 @@ const galleryData = [
   { id: "proc-11", src: "/gallery/seating/procession/11.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-12", src: "/gallery/seating/procession/12.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-13", src: "/gallery/seating/procession/13.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
-
 
   //  Highlight Photos
   { id: "photo-high-1", src: "/gallery/photography/highlight/1.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
@@ -108,8 +105,6 @@ const galleryData = [
   { id: "photo-stg-8", src: "/gallery/photography/stage/8.jpg", category: "Event Photography", subCategory: "Stage Photos", title: "Stage Photos" },
 
   // Full and Bust
-  { id: "photo-fb-1", src: "/gallery/photography/fullbust/1.jpg", category: "Event Photography", subCategory: "Full & Bust Photos", title: "Full & Bust Photos" },
-  { id: "photo-fb-2", src: "/gallery/photography/fullbust/2.jpg", category: "Event Photography", subCategory: "Full & Bust Photos", title: "Full & Bust Photos" },
   { id: "photo-fb-3", src: "/gallery/photography/fullbust/3.jpg", category: "Event Photography", subCategory: "Full & Bust Photos", title: "Full & Bust Photos" },
   { id: "photo-fb-4", src: "/gallery/photography/fullbust/4.jpg", category: "Event Photography", subCategory: "Full & Bust Photos", title: "Full & Bust Photos" },
   { id: "photo-fb-5", src: "/gallery/photography/fullbust/5.jpg", category: "Event Photography", subCategory: "Full & Bust Photos", title: "Full & Bust Photos" },
@@ -133,7 +128,6 @@ const galleryData = [
   { id: "photo-cpl-1", src: "/gallery/photography/couple/1.jpg", category: "Event Photography", subCategory: "Couple Photos", title: "Couple Photos" },
   { id: "photo-cpl-2", src: "/gallery/photography/couple/2.jpg", category: "Event Photography", subCategory: "Couple Photos", title: "Couple Photos" },
   { id: "photo-cpl-3", src: "/gallery/photography/couple/3.jpg", category: "Event Photography", subCategory: "Couple Photos", title: "Couple Photos" },
-  { id: "photo-cpl-4", src: "/gallery/photography/couple/4.jpg", category: "Event Photography", subCategory: "Couple Photos", title: "Couple Photos" },
 
   //Group Photos
   { id: "photo-grp-1", src: "/gallery/photography/group/1.jpg", category: "Event Photography", subCategory: "Group Photos", title: "Group Photos" },
@@ -145,11 +139,9 @@ const galleryData = [
   { id: "photo-back-4", src: "/gallery/photography/backdrop/4.jpg", category: "Event Photography", subCategory: "Backdrop Photos", title: "Backdrop Photos" },
   { id: "photo-back-5", src: "/gallery/photography/backdrop/5.jpg", category: "Event Photography", subCategory: "Backdrop Photos", title: "Backdrop Photos" },
   { id: "photo-back-6", src: "/gallery/photography/backdrop/6.jpg", category: "Event Photography", subCategory: "Backdrop Photos", title: "Backdrop Photos" },
+  { id: "photo-back-7", src: "/gallery/photography/backdrop/7.jpg", category: "Event Photography", subCategory: "Backdrop Photos", title: "Backdrop Photos" },
 
   //Event Videography
-  { id: "video-1", src: "/gallery/videography/1.jpg", category: "Event Videography", title: "360 Video Booth Setup" },
-  { id: "video-2", src: "/gallery/videography/2.jpg", category: "Event Videography", title: "360 Video Booth Setup" },
-  { id: "video-3", src: "/gallery/videography/3.jpg", category: "Event Videography", title: "360 Video Booth Setup" },
 
   //cCompere
   { id: "compere-1", src: "/gallery/compere/1.jpg", category: "Master of Ceremony & Compere", title: "Professional Compere on Stage" },
@@ -175,8 +167,8 @@ const galleryData = [
   { id: "stg-digipod-1", src: "/gallery/stage/digipodium/1.jpg", category: "Stage Arrangements", subCategory: "Digital Podium", title: "Digital Podium" },
   { id: "stg-digipod-2", src: "/gallery/stage/digipodium/2.jpg", category: "Stage Arrangements", subCategory: "Digital Podium", title: "Digital Podium" },
 
-  { id: "stg-wel-1", src: "/gallery/stage/welcome/1.jpg", category: "Stage Arrangements", subCategory: "Welcome Wall", title: "Welcome Signage" },
-  { id: "stg-wel-2", src: "/gallery/stage/welcome/2.jpg", category: "Stage Arrangements", subCategory: "Welcome Wall", title: "Welcome Signage" },
+  { id: "stg-wel-1", src: "/gallery/stage/welcome/1.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
+  { id: "stg-wel-2", src: "/gallery/stage/welcome/2.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
 
   { id: "stg-tv-1", src: "/gallery/stage/tv/1.jpg", category: "Stage Arrangements", subCategory: "55_ LED TV", title: "55_ LED TV" },
   { id: "stg-tv-2", src: "/gallery/stage/tv/2.jpg", category: "Stage Arrangements", subCategory: "55_ LED TV", title: "55_ LED TV" },
@@ -212,9 +204,6 @@ const galleryData = [
   { id: "ent-west-6", src: "/gallery/entertainment/wes/6.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
   { id: "ent-west-7", src: "/gallery/entertainment/wes/7.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
 
-  // Sesath Holders
-  { id: "ent-sesath-7", src: "/gallery/entertainment/sesath/1.jpg", category: "Entertainment", subCategory: "Sesath Holders", title: "Sesath Holders" },
-
   // Puja Dancers
   { id: "ent-puja-1", src: "/gallery/entertainment/puja/1.jpg", category: "Entertainment", subCategory: "Puja Dancers", title: "Puja Dancers" },
   { id: "ent-puja-2", src: "/gallery/entertainment/puja/2.jpg", category: "Entertainment", subCategory: "Puja Dancers", title: "Puja Dancers" },
@@ -241,11 +230,12 @@ const galleryData = [
   { id: "pc-flag-3", src: "/gallery/pc/flags/3.jpg", category: "Printing & Certificates", subCategory: "Flags", title: "Printing & Certificates" },
   { id: "pc-flag-4", src: "/gallery/pc/flags/4.jpg", category: "Printing & Certificates", subCategory: "Flags", title: "Printing & Certificates" },
   { id: "pc-flag-5", src: "/gallery/pc/flags/5.jpg", category: "Printing & Certificates", subCategory: "Flags", title: "Printing & Certificates" },
-  { id: "pc-token-1", src: "/gallery/pc/tokens/1.jpg", category: "Printing & Certificates", subCategory: "TokenOfAppreciation", title: "Printing & Certificates" },
-  { id: "pc-token-2", src: "/gallery/pc/tokens/2.jpg", category: "Printing & Certificates", subCategory: "TokenOfAppreciation", title: "Printing & Certificates" },
-  { id: "pc-token-3", src: "/gallery/pc/tokens/3.jpg", category: "Printing & Certificates", subCategory: "TokenOfAppreciation", title: "Printing & Certificates" },
+  { id: "pc-token-1", src: "/gallery/pc/tokens/1.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
+  { id: "pc-token-2", src: "/gallery/pc/tokens/2.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
+  { id: "pc-token-3", src: "/gallery/pc/tokens/3.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
   { id: "pc-suvour-1", src: "/gallery/pc/suvour/1.jpg", category: "Printing & Certificates", subCategory: "Suvourniers", title: "Printing & Certificates" },
   { id: "pc-suvour-2", src: "/gallery/pc/suvour/2.jpg", category: "Printing & Certificates", subCategory: "Suvourniers", title: "Printing & Certificates" },
+  { id: "pc-pouches-1", src: "/gallery/graduationitems/pouches/1.jpg", category: "Printing & Certificates", subCategory: "Certificate Pouches", title: "Premium Certificate Holder Pouches" },
 
   { id: "grad-garl-1", src: "/gallery/graduationitems/garland/1.jpg", category: "Graduation Items", subCategory: "Garlands", title: "Premium Garlands" },
   { id: "grad-garl-2", src: "/gallery/graduationitems/garland/2.jpeg", category: "Graduation Items", subCategory: "Garlands", title: "Premium Garlands" },
@@ -269,15 +259,17 @@ const galleryData = [
 
   { id: "grad-stoles-1", src: "/gallery/graduationitems/stoles/1.jpg", category: "Graduation Items", subCategory: "Stoles", title: "Premium Stoles" },
 
-  { id: "grad-pouches-1", src: "/gallery/graduationitems/pouches/1.jpg", category: "Graduation Items", subCategory: "Certificate Pouches", title: "Premium Certificate Holder Pouches" },
-
   { id: "grad-hats-1", src: "/gallery/graduationitems/hats/1.jpg", category: "Graduation Items", subCategory: "Hats", title: "Premium Hats" },
   { id: "grad-hats-2", src: "/gallery/graduationitems/hats/2.jpeg", category: "Graduation Items", subCategory: "Hats", title: "Premium Hats" },
   { id: "grad-hats-3", src: "/gallery/graduationitems/hats/3.jpeg", category: "Graduation Items", subCategory: "Hats", title: "Premium Hats" },
   { id: "grad-hats-4", src: "/gallery/graduationitems/hats/4.jpeg", category: "Graduation Items", subCategory: "Hats", title: "Premium Hats" },
   { id: "grad-hats-5", src: "/gallery/graduationitems/hats/5.jpeg", category: "Graduation Items", subCategory: "Hats", title: "Premium Hats" },
 
-  { id: "snd-1", src: "/gallery/sound/1.jpg", category: "Sound & Lighting Systems", title: "Dynamic Concert Lighting" },
+  { id: "grad-cercloaks-1", src: "/gallery/graduationitems/cercloaks/01.jpeg", category: "Graduation Items", subCategory: "Ceremonial Cloaks", title: "Premium Ceremonial Cloaks" },
+  { id: "grad-cercloaks-2", src: "/gallery/graduationitems/cercloaks/02.jpeg", category: "Graduation Items", subCategory: "Ceremonial Cloaks", title: "Premium Ceremonial Cloaks" },
+  { id: "grad-cercloaks-3", src: "/gallery/graduationitems/cercloaks/03.jpeg", category: "Graduation Items", subCategory: "Ceremonial Cloaks", title: "Premium Ceremonial Cloaks" },
+  { id: "grad-cercloaks-4", src: "/gallery/graduationitems/cercloaks/04.jpeg", category: "Graduation Items", subCategory: "Ceremonial Cloaks", title: "Premium Ceremonial Cloaks" },
+  { id: "grad-cercloaks-5", src: "/gallery/graduationitems/cercloaks/05.jpeg", category: "Graduation Items", subCategory: "Ceremonial Cloaks", title: "Premium Ceremonial Cloaks" },
 
   
 ];
@@ -285,7 +277,6 @@ const galleryData = [
 // --- CATEGORY TO YOUTUBE VIDEO MAPPING ---
 const categoryVideos: Record<string, string[]> = {
   // Main Categories
-  "Seating Arrangements": ["if_Phg6H-FU"],
   "Event Videography": ["wkGEiVu_duQ", "ig-q_lhvFNs", "kfLKCrPA5Ak"],
   "Master of Ceremony & Compere": ["8Se9Yrl3snc", "sWrWX_07ZAo", "e36gEPxbbIc"],
   "Entertainment": ["kQIsAfJ8b7U"],
@@ -295,8 +286,7 @@ const categoryVideos: Record<string, string[]> = {
   "Light Dance": ["AAhlUA2UxYg", "BnpiFk1-_mM"], 
   "Wes Dance": ["2aXeCaRUSTY"],
   "Latin Dance": ["N8nS014KaUU"],
-  "Puja Dancers": ["HXSz-TQ5hdw"],
-  "Auditorium": ["video_id_for_auditorium"]
+  "Puja Dancers": ["HXSz-TQ5hdw"]
 };
 const StandardVideoPlayer = ({ videoId }: { videoId: string }) => {
   const ref = useRef<HTMLIFrameElement>(null);
@@ -404,32 +394,41 @@ export default function GalleryGrid() {
   }, [activeCategory, activeSubCategory]);
 
   const activeVideoKey = activeSubCategory !== "All" ? activeSubCategory : activeCategory;
-  const activeVideoIds = categoryVideos[activeVideoKey] || [];
+  let activeVideoIds = [...(categoryVideos[activeVideoKey] || [])];
 
+  // Entertainment category eke 'All' select karala thiyeddi, sub-categories wala thiyena okkoma videos ekathu karanawa
+  if (activeCategory === "Entertainment" && activeSubCategory === "All") {
+    const subCatVideos = availableSubCategories.flatMap(subCat => categoryVideos[subCat] || []);
+    // Main videos tikatai, sub-categories wala videos tikatai ekathu karala eka array ekak hadanawa
+    activeVideoIds = [...activeVideoIds, ...subCatVideos];
+  }
   // Reusable Sidebar Content
   const SidebarContent = () => (
     <div className="flex flex-col space-y-1.5">
       {categoriesConfig.map((cat) => {
         const isActive = activeCategory === cat.name;
         const hasSubCategories = cat.subCategories && cat.subCategories.length > 0;
+        const CatIcon = cat.icon;
 
         return (
           <div key={cat.name} className="flex flex-col">
             <button
               onClick={() => handleCategoryChange(cat.name)}
-              className={`text-left px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300 relative overflow-hidden group flex items-center justify-between ${
+              className={`w-full text-left px-3 py-2.5 rounded-xl text-[13px] font-bold transition-all duration-300 flex items-center justify-between border ${
                 isActive 
-                  ? "bg-[#a40049]/5 text-[#a40049]" 
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  ? "bg-white text-[#a40049] border-[#a40049]/20 shadow-[0_4px_15px_-3px_rgba(164,0,73,0.15)] scale-[1.02]" 
+                  : "bg-gray-50/50 text-gray-600 border-transparent hover:bg-white hover:border-gray-200 hover:shadow-sm"
               }`}
             >
-              {isActive && (
-                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#a40049] rounded-r-full" />
-              )}
-              <span className={`relative z-10 ${isActive ? "pl-2" : ""}`}>{cat.name}</span>
+              <div className="flex items-center gap-2.5">
+                <div className={`p-1.5 rounded-lg transition-colors ${isActive ? 'bg-[#a40049]/10 text-[#a40049]' : 'bg-gray-100 text-gray-400'}`}>
+                  <CatIcon className="w-3.5 h-3.5" />
+                </div>
+                <span>{cat.name}</span>
+              </div>
               
               {hasSubCategories && (
-                <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isActive ? "rotate-180 text-[#a40049]" : "text-gray-400"}`} />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isActive ? "rotate-180 text-[#a40049]" : "text-gray-300"}`} />
               )}
             </button>
 
@@ -440,18 +439,20 @@ export default function GalleryGrid() {
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="overflow-hidden ml-4 pl-4 border-l border-gray-100 mt-1 space-y-1"
+                  className="overflow-hidden ml-4 pl-3 border-l-2 border-gray-100/60 mt-1 space-y-1"
                 >
                   <button
                     onClick={() => {
                       setActiveSubCategory("All");
                       setIsMobileFilterOpen(false);
                     }}
-                    className={`w-full text-left px-3 py-2.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-2 ${
-                      activeSubCategory === "All" ? "text-[#a40049] bg-gray-50" : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                    className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 border ${
+                      activeSubCategory === "All" 
+                        ? "bg-white text-[#a40049] border-[#a40049]/10 shadow-sm" 
+                        : "bg-transparent text-gray-500 border-transparent hover:bg-gray-50 hover:text-gray-900"
                     }`}
                   >
-                    <ChevronRight className={`w-3 h-3 shrink-0 ${activeSubCategory === "All" ? "text-[#a40049]" : "opacity-0"}`} />
+                    <ChevronRight className={`w-3 h-3 shrink-0 transition-opacity ${activeSubCategory === "All" ? "text-[#a40049] opacity-100" : "opacity-0"}`} />
                     <span className="leading-snug">All {cat.name}</span>
                   </button>
 
@@ -462,11 +463,13 @@ export default function GalleryGrid() {
                         setActiveSubCategory(subCat);
                         setIsMobileFilterOpen(false);
                       }}
-                      className={`w-full text-left px-3 py-2.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-2 ${
-                        activeSubCategory === subCat ? "text-[#a40049] bg-gray-50" : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 border ${
+                        activeSubCategory === subCat 
+                          ? "bg-white text-[#a40049] border-[#a40049]/10 shadow-sm" 
+                          : "bg-transparent text-gray-500 border-transparent hover:bg-gray-50 hover:text-gray-900"
                       }`}
                     >
-                      <ChevronRight className={`w-3 h-3 shrink-0 ${activeSubCategory === subCat ? "text-[#a40049]" : "opacity-0"}`} />
+                      <ChevronRight className={`w-3 h-3 shrink-0 transition-opacity ${activeSubCategory === subCat ? "text-[#a40049] opacity-100" : "opacity-0"}`} />
                       <span className="leading-snug">{subCat}</span>
                     </button>
                   ))}
@@ -490,28 +493,32 @@ export default function GalleryGrid() {
           
           {/* Main Category Scroll Row */}
           <div className="flex-1 overflow-x-auto custom-scrollbar-hide flex gap-2 snap-x items-center py-1">
-             {categoriesConfig.map((cat) => (
+             {categoriesConfig.map((cat) => {
+               const CatIcon = cat.icon;
+               return (
                 <button
                   key={cat.name}
                   onClick={() => handleCategoryChange(cat.name)}
-                  className={`whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 snap-start shrink-0 border ${
+                  className={`whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-300 snap-start shrink-0 border flex items-center gap-1.5 ${
                     activeCategory === cat.name
                       ? "bg-[#a40049]/10 text-[#a40049] border-[#a40049]/30 shadow-sm"
                       : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100"
                   }`}
                 >
+                  <CatIcon className={`w-3 h-3 ${activeCategory === cat.name ? 'text-[#a40049]' : 'text-gray-400'}`} />
                   {cat.name}
                 </button>
-              ))}
+              )
+             })}
           </div>
 
           {/* Filter Drawer Trigger Button */}
           <div className="shrink-0 pl-2 border-l border-gray-200">
             <button 
               onClick={() => setIsMobileFilterOpen(true)}
-              className="flex items-center justify-center w-10 h-10 bg-gray-900 text-white rounded-xl shadow-md hover:bg-gray-800 transition-colors"
+              className="flex items-center justify-center w-9 h-9 bg-gray-900 text-white rounded-xl shadow-md hover:bg-gray-800 transition-colors"
             >
-              <SlidersHorizontal className="w-4 h-4" />
+              <SlidersHorizontal className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
@@ -529,7 +536,7 @@ export default function GalleryGrid() {
                   onClick={() => setActiveSubCategory("All")}
                   className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all duration-300 snap-start shrink-0 border ${
                     activeSubCategory === "All"
-                      ? "bg-gray-900 text-white border-gray-900"
+                      ? "bg-gray-900 text-white border-gray-900 shadow-sm"
                       : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
                   }`}
                 >
@@ -541,7 +548,7 @@ export default function GalleryGrid() {
                     onClick={() => setActiveSubCategory(subCat)}
                     className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all duration-300 snap-start shrink-0 border ${
                       activeSubCategory === subCat
-                        ? "bg-gray-900 text-white border-gray-900"
+                        ? "bg-gray-900 text-white border-gray-900 shadow-sm"
                         : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
                     }`}
                   >
@@ -595,9 +602,9 @@ export default function GalleryGrid() {
             DESKTOP SIDEBAR
             ============================================== */}
         <aside className="hidden lg:block w-72 shrink-0">
-          <div className="sticky top-32 bg-white rounded-3xl p-6 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] border border-gray-100">
-            <h3 className="text-gray-900 font-extrabold text-lg mb-6 flex items-center gap-2">
-              <Filter className="w-5 h-5 text-[#a40049]" /> 
+          <div className="sticky top-28 bg-white rounded-3xl p-5 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] border border-gray-100 max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar-hide">
+            <h3 className="text-gray-900 font-extrabold text-[15px] mb-5 flex items-center gap-2">
+              <Filter className="w-4 h-4 text-[#a40049]" /> 
               Filter Gallery
             </h3>
             <SidebarContent />
@@ -607,16 +614,39 @@ export default function GalleryGrid() {
         {/* ==============================================
             MAIN CONTENT AREA
             ============================================== */}
-        <main className="flex-1 flex flex-col">
+        <main className="flex-1 flex flex-col min-h-[75vh]">
           
           <div className="mb-8 hidden lg:flex items-center justify-between">
             <div>
               <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
                 {activeSubCategory !== "All" ? activeSubCategory : activeCategory} Portfolio
               </h2>
-              <p className="text-gray-500 font-medium text-sm mt-1">Showing {filteredImages.length} extraordinary moments.</p>
+              {(filteredImages.length > 0 || activeVideoIds.length > 0) && (
+                <p className="text-gray-500 font-medium text-sm mt-1">
+                  {filteredImages.length > 0 
+                    ? `Showing ${filteredImages.length} extraordinary moments.` 
+                    : `Showing ${activeVideoIds.length} video highlights.`}
+                </p>
+              )}
             </div>
           </div>
+
+          {/* ==============================================
+              ENTERTAINMENT CATEGORY - VIDEOS ON TOP
+              ============================================== */}
+          {activeCategory === "Entertainment" && (
+            <AnimatePresence mode="wait">
+              {activeVideoIds && activeVideoIds.length > 0 && (
+                <div className="mb-8">
+                  <CategoryVideoShowcase 
+                    key={activeVideoKey} 
+                    videoIds={activeVideoIds} 
+                    categoryName={activeVideoKey} 
+                  />
+                </div>
+              )}
+            </AnimatePresence>
+          )}
 
           {/* --- PERFORMANCE OPTIMIZED GRID --- */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-max">
@@ -692,7 +722,7 @@ export default function GalleryGrid() {
           </div>
 
           {/* Fallback Empty State */}
-          {filteredImages.length === 0 && (
+          {filteredImages.length === 0 && activeVideoIds.length === 0 && (
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center text-center py-32 px-4 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 border-dashed mt-6"
@@ -708,15 +738,17 @@ export default function GalleryGrid() {
           )}
 
           {/* YOUTUBE AMBIENT VIDEO SHOWCASE */}
-          <AnimatePresence mode="wait">
-            {activeVideoIds && activeVideoIds.length > 0 && (
-              <CategoryVideoShowcase 
-                key={activeVideoKey} 
-                videoIds={activeVideoIds} 
-                categoryName={activeVideoKey} 
-              />
-            )}
-          </AnimatePresence>
+          {activeCategory !== "Entertainment" && (
+            <AnimatePresence mode="wait">
+              {activeVideoIds && activeVideoIds.length > 0 && (
+                <CategoryVideoShowcase 
+                  key={activeVideoKey} 
+                  videoIds={activeVideoIds} 
+                  categoryName={activeVideoKey} 
+                />
+              )}
+            </AnimatePresence>
+          )}
 
         </main>
       </div>

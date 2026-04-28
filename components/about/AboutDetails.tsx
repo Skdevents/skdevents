@@ -120,7 +120,7 @@ export default function AboutDetails() {
                 {[
                   "Event Planning & Coordination", 
                   "Event Management",
-                  "Corporate Events & Launches", 
+                  "Corporate Events & Product Launches", 
                   "Convocation Events", 
                   "Entertainment Events", 
                   "Supply Services (Décor, Sound, Light)",

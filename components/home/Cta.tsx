@@ -6,7 +6,7 @@ import { ArrowRight, PhoneCall, Mail } from "lucide-react";
 
 export default function Cta() {
   return (
-    <section className="py-12 md:py-16 bg-white relative overflow-hidden">
+    <section className="py-10 md:py-14 bg-white relative overflow-hidden">
       
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes pulse-orb1 {
@@ -54,28 +54,28 @@ export default function Cta() {
           {/* Grid Pattern Overlay for High-Tech feel */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:30px_30px] opacity-20" />
 
-          {/* Content Container - FIXED: Reduced paddings for a more compact, cute look */}
-          <div className="relative z-20 px-6 py-12 md:py-16 lg:px-16 flex flex-col items-center text-center">
+          {/* Content Container - Compact and Cute */}
+          <div className="relative z-20 px-5 py-10 md:py-12 lg:px-12 flex flex-col items-center text-center">
             
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 mb-6 backdrop-blur-md transform-gpu"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 mb-4 sm:mb-5 backdrop-blur-md transform-gpu"
             >
-              <span className="text-[10px] sm:text-xs font-bold tracking-widest text-white uppercase">
+              <span className="text-[10px] sm:text-[11px] font-bold tracking-widest text-white uppercase">
                 Let's Work Together
               </span>
             </motion.div>
 
-            {/* FIXED: Scaled down text sizes slightly to avoid bulkiness */}
+            {/* Cute, Scalable Heading */}
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4 sm:mb-5 leading-[1.15] max-w-3xl transform-gpu"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-3 sm:mb-4 leading-[1.2] max-w-2xl transform-gpu"
             >
               Ready to Create an <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff4d94] to-[#a40049]">Unforgettable Experience?</span>
@@ -86,7 +86,7 @@ export default function Cta() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-sm sm:text-base text-gray-300 max-w-xl mb-8 sm:mb-10 font-medium leading-relaxed transform-gpu px-4"
+              className="text-xs sm:text-sm md:text-base text-gray-300 max-w-lg mb-6 sm:mb-8 font-medium leading-relaxed transform-gpu px-2"
             >
               From conceptualization to flawless execution, we bring passion, innovation, and professionalism to every project. Book your event with us today.
             </motion.p>
@@ -96,44 +96,43 @@ export default function Cta() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              /* FIXED: Reduced gap and adjusted button sizes for a sleeker look */
-              className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto transform-gpu px-4 sm:px-0"
+              className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto transform-gpu px-4 sm:px-0"
             >
+              {/* Changed Text to "Contact Us" */}
               <Link href="/contact" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto group relative px-6 sm:px-8 py-3 sm:py-3.5 bg-white rounded-full font-bold text-gray-900 text-sm sm:text-base shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2">
-                  Request a Quotation
+                <button className="w-full sm:w-auto group relative px-6 sm:px-8 py-2.5 sm:py-3 bg-white rounded-full font-bold text-gray-900 text-sm sm:text-base shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2">
+                  Contact Us
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300 text-[#a40049]" />
                 </button>
               </Link>
 
               <Link href="/services" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 rounded-full font-bold text-white border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-300 flex items-center justify-center text-sm sm:text-base">
+                <button className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold text-white border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-300 flex items-center justify-center text-sm sm:text-base">
                   Explore Services
                 </button>
               </Link>
             </motion.div>
 
-            {/* Quick Contact Info at the bottom of CTA */}
+            {/* Quick Contact Info - REDUCED GAP & PADDING */}
             <motion.div 
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              /* FIXED: Reduced top margin and padding for a tighter, cleaner layout */
-              className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pt-6 sm:pt-8 border-t border-white/10 w-full max-w-2xl transform-gpu"
+              className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pt-5 sm:pt-6 border-t border-white/10 w-full max-w-xl transform-gpu"
             >
-              <a href="tel:+94112248181" className="flex items-center gap-2.5 text-gray-300 hover:text-white transition-colors group">
-                <div className="p-2 sm:p-2.5 rounded-full bg-white/5 group-hover:bg-[#a40049]/20 transition-colors">
-                  <PhoneCall className="w-4 h-4 text-[#ff4d94]" />
+              <a href="tel:+94112248181" className="flex items-center gap-2 sm:gap-2.5 text-gray-300 hover:text-white transition-colors group">
+                <div className="p-2 rounded-full bg-white/5 group-hover:bg-[#a40049]/20 transition-colors">
+                  <PhoneCall className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ff4d94]" />
                 </div>
-                <span className="text-sm font-semibold tracking-wide">+94 112 248 181</span>
+                <span className="text-[13px] sm:text-sm font-semibold tracking-wide">+94 112 248 181</span>
               </a>
               
-              <a href="mailto:info@skdevents.lk" className="flex items-center gap-2.5 text-gray-300 hover:text-white transition-colors group">
-                <div className="p-2 sm:p-2.5 rounded-full bg-white/5 group-hover:bg-[#a40049]/20 transition-colors">
-                  <Mail className="w-4 h-4 text-[#ff4d94]" />
+              <a href="mailto:info@skdevents.lk" className="flex items-center gap-2 sm:gap-2.5 text-gray-300 hover:text-white transition-colors group">
+                <div className="p-2 rounded-full bg-white/5 group-hover:bg-[#a40049]/20 transition-colors">
+                  <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ff4d94]" />
                 </div>
-                <span className="text-sm font-semibold tracking-wide">info@skdevents.lk</span>
+                <span className="text-[13px] sm:text-sm font-semibold tracking-wide">info@skdevents.lk</span>
               </a>
             </motion.div>
 

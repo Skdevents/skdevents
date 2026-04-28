@@ -98,7 +98,7 @@ export default function Navbar() {
               {/* Desktop CTA Button */}
               <Link href="/contact" className="hidden md:block">
                 <button className="group relative px-6 py-2.5 bg-gradient-to-r from-[#a40049] to-[#4d002c] text-white rounded-xl font-bold shadow-lg hover:shadow-[#a40049]/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 transform-gpu">
-                  <span className="text-sm lg:text-base">Get a Quote</span>
+                  <span className="text-sm lg:text-base">Contact us</span>
                 </button>
               </Link>
 

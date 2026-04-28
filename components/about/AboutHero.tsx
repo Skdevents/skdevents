@@ -78,17 +78,25 @@ export default function AboutHero() {
                   initial={{ opacity: 0, y: 50 }} 
                   animate={{ opacity: 1, y: 0 }} 
                   transition={{ duration: 0.8, delay: 0.4 }} 
-                  className="relative flex-[2] rounded-3xl overflow-hidden shadow-xl bg-gradient-to-br from-white to-gray-50 border border-gray-100 p-4 sm:p-6 flex flex-col justify-center items-center text-center group transform-gpu will-change-transform"
+                  className="relative flex-[2] rounded-3xl overflow-hidden shadow-xl bg-gradient-to-br from-white to-gray-50 border border-gray-100 p-3 sm:p-5 lg:p-6 flex flex-col justify-center items-center text-center group transform-gpu will-change-transform"
                 >
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#a40049] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[#a40049]/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-500 transform-gpu">
-                    <ShieldCheck className="w-6 h-6 sm:w-8 sm:h-8 text-[#a40049]" />
+                  <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-[#a40049]/10 flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-500 transform-gpu">
+                    <ShieldCheck className="w-5 h-5 sm:w-7 sm:h-7 text-[#a40049]" />
                   </div>
-                  <h3 className="font-extrabold text-gray-900 text-lg sm:text-xl mb-1">ISO Certified</h3>
-                  <p className="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider">
+                  
+                  <h3 className="font-extrabold text-gray-900 text-sm sm:text-lg lg:text-xl mb-1 sm:mb-1.5 leading-none">
+                    ISO 9001:2015
+                  </h3>
+                  
+                  <span className="text-[#a40049] text-[8px] sm:text-[10px] font-black uppercase tracking-widest mb-2 sm:mb-3 bg-[#a40049]/5 px-2.5 py-0.5 rounded-full border border-[#a40049]/10">
+                    Certified
+                  </span>
+                  
+                  <p className="text-[9px] sm:text-[11px] text-gray-500 font-bold uppercase tracking-wide leading-relaxed px-1">
                     Extended Division of <br/>
-                    <span className="text-[#a40049]">SKD Manufacturer</span>
+                    <span className="text-gray-900 font-extrabold">SKD Manufacturing (Pvt) Ltd</span>
                   </p>
                 </motion.div>
               </div>
