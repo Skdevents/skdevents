@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+:root {
+  background-color: #ffffff;
+  color: #111827; /* Dark text for light background */
+}
+
+html { scroll-behavior: smooth; }
+body { overflow-x: hidden; }
