@@ -77,7 +77,6 @@ const galleryData = [
   { id: "proc-8", src: "/gallery/seating/procession/8.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-9", src: "/gallery/seating/procession/9.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-10", src: "/gallery/seating/procession/10.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
-  { id: "proc-11", src: "/gallery/seating/procession/11.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-12", src: "/gallery/seating/procession/12.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-13", src: "/gallery/seating/procession/13.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
 
@@ -91,9 +90,7 @@ const galleryData = [
   { id: "photo-high-7", src: "/gallery/photography/highlight/7.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
   { id: "photo-high-8", src: "/gallery/photography/highlight/8.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
   { id: "photo-high-9", src: "/gallery/photography/highlight/9.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
-  { id: "photo-high-10", src: "/gallery/photography/highlight/10.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
-  { id: "photo-high-11", src: "/gallery/photography/highlight/11.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
-  { id: "photo-high-12", src: "/gallery/photography/highlight/12.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
+ 
   // Stage 
   { id: "photo-stg-1", src: "/gallery/photography/stage/1.jpg", category: "Event Photography", subCategory: "Stage Photos", title: "Stage Photos" },
   { id: "photo-stg-2", src: "/gallery/photography/stage/2.jpg", category: "Event Photography", subCategory: "Stage Photos", title: "Stage Photos" },
@@ -169,6 +166,8 @@ const galleryData = [
 
   { id: "stg-wel-1", src: "/gallery/stage/welcome/1.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
   { id: "stg-wel-2", src: "/gallery/stage/welcome/2.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
+  { id: "stg-wel-3", src: "/gallery/stage/welcome/3.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
+
 
   { id: "stg-tv-1", src: "/gallery/stage/tv/1.jpg", category: "Stage Arrangements", subCategory: "55_ LED TV", title: "55_ LED TV" },
   { id: "stg-tv-2", src: "/gallery/stage/tv/2.jpg", category: "Stage Arrangements", subCategory: "55_ LED TV", title: "55_ LED TV" },
@@ -182,10 +181,10 @@ const galleryData = [
   { id: "stg-hd-1", src: "/gallery/stage/headtabledeco/1.jpg", category: "Stage Arrangements", subCategory: "Head Table Decorations", title: "Head Table Decorations" },
   { id: "stg-hd-2", src: "/gallery/stage/headtabledeco/2.jpg", category: "Stage Arrangements", subCategory: "Head Table Decorations", title: "Head Table Decorations" },
 
-  { id: "stg-gar-1", src: "/gallery/stage/garland/1.jpg", category: "Stage Arrangements", subCategory: "Flower Garlands & Baskets", title: "Flower Garlands & Baskets" },
-  { id: "stg-gar-2", src: "/gallery/stage/garland/2.jpg", category: "Stage Arrangements", subCategory: "Flower Garlands & Baskets", title: "Flower Garlands & Baskets" },
-  { id: "stg-gar-3", src: "/gallery/stage/garland/3.jpg", category: "Stage Arrangements", subCategory: "Flower Garlands & Baskets", title: "Flower Garlands & Baskets" },
-  { id: "stg-gar-4", src: "/gallery/stage/garland/4.jpg", category: "Stage Arrangements", subCategory: "Flower Garlands & Baskets", title: "Flower Garlands & Baskets" },
+  { id: "stg-gar-1", src: "/gallery/stage/garlands/1.jpg", category: "Stage Arrangements", subCategory: "Flower Garlands & Baskets", title: "Flower Garlands & Baskets" },
+  { id: "stg-gar-2", src: "/gallery/stage/garlands/2.jpg", category: "Stage Arrangements", subCategory: "Flower Garlands & Baskets", title: "Flower Garlands & Baskets" },
+  { id: "stg-gar-3", src: "/gallery/stage/garlands/3.jpg", category: "Stage Arrangements", subCategory: "Flower Garlands & Baskets", title: "Flower Garlands & Baskets" },
+  { id: "stg-gar-4", src: "/gallery/stage/garlands/4.jpg", category: "Stage Arrangements", subCategory: "Flower Garlands & Baskets", title: "Flower Garlands & Baskets" },
 
   // Light Dance
   { id: "ent-light-1", src: "/gallery/entertainment/light/1.jpg", category: "Entertainment", subCategory: "Light Dance", title: "Light Dance Performance" },
@@ -277,16 +276,16 @@ const galleryData = [
 // --- CATEGORY TO YOUTUBE VIDEO MAPPING ---
 const categoryVideos: Record<string, string[]> = {
   // Main Categories
-  "Event Videography": ["wkGEiVu_duQ", "ig-q_lhvFNs", "kfLKCrPA5Ak"],
+  "Event Videography": ["ig-q_lhvFNs", "kfLKCrPA5Ak","wkGEiVu_duQ" ],
   "Master of Ceremony & Compere": ["8Se9Yrl3snc", "sWrWX_07ZAo", "e36gEPxbbIc"],
   "Entertainment": ["kQIsAfJ8b7U"],
-  "Stage Arrangements": ["Cc5baISr2wA"],
 
   // Sub-Categories (ඔයාට ඕන Sub-category නමක් මෙතනට දාලා Video IDs දෙන්න පුළුවන්)
   "Light Dance": ["AAhlUA2UxYg", "BnpiFk1-_mM"], 
   "Wes Dance": ["2aXeCaRUSTY"],
   "Latin Dance": ["N8nS014KaUU"],
-  "Puja Dancers": ["HXSz-TQ5hdw"]
+  "Puja Dancers": ["HXSz-TQ5hdw"],
+  "Procession (Perahara)": ["Cc5baISr2wA"],
 };
 const StandardVideoPlayer = ({ videoId }: { videoId: string }) => {
   const ref = useRef<HTMLIFrameElement>(null);
