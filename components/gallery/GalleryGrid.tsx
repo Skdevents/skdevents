@@ -28,7 +28,7 @@ const categoriesConfig = [
   },
   { 
     name: "Stage Arrangements", icon: Theater,
-    subCategories: ["Welcome Panadol- Digital", "Stage Flower Decorations", "LED Video Wall", "Podium Decorations", "Oil Lamps Decorations", "Digital Podium", "55_ LED TV", "Head Table Decorations", "Flower Garlands & Baskets"] 
+    subCategories: ["Welcome Panadol- Digital", "Stage Flower Decorations", "LED Video Wall", "Podium Decorations", "Oil Lamps Decorations", "Digital Podium", '55" LED TV', "Head Table Decorations", "Flower Garlands & Baskets"] 
   },
   
   { name: "Entertainment", icon: Music, subCategories: ["Wes Dance", "Puja Dancers", "Light Dance", "Latin Dance", "Indian Classical Dance"] },
@@ -52,16 +52,9 @@ const galleryData = [
   { id: "seat-1", src: "/gallery/seating/seating/1.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
   { id: "seat-2", src: "/gallery/seating/seating/2.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
   { id: "seat-3", src: "/gallery/seating/seating/3.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
-  { id: "seat-4", src: "/gallery/seating/seating/4.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
   { id: "seat-5", src: "/gallery/seating/seating/5.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
   { id: "seat-6", src: "/gallery/seating/seating/6.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
-  { id: "seat-7", src: "/gallery/seating/seating/7.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
-  { id: "seat-8", src: "/gallery/seating/seating/8.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
   { id: "seat-9", src: "/gallery/seating/seating/9.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
-  { id: "seat-10", src: "/gallery/seating/seating/10.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
-  { id: "seat-11", src: "/gallery/seating/seating/11.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
-  { id: "seat-12", src: "/gallery/seating/seating/12.jpg", category: "Seating Arrangements", subCategory: "Auditorium", title: "Premium Auditorium Seating" },
-
   // Award Receiving
   { id: "award-1", src: "/gallery/seating/award/1.jpg", category: "Seating Arrangements", subCategory: "Award Receiving and Time Management", title: "Award Receiving and Time Management" },
   { id: "award-2", src: "/gallery/seating/award/2.jpg", category: "Seating Arrangements", subCategory: "Award Receiving and Time Management", title: "Award Receiving and Time Management" },
@@ -74,11 +67,10 @@ const galleryData = [
   { id: "proc-2", src: "/gallery/seating/procession/2.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-3", src: "/gallery/seating/procession/3.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-4", src: "/gallery/seating/procession/4.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
+  { id: "proc-5", src: "/gallery/seating/procession/5.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-6", src: "/gallery/seating/procession/6.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-7", src: "/gallery/seating/procession/7.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
-  { id: "proc-8", src: "/gallery/seating/procession/8.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-9", src: "/gallery/seating/procession/9.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
-  { id: "proc-10", src: "/gallery/seating/procession/10.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-12", src: "/gallery/seating/procession/12.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
   { id: "proc-13", src: "/gallery/seating/procession/13.jpg", category: "Seating Arrangements", subCategory: "Procession (Perahara)", title: "Traditional Procession Setup" },
 
@@ -153,7 +145,6 @@ const galleryData = [
   { id: "stg-vid-1", src: "/gallery/stage/videowall/1.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
   { id: "stg-vid-2", src: "/gallery/stage/videowall/2.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
   { id: "stg-vid-3", src: "/gallery/stage/videowall/3.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
-  { id: "stg-vid-4", src: "/gallery/stage/videowall/4.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
   { id: "stg-vid-5", src: "/gallery/stage/videowall/5.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
   { id: "stg-vid-6", src: "/gallery/stage/videowall/6.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
 
@@ -174,15 +165,11 @@ const galleryData = [
   { id: "stg-digipod-2", src: "/gallery/stage/digipodium/2.jpg", category: "Stage Arrangements", subCategory: "Digital Podium", title: "Digital Podium" },
 
   { id: "stg-wel-1", src: "/gallery/stage/welcome/1.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
-  { id: "stg-wel-2", src: "/gallery/stage/welcome/2.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
   { id: "stg-wel-3", src: "/gallery/stage/welcome/3.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
 
-  { id: "stg-tv-1", src: "/gallery/stage/tv/1.jpg", category: "Stage Arrangements", subCategory: "55_ LED TV", title: "55_ LED TV" },
-  { id: "stg-tv-2", src: "/gallery/stage/tv/2.jpg", category: "Stage Arrangements", subCategory: "55_ LED TV", title: "55_ LED TV" },
+  { id: "stg-tv-1", src: "/gallery/stage/tv/1.jpg", category: "Stage Arrangements", subCategory: '55" LED TV', title: '55" LED TV' },
 
   { id: "stg-flw-1", src: "/gallery/stage/stageflowerdeco/1.jpg", category: "Stage Arrangements", subCategory: "Stage Flower Decorations", title: "Stage Flower Decorations" },
-  { id: "stg-flw-2", src: "/gallery/stage/stageflowerdeco/2.jpg", category: "Stage Arrangements", subCategory: "Stage Flower Decorations", title: "Stage Flower Decorations" },
-  { id: "stg-flw-3", src: "/gallery/stage/stageflowerdeco/3.jpg", category: "Stage Arrangements", subCategory: "Stage Flower Decorations", title: "Stage Flower Decorations" },
   { id: "stg-flw-4", src: "/gallery/stage/stageflowerdeco/4.jpg", category: "Stage Arrangements", subCategory: "Stage Flower Decorations", title: "Stage Flower Decorations" },
   { id: "stg-flw-5", src: "/gallery/stage/stageflowerdeco/5.jpg", category: "Stage Arrangements", subCategory: "Stage Flower Decorations", title: "Stage Flower Decorations" },
   { id: "stg-flw-6", src: "/gallery/stage/stageflowerdeco/6.jpg", category: "Stage Arrangements", subCategory: "Stage Flower Decorations", title: "Stage Flower Decorations" },
@@ -202,16 +189,12 @@ const galleryData = [
   { id: "ent-light-2", src: "/gallery/entertainment/light/2.jpg", category: "Entertainment", subCategory: "Light Dance", title: "Light Dance Performance" },
   { id: "ent-light-3", src: "/gallery/entertainment/light/3.jpg", category: "Entertainment", subCategory: "Light Dance", title: "Light Dance Performance" },
   { id: "ent-light-4", src: "/gallery/entertainment/light/4.jpg", category: "Entertainment", subCategory: "Light Dance", title: "Light Dance Performance" },
-  { id: "ent-light-5", src: "/gallery/entertainment/light/5.jpg", category: "Entertainment", subCategory: "Light Dance", title: "Light Dance Performance" },
 
   // Wes Dance
   { id: "ent-west-1", src: "/gallery/entertainment/wes/1.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
   { id: "ent-west-2", src: "/gallery/entertainment/wes/2.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
-  { id: "ent-west-3", src: "/gallery/entertainment/wes/3.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
   { id: "ent-west-4", src: "/gallery/entertainment/wes/4.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
-  { id: "ent-west-5", src: "/gallery/entertainment/wes/5.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
   { id: "ent-west-6", src: "/gallery/entertainment/wes/6.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
-  { id: "ent-west-7", src: "/gallery/entertainment/wes/7.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
   { id: "ent-west-8", src: "/gallery/entertainment/wes/8.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
 
   // Puja Dancers
@@ -231,9 +214,7 @@ const galleryData = [
   { id: "ent-latin-3", src: "/gallery/entertainment/latin/3.jpg", category: "Entertainment", subCategory: "Latin Dance", title: "Latin Dance Performance" },
 
   // Indian Classical Dance
-  { id: "ent-indian-1", src: "/gallery/entertainment/indian/1.jpg", category: "Entertainment", subCategory: "Indian Classical Dance", title: "Indian Classical Dance" },
   { id: "ent-indian-2", src: "/gallery/entertainment/indian/2.jpg", category: "Entertainment", subCategory: "Indian Classical Dance", title: "Indian Classical Dance" },
-  { id: "ent-indian-3", src: "/gallery/entertainment/indian/3.jpg", category: "Entertainment", subCategory: "Indian Classical Dance", title: "Indian Classical Dance" },
   { id: "ent-indian-4", src: "/gallery/entertainment/indian/4.jpg", category: "Entertainment", subCategory: "Indian Classical Dance", title: "Indian Classical Dance" },
 
   // Flags
@@ -249,7 +230,6 @@ const galleryData = [
   { id: "pc-token-4", src: "/gallery/pc/tokens/4.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
   
   { id: "pc-suvour-1", src: "/gallery/pc/suvour/1.jpg", category: "Printing & Certificates", subCategory: "Souvenirs", title: "Printing & Certificates" },
-  { id: "pc-suvour-2", src: "/gallery/pc/suvour/2.jpg", category: "Printing & Certificates", subCategory: "Souvenirs", title: "Printing & Certificates" },
   { id: "pc-suvour-3", src: "/gallery/pc/suvour/3.jpg", category: "Printing & Certificates", subCategory: "Souvenirs", title: "Printing & Certificates" },
   { id: "pc-suvour-4", src: "/gallery/pc/suvour/4.jpg", category: "Printing & Certificates", subCategory: "Souvenirs", title: "Printing & Certificates" },
   
