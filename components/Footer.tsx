@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { MapPin, PhoneCall, Mail, Instagram, Facebook, ArrowRight, ExternalLink } from "lucide-react";
+import { MapPin, PhoneCall, Mail, Instagram, Facebook, ArrowRight, ExternalLink, Linkedin } from "lucide-react";
 
 // Premium WhatsApp SVG Icon
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -46,16 +46,62 @@ export default function Footer() {
             </div>
             
             {/* Social Links */}
-            <div className="flex gap-3">
-              <a href="https://www.instagram.com/skdeventmanagement" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-gradient-to-br hover:from-[#f09433] hover:to-[#bc1888] hover:text-white transition-all duration-300 group shadow-sm">
-                <Instagram className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              </a>
-              <a href="https://www.facebook.com/skdeventslk" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-[#1877F2] hover:text-white transition-all duration-300 group shadow-sm">
-                <Facebook className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              </a>
-              <a href="https://wa.me/94771234567" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-[#25D366] hover:text-white transition-all duration-300 group shadow-sm">
-                <WhatsAppIcon className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              </a>
+            <div className="flex flex-wrap gap-3">
+              {[
+                {
+                  name: "Instagram",
+                  href: "https://www.instagram.com/skdeventmanagement",
+                  hoverBg: "hover:bg-gradient-to-br hover:from-[#f09433] hover:to-[#bc1888]",
+                  icon: <Instagram className="w-4 h-4" />
+                },
+                {
+                  name: "Facebook",
+                  href: "https://www.facebook.com/skdeventslk",
+                  hoverBg: "hover:bg-[#1877F2]",
+                  icon: <Facebook className="w-4 h-4" />
+                },
+                {
+                  name: "TikTok",
+                  href: "https://www.tiktok.com/@skdeventmanagement",
+                  hoverBg: "hover:bg-black",
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                    </svg>
+                  )
+                },
+                {
+                  name: "LinkedIn",
+                  href: "https://www.linkedin.com/company/skdeventslk",
+                  hoverBg: "hover:bg-[#0A66C2]",
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                      <rect x="2" y="9" width="4" height="12"></rect>
+                      <circle cx="4" cy="4" r="2"></circle>
+                    </svg>
+                  )
+                },
+                {
+                  name: "WhatsApp",
+                  href: "https://wa.me/94701223322", // Call history eke thibba hotline eka damma
+                  hoverBg: "hover:bg-[#25D366]",
+                  icon: <WhatsAppIcon className="w-4 h-4" />
+                }
+              ].map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 ${social.hoverBg} hover:text-white transition-all duration-300 group shadow-sm`}
+                  title={social.name}
+                >
+                  <div className="group-hover:scale-110 transition-transform">
+                    {social.icon}
+                  </div>
+                </a>
+              ))}
             </div>
           </motion.div>
 

@@ -42,7 +42,7 @@ export default function HomeAbout() {
               
               {/* FIXED: Typography for Mobile. Added text-center sm:text-left (handled by parent), max-w, and leading-relaxed */}
               <p className="text-base sm:text-lg text-gray-600 leading-relaxed sm:leading-loose mb-6 font-medium max-w-xl lg:max-w-none">
-                Welcome to SKD Event Management an extension of SKD Manufacturing (Pvt) Ltd. We combine Creativity, Precision, and Innovation to deliver exceptional, world-class events. From elegant convocations to large-scale corporate launches, we turn every vision into a memorable experience.
+                Welcome to SKD Event Management an extended division of SKD Manufacturing (Pvt) Ltd. We combine Creativity, Precision, and Innovation to deliver exceptional, world-class events. From elegant convocations to large-scale corporate launches, we turn every vision into a memorable experience.
               </p>
 
               {/* ISO Certification Highlight - NEW */}

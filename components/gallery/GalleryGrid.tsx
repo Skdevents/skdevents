@@ -87,7 +87,6 @@ const galleryData = [
   { id: "photo-high-2", src: "/gallery/photography/highlight/2.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
   { id: "photo-high-3", src: "/gallery/photography/highlight/3.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
   { id: "photo-high-4", src: "/gallery/photography/highlight/4.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
-  { id: "photo-high-5", src: "/gallery/photography/highlight/5.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
   { id: "photo-high-6", src: "/gallery/photography/highlight/6.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
   { id: "photo-high-7", src: "/gallery/photography/highlight/7.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },
   { id: "photo-high-8", src: "/gallery/photography/highlight/8.jpg", category: "Event Photography", subCategory: "Highlights Photos", title: "Highlight Photos" },

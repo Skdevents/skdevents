@@ -38,7 +38,7 @@ const services = [
   },
   {
     id: 6,
-    title: "Stage Arrangements, Sounds & Lightning",
+    title: "Stage Arrangements, Sounds & Lighting",
     desc: "Stunning stage setups, LED walls, crystal-clear audio, and dynamic lighting for a magnificent atmosphere.",
     img: "/services/stagephoto.jpg",
   },
