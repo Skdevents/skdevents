@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Maximize2, Image as ImageIcon, Filter, PlayCircle, ChevronDown, ChevronRight, X, SlidersHorizontal,
+import { Maximize2, Image as ImageIcon, Filter, PlayCircle, ChevronDown, ChevronRight, ChevronLeft, X, SlidersHorizontal,
   LayoutGrid, ClipboardCheck, Users, Camera, Video, Mic, Theater, Music, Printer, GraduationCap, 
   MessageSquareQuote
 } from "lucide-react";
@@ -354,7 +354,17 @@ export default function GalleryGrid() {
   
   // NEW STATE: Track Selected Image for Lightbox Popup
   const [selectedImage, setSelectedImage] = useState<typeof galleryData[0] | null>(null);
-
+  
+  const galleryTopRef = useRef<HTMLElement>(null);
+  const scrollToGalleryTop = () => {
+    setTimeout(() => {
+      if (galleryTopRef.current) {
+        const yOffset = -120; 
+        const y = galleryTopRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    }, 100);
+  };
   // Prevent Body Scroll when Mobile Menu or Lightbox is Open
   useEffect(() => {
     if (isMobileFilterOpen || selectedImage !== null) {
@@ -373,6 +383,8 @@ export default function GalleryGrid() {
     if (!catConfig?.subCategories) {
       setIsMobileFilterOpen(false);
     }
+    
+    scrollToGalleryTop();
   };
 
   const currentCatConfig = categoriesConfig.find(c => c.name === activeCategory);
@@ -417,19 +429,19 @@ export default function GalleryGrid() {
               onClick={() => handleCategoryChange(cat.name)}
               className={`w-full text-left px-3 py-2.5 rounded-xl text-[13px] font-bold transition-all duration-300 flex items-center justify-between border ${
                 isActive 
-                  ? "bg-white text-[#a40049] border-[#a40049]/20 shadow-[0_4px_15px_-3px_rgba(164,0,73,0.15)] scale-[1.02]" 
+                  ? "bg-gradient-to-r from-[#a40049] to-[#800039] text-white border-transparent shadow-[0_4px_15px_-3px_rgba(164,0,73,0.3)] scale-[1.02]" 
                   : "bg-gray-50/50 text-gray-600 border-transparent hover:bg-white hover:border-gray-200 hover:shadow-sm"
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <div className={`p-1.5 rounded-lg transition-colors ${isActive ? 'bg-[#a40049]/10 text-[#a40049]' : 'bg-gray-100 text-gray-400'}`}>
+                <div className={`p-1.5 rounded-lg transition-colors ${isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-400'}`}>
                   <CatIcon className="w-3.5 h-3.5" />
                 </div>
                 <span>{cat.name}</span>
               </div>
               
               {hasSubCategories && (
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isActive ? "rotate-180 text-[#a40049]" : "text-gray-300"}`} />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isActive ? "rotate-180 text-white" : "text-gray-300"}`} />
               )}
             </button>
 
@@ -446,10 +458,11 @@ export default function GalleryGrid() {
                     onClick={() => {
                       setActiveSubCategory("All");
                       setIsMobileFilterOpen(false);
+                      scrollToGalleryTop();
                     }}
                     className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 border ${
                       activeSubCategory === "All" 
-                        ? "bg-white text-[#a40049] border-[#a40049]/10 shadow-sm" 
+                        ? "bg-[#a40049]/10 text-[#a40049] border-[#a40049]/20 shadow-sm" 
                         : "bg-transparent text-gray-500 border-transparent hover:bg-gray-50 hover:text-gray-900"
                     }`}
                   >
@@ -463,10 +476,11 @@ export default function GalleryGrid() {
                       onClick={() => {
                         setActiveSubCategory(subCat);
                         setIsMobileFilterOpen(false);
+                        scrollToGalleryTop();
                       }}
                       className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 border ${
                         activeSubCategory === subCat 
-                          ? "bg-white text-[#a40049] border-[#a40049]/10 shadow-sm" 
+                          ? "bg-[#a40049]/10 text-[#a40049] border-[#a40049]/20 shadow-sm" 
                           : "bg-transparent text-gray-500 border-transparent hover:bg-gray-50 hover:text-gray-900"
                       }`}
                     >
@@ -483,6 +497,43 @@ export default function GalleryGrid() {
     </div>
   );
 
+  // ====================================================================
+  // LIGHTBOX SLIDE SHOW LOGIC
+  // ====================================================================
+  const handleNextImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (!selectedImage) return;
+    const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
+    if (currentIndex !== -1) {
+      // Loop back to start if it's the last image
+      const nextIndex = (currentIndex + 1) % filteredImages.length;
+      setSelectedImage(filteredImages[nextIndex]);
+    }
+  };
+
+  const handlePrevImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (!selectedImage) return;
+    const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
+    if (currentIndex !== -1) {
+      // Loop to end if it's the first image
+      const prevIndex = (currentIndex - 1 + filteredImages.length) % filteredImages.length;
+      setSelectedImage(filteredImages[prevIndex]);
+    }
+  };
+
+  // Keyboard navigation for Lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedImage) return;
+      if (e.key === "ArrowRight") handleNextImage();
+      if (e.key === "ArrowLeft") handlePrevImage();
+      if (e.key === "Escape") setSelectedImage(null);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedImage, filteredImages]);
+
   return (
     <section className="bg-[#FAFAFA] min-h-screen pt-8 pb-20">
       
@@ -496,17 +547,18 @@ export default function GalleryGrid() {
           <div className="flex-1 overflow-x-auto custom-scrollbar-hide flex gap-2 snap-x items-center py-1">
              {categoriesConfig.map((cat) => {
                const CatIcon = cat.icon;
+               const isActive = activeCategory === cat.name;
                return (
                 <button
                   key={cat.name}
                   onClick={() => handleCategoryChange(cat.name)}
                   className={`whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-300 snap-start shrink-0 border flex items-center gap-1.5 ${
-                    activeCategory === cat.name
-                      ? "bg-[#a40049]/10 text-[#a40049] border-[#a40049]/30 shadow-sm"
+                    isActive
+                      ? "bg-gradient-to-r from-[#a40049] to-[#800039] text-white border-transparent shadow-md"
                       : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100"
                   }`}
                 >
-                  <CatIcon className={`w-3 h-3 ${activeCategory === cat.name ? 'text-[#a40049]' : 'text-gray-400'}`} />
+                  <CatIcon className={`w-3 h-3 ${isActive ? 'text-white' : 'text-gray-400'}`} />
                   {cat.name}
                 </button>
               )
@@ -537,7 +589,7 @@ export default function GalleryGrid() {
                   onClick={() => setActiveSubCategory("All")}
                   className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all duration-300 snap-start shrink-0 border ${
                     activeSubCategory === "All"
-                      ? "bg-gray-900 text-white border-gray-900 shadow-sm"
+                      ? "bg-[#a40049] text-white border-[#a40049] shadow-sm"
                       : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
                   }`}
                 >
@@ -549,7 +601,7 @@ export default function GalleryGrid() {
                     onClick={() => setActiveSubCategory(subCat)}
                     className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all duration-300 snap-start shrink-0 border ${
                       activeSubCategory === subCat
-                        ? "bg-gray-900 text-white border-gray-900 shadow-sm"
+                        ? "bg-[#a40049] text-white border-[#a40049] shadow-sm"
                         : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
                     }`}
                   >
@@ -615,7 +667,7 @@ export default function GalleryGrid() {
         {/* ==============================================
             MAIN CONTENT AREA
             ============================================== */}
-        <main className="flex-1 flex flex-col min-h-[75vh]">
+        <main ref={galleryTopRef} className="flex-1 flex flex-col min-h-[75vh]">
           
           <div className="mb-8 hidden lg:flex items-center justify-between">
             <div>
@@ -686,8 +738,14 @@ export default function GalleryGrid() {
                     <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     
                     {/* 4. CONTENT & BUTTONS (z-30 දාලා උඩටම ගත්තා) */}
-                    <div className="absolute inset-0 z-30 p-5 sm:p-6 flex flex-col justify-end translate-y-8 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 transform-gpu">
-                      
+                    <div 
+                      onDoubleClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImage(item);
+                      }}
+                      className="absolute inset-0 z-30 p-5 sm:p-6 flex flex-col justify-end translate-y-8 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 transform-gpu cursor-pointer"
+                    >
+
                       <div className="flex flex-wrap items-center gap-2 mb-3 pointer-events-none">
                         <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-full shadow-sm">
                           {item.category}
@@ -755,7 +813,7 @@ export default function GalleryGrid() {
       </div>
       
       {/* ==============================================
-          BEAUTIFUL GLASSMORPHIC LIGHTBOX (POPUP) - CLEAN VERSION
+          BEAUTIFUL GLASSMORPHIC LIGHTBOX (POPUP) WITH SLIDESHOW
           ============================================== */}
       <AnimatePresence>
         {selectedImage && (
@@ -764,7 +822,7 @@ export default function GalleryGrid() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedImage(null)}
-            className="fixed inset-0 z-[999] flex items-center justify-center bg-white/60 backdrop-blur-2xl p-4 sm:p-8"
+            className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80 backdrop-blur-xl p-0 sm:p-8"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20, opacity: 0 }}
@@ -772,24 +830,56 @@ export default function GalleryGrid() {
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()} // Prevent click from closing when clicking inside
-              className="relative max-w-6xl w-full flex items-center justify-center group"
+              className="relative max-w-7xl w-full h-full sm:h-auto flex items-center justify-center group"
             >
-              {/* Close Button - Only visible on hover or mobile */}
+              {/* Close Button */}
               <button
                 onClick={() => setSelectedImage(null)}
-                className="absolute -top-4 -right-4 sm:top-4 sm:right-4 z-10 w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center text-gray-900 shadow-xl transition-all border border-gray-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                className="absolute top-4 right-4 sm:-top-4 sm:-right-4 z-50 w-10 h-10 bg-white/10 hover:bg-[#a40049] backdrop-blur-md rounded-full flex items-center justify-center text-white shadow-xl transition-all border border-white/20"
               >
                 <X className="w-5 h-5" />
               </button>
+
+              {/* Prev Button (Only show if there is more than 1 image) */}
+              {filteredImages.length > 1 && (
+                <button
+                  onClick={handlePrevImage}
+                  className="absolute left-2 sm:left-0 z-40 w-12 h-12 sm:w-14 sm:h-14 bg-black/40 hover:bg-[#a40049] backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all border border-white/10 shadow-lg group/btn"
+                >
+                  <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8 group-hover/btn:-translate-x-0.5 transition-transform" />
+                </button>
+              )}
               
-              {/* Clean Image Container - No Text, No Background Box */}
-              <div className="relative w-full flex items-center justify-center">
-                <img
+              {/* Clean Image Container */}
+              <div className="relative w-full h-full sm:h-[85vh] flex items-center justify-center px-16 sm:px-20">
+                <motion.img
+                  key={selectedImage.id} // Re-animates smoothly when image changes
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
                   src={selectedImage.src}
                   alt={selectedImage.title}
-                  className="w-auto h-auto max-w-full max-h-[85vh] object-contain rounded-2xl sm:rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)]"
+                  className="w-auto h-auto max-w-full max-h-full sm:max-h-[85vh] object-contain rounded-none sm:rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] select-none"
+                  onDoubleClick={(e) => e.stopPropagation()} // Prevent accidental close on double tap inside
                 />
+                
+                {/* Optional: Show Image Counter at bottom */}
+                <div className="absolute bottom-4 sm:-bottom-8 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-md px-4 py-1.5 rounded-full text-white text-xs font-bold tracking-wider border border-white/10">
+                  {filteredImages.findIndex(img => img.id === selectedImage.id) + 1} / {filteredImages.length}
+                </div>
               </div>
+
+              {/* Next Button (Only show if there is more than 1 image) */}
+              {filteredImages.length > 1 && (
+                <button
+                  onClick={handleNextImage}
+                  className="absolute right-2 sm:right-0 z-40 w-12 h-12 sm:w-14 sm:h-14 bg-black/40 hover:bg-[#a40049] backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all border border-white/10 shadow-lg group/btn"
+                >
+                  <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 group-hover/btn:translate-x-0.5 transition-transform" />
+                </button>
+              )}
+
             </motion.div>
           </motion.div>
         )}
