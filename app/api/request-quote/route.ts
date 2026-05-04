@@ -151,12 +151,13 @@ export async function POST(req: Request) {
     // --- BUILD THE PRICE TABLE ---
     const tableRows = [];
     
-    // Table Header
+    // Table Header (Updated to 4 Columns)
     tableRows.push(
       new TableRow({
         children: [
-          new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Description", bold: true })], alignment: AlignmentType.CENTER })], shading: { fill: "F3F4F6" }, width: { size: 60, type: WidthType.PERCENTAGE } }),
-          new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Qty", bold: true })], alignment: AlignmentType.CENTER })], shading: { fill: "F3F4F6" }, width: { size: 15, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Description", bold: true })], alignment: AlignmentType.CENTER })], shading: { fill: "F3F4F6" }, width: { size: 45, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Unit Price (LKR)", bold: true })], alignment: AlignmentType.CENTER })], shading: { fill: "F3F4F6" }, width: { size: 20, type: WidthType.PERCENTAGE } }),
+          new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Qty", bold: true })], alignment: AlignmentType.CENTER })], shading: { fill: "F3F4F6" }, width: { size: 10, type: WidthType.PERCENTAGE } }),
           new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Estimated Cost (LKR)", bold: true })], alignment: AlignmentType.CENTER })], shading: { fill: "F3F4F6" }, width: { size: 25, type: WidthType.PERCENTAGE } }),
         ],
       })
@@ -174,6 +175,7 @@ export async function POST(req: Request) {
         new TableRow({
           children: [
             new TableCell({ children: [new Paragraph({ text: item.name })], margins: { top: 100, bottom: 100, left: 100 } }),
+            new TableCell({ children: [new Paragraph({ text: item.price.toLocaleString() + ".00", alignment: AlignmentType.RIGHT })], margins: { top: 100, bottom: 100, right: 100 } }),
             new TableCell({ children: [new Paragraph({ text: "01", alignment: AlignmentType.CENTER })], margins: { top: 100, bottom: 100 } }),
             new TableCell({ children: [new Paragraph({ text: item.price.toLocaleString() + ".00", alignment: AlignmentType.RIGHT })], margins: { top: 100, bottom: 100, right: 100 } }),
           ],
@@ -201,6 +203,7 @@ export async function POST(req: Request) {
         new TableRow({
           children: [
             new TableCell({ children: [new Paragraph({ text: itemName })], margins: { top: 100, bottom: 100, left: 100 } }),
+            new TableCell({ children: [new Paragraph({ text: price > 0 ? price.toLocaleString() + ".00" : "TBD", alignment: AlignmentType.RIGHT })], margins: { top: 100, bottom: 100, right: 100 } }),
             new TableCell({ children: [new Paragraph({ text: "01", alignment: AlignmentType.CENTER })], margins: { top: 100, bottom: 100 } }),
             new TableCell({ children: [new Paragraph({ text: price > 0 ? price.toLocaleString() + ".00" : "TBD", alignment: AlignmentType.RIGHT })], margins: { top: 100, bottom: 100, right: 100 } }),
           ],
@@ -216,6 +219,7 @@ export async function POST(req: Request) {
         new TableRow({
           children: [
             new TableCell({ children: [new Paragraph({ text: "Student Photo Package (Per Student)" })], margins: { top: 100, bottom: 100, left: 100 } }),
+            new TableCell({ children: [new Paragraph({ text: "3,500.00", alignment: AlignmentType.RIGHT })], margins: { top: 100, bottom: 100, right: 100 } }),
             new TableCell({ children: [new Paragraph({ text: graduatesCount.toString(), alignment: AlignmentType.CENTER })], margins: { top: 100, bottom: 100 } }),
             new TableCell({ children: [new Paragraph({ text: photoCost.toLocaleString() + ".00", alignment: AlignmentType.RIGHT })], margins: { top: 100, bottom: 100, right: 100 } }),
           ],
@@ -427,11 +431,25 @@ export async function POST(req: Request) {
       },
     });
 
+    // --- ENHANCED EMAIL BODY CONTENT ---
+    const emailBodyText = `You have received a new quotation request from ${organizationDetails.organizationName}.
+
+Event Details & Contact Information:
+-----------------------------------------
+Organization Name : ${organizationDetails.organizationName}
+Contact Person    : ${organizationDetails.contactPerson}
+Email Address     : ${organizationDetails.email}
+WhatsApp Number   : ${organizationDetails.whatsappNumber}
+Event Name        : ${organizationDetails.eventName}
+-----------------------------------------
+
+Attached is the fully structured Word Document. You can edit prices, add your bank details, and save it as a PDF before sending to the client.`;
+
     await transporter.sendMail({
       from: `"SKD Web Portal" <${process.env.ZOHO_EMAIL_USER}>`,
       to: 'info@skdevents.lk',
       subject: `New Quotation Request - ${generatedId} (${organizationDetails.organizationName})`,
-      text: `You have received a new quotation request from ${organizationDetails.organizationName}.\n\nAttached is the fully structured Word Document. You can edit prices, add your bank details, and save it as a PDF before sending to the client.`,
+      text: emailBodyText,
       attachments: [
         {
           filename: `SKD_Quotation_${generatedId}.docx`,
