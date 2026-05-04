@@ -23,8 +23,9 @@ const categoriesConfig = [
    },
 
   { name: "Event Videography" , icon: Video },
-  { name: "Master of Ceremony & Compere" , icon: Mic },
-  { name: "Review & Testimonial Video Host", icon: MessageSquareQuote },
+  { name: "Master of Ceremony & Compere" , icon: Mic ,
+    subCategories: ["Review Interview Host"]
+  },
   { 
     name: "Stage Arrangements", icon: Theater,
     subCategories: ["Welcome Panadol- Digital", "Stage Flower Decorations", "LED Video Wall", "Podium Decorations", "Oil Lamps Decorations", "Digital Podium", "55_ LED TV", "Head Table Decorations", "Flower Garlands & Baskets"] 
@@ -300,7 +301,7 @@ const categoryVideos: Record<string, string[]> = {
   "Event Videography": ["ig-q_lhvFNs", "kfLKCrPA5Ak","wkGEiVu_duQ" ],
   "Master of Ceremony & Compere": ["8Se9Yrl3snc", "sWrWX_07ZAo", "e36gEPxbbIc"],
   "Entertainment": ["kQIsAfJ8b7U"],
-  "Review & Testimonial Video Host": ["wstLEbIYKxY", "ktAR2r4iuOQ", "1dkBXxJrpC0" , "u4y1WLayo8A", "j6H1kxlTQO4"],
+  "Review Interview Host": ["wstLEbIYKxY", "ktAR2r4iuOQ", "1dkBXxJrpC0" , "u4y1WLayo8A", "j6H1kxlTQO4"],
 
   // Sub-Categories (ඔයාට ඕන Sub-category නමක් මෙතනට දාලා Video IDs දෙන්න පුළුවන්)
   "Light Dance": ["AAhlUA2UxYg", "BnpiFk1-_mM"], 
