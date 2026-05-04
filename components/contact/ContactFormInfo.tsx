@@ -109,9 +109,16 @@ export default function ContactFormInfo() {
               <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0 group-hover:bg-[#a40049]/10 transition-colors transform-gpu">
                 <PhoneCall className="w-5 h-5 text-[#a40049]" />
               </div>
-              <div>
-                <h4 className="font-bold text-gray-900 mb-1">Direct Lines</h4>
-                <p className="text-sm text-gray-600 font-medium hover:text-[#a40049] transition-colors cursor-pointer">+94 701 22 33 22 (Hotline)</p>
+              <div className="flex flex-col gap-2">
+                <h4 className="font-bold text-gray-900 mb-0.5">Direct Lines</h4>
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Hotline</span>
+                  <a href="tel:+94701223322" className="text-sm text-gray-600 font-semibold hover:text-[#a40049] transition-colors">+94 701 22 33 22</a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Telephone</span>
+                  <a href="tel:+94112248181" className="text-sm text-gray-600 font-semibold hover:text-[#a40049] transition-colors">+94 11 224 8181</a>
+                </div>
               </div>
             </motion.div>
 

@@ -47,13 +47,13 @@ export default function Footer() {
             
             {/* Social Links */}
             <div className="flex gap-3">
-              <a href="https://www.instagram.com/event_skd/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-gradient-to-br hover:from-[#f09433] hover:to-[#bc1888] hover:text-white transition-all duration-300 group shadow-sm">
+              <a href="https://www.instagram.com/skdeventmanagement" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-gradient-to-br hover:from-[#f09433] hover:to-[#bc1888] hover:text-white transition-all duration-300 group shadow-sm">
                 <Instagram className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </a>
-              <a href="https://www.facebook.com/share/1READQGoer/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-[#1877F2] hover:text-white transition-all duration-300 group shadow-sm">
+              <a href="https://www.facebook.com/skdeventslk" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-[#1877F2] hover:text-white transition-all duration-300 group shadow-sm">
                 <Facebook className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-[#25D366] hover:text-white transition-all duration-300 group shadow-sm">
+              <a href="https://wa.me/94771234567" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-[#25D366] hover:text-white transition-all duration-300 group shadow-sm">
                 <WhatsAppIcon className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </a>
             </div>
@@ -125,11 +125,20 @@ export default function Footer() {
                   Sri Lanka.
                 </span>
               </li>
-              <li className="flex items-center gap-3 group">
+              <li className="flex items-start gap-3 group">
                 <div className="w-8 h-8 rounded-full bg-[#a40049]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#a40049] transition-colors duration-300">
                   <PhoneCall className="w-4 h-4 text-[#a40049] group-hover:text-white transition-colors duration-300" />
                 </div>
-                <a href="tel:+94701223322" className="text-gray-600 text-sm hover:text-[#a40049] font-medium transition-colors">+94 701 22 33 22</a>
+                <div className="flex flex-col gap-1 mt-0.5">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Hotline</span>
+                    <a href="tel:+94701223322" className="text-gray-600 text-sm hover:text-[#a40049] font-semibold transition-colors">+94 701 22 33 22</a>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Telephone</span>
+                    <a href="tel:+94112248181" className="text-gray-600 text-sm hover:text-[#a40049] font-semibold transition-colors">+94 11 224 8181</a>
+                  </div>
+                </div>
               </li>
               <li className="flex items-start gap-3 group">
                 <div className="w-8 h-8 rounded-full bg-[#a40049]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#a40049] transition-colors duration-300">
