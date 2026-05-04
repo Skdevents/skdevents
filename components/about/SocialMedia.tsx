@@ -7,7 +7,7 @@ import { ArrowUpRight, Share2 } from "lucide-react";
 const socialLinks = [
   {
     name: "Instagram",
-    href: "https://www.instagram.com/skdeventslk",
+    href: "https://www.instagram.com/skdeventmanagement",
     gradient: "from-[#f09433] via-[#e6683c] to-[#bc1888]",
     // අලුතින් එකතු කල brand colors
     iconColor: "text-[#E1306C]",
@@ -36,7 +36,7 @@ const socialLinks = [
   },
   {
     name: "TikTok",
-    href: "#", 
+    href: "https://www.tiktok.com/@skdeventmanagement", 
     gradient: "from-[#000000] via-[#333333] to-[#000000]",
     iconColor: "text-black",
     iconBg: "bg-gray-100",

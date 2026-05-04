@@ -77,9 +77,6 @@ export default function HomeAbout() {
             </div>
           </motion.div>
 
-          {/* =========================================
-              RIGHT SIDE: BENTO GRID (4 Images)
-              ========================================= */}
           <div className="w-full">
             <div className="grid grid-cols-2 gap-4 sm:gap-6 h-[500px] sm:h-[600px] lg:h-[650px]">
               
@@ -124,10 +121,8 @@ export default function HomeAbout() {
 
               </div>
 
-              {/* Column 2 (Pushed Up slightly) */}
               <div className="flex flex-col gap-4 sm:gap-6 pb-8 sm:pb-16">
                 
-                {/* Image 3: Small Square -> LOGO CONTAINER */}
                 <motion.div 
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}

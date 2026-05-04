@@ -30,7 +30,7 @@ const categoriesConfig = [
   },
   
   { name: "Entertainment", icon: Music, subCategories: ["Wes Dance", "Puja Dancers", "Light Dance", "Latin Dance", "Indian Classical Dance"] },
-  { name: "Printing & Certificates" , icon: Printer, subCategories: ["Flags", "Token Of Appreciation", "Suvourniers" , "Certificate Pouches"]},
+  { name: "Printing & Certificates" , icon: Printer, subCategories: ["Flags", "Token Of Appreciation", "Souvenirs" , "Certificate Pouches"]},
   { name: "Graduation Items" , icon: GraduationCap, subCategories: ["Cloaks", "Ceremonial Cloaks", "Hats", "Scrolls", "Garlands", "Stoles", "Hoods",]},
 ];
 
@@ -142,19 +142,27 @@ const galleryData = [
 
   //cCompere
   { id: "compere-1", src: "/gallery/compere/1.jpg", category: "Master of Ceremony & Compere", title: "Professional Compere on Stage" },
-  
+  { id: "compere-2", src: "/gallery/compere/2.jpg", category: "Master of Ceremony & Compere", title: "Professional Compere on Stage" },
+  { id: "compere-3", src: "/gallery/compere/3.jpg", category: "Master of Ceremony & Compere", title: "Professional Compere on Stage" },
+  { id: "compere-4", src: "/gallery/compere/4.jpg", category: "Master of Ceremony & Compere", title: "Professional Compere on Stage" },
+  { id: "compere-5", src: "/gallery/compere/5.jpg", category: "Master of Ceremony & Compere", title: "Professional Compere on Stage" },
+  { id: "compere-6", src: "/gallery/compere/6.jpg", category: "Master of Ceremony & Compere", title: "Professional Compere on Stage" },
+
   // Stage Arrangements 
   { id: "stg-vid-1", src: "/gallery/stage/videowall/1.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
   { id: "stg-vid-2", src: "/gallery/stage/videowall/2.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
   { id: "stg-vid-3", src: "/gallery/stage/videowall/3.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
   { id: "stg-vid-4", src: "/gallery/stage/videowall/4.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
   { id: "stg-vid-5", src: "/gallery/stage/videowall/5.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
+  { id: "stg-vid-6", src: "/gallery/stage/videowall/6.jpg", category: "Stage Arrangements", subCategory: "LED Video Wall", title: "Massive LED Video Wall" },
 
   { id: "stg-oil-1", src: "/gallery/stage/oillampdeco/1.jpg", category: "Stage Arrangements", subCategory: "Oil Lamps Decorations", title: "Oil Lamps Decorations" },
   { id: "stg-oil-2", src: "/gallery/stage/oillampdeco/2.jpg", category: "Stage Arrangements", subCategory: "Oil Lamps Decorations", title: "Oil Lamps Decorations" },
   { id: "stg-oil-3", src: "/gallery/stage/oillampdeco/3.jpg", category: "Stage Arrangements", subCategory: "Oil Lamps Decorations", title: "Oil Lamps Decorations" },
   { id: "stg-oil-4", src: "/gallery/stage/oillampdeco/4.jpg", category: "Stage Arrangements", subCategory: "Oil Lamps Decorations", title: "Oil Lamps Decorations" },
   { id: "stg-oil-5", src: "/gallery/stage/oillampdeco/5.jpg", category: "Stage Arrangements", subCategory: "Oil Lamps Decorations", title: "Oil Lamps Decorations" },
+  { id: "stg-oil-6", src: "/gallery/stage/oillampdeco/6.jpg", category: "Stage Arrangements", subCategory: "Oil Lamps Decorations", title: "Oil Lamps Decorations" },
+  { id: "stg-oil-7", src: "/gallery/stage/oillampdeco/7.jpg", category: "Stage Arrangements", subCategory: "Oil Lamps Decorations", title: "Oil Lamps Decorations" },
 
   { id: "stg-pod-1", src: "/gallery/stage/podium/1.jpg", category: "Stage Arrangements", subCategory: "Podium Decorations", title: "Podiums Decorations" },
   { id: "stg-pod-2", src: "/gallery/stage/podium/2.jpg", category: "Stage Arrangements", subCategory: "Podium Decorations", title: "Podiums Decorations" },
@@ -168,7 +176,6 @@ const galleryData = [
   { id: "stg-wel-2", src: "/gallery/stage/welcome/2.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
   { id: "stg-wel-3", src: "/gallery/stage/welcome/3.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
 
-
   { id: "stg-tv-1", src: "/gallery/stage/tv/1.jpg", category: "Stage Arrangements", subCategory: "55_ LED TV", title: "55_ LED TV" },
   { id: "stg-tv-2", src: "/gallery/stage/tv/2.jpg", category: "Stage Arrangements", subCategory: "55_ LED TV", title: "55_ LED TV" },
 
@@ -177,9 +184,12 @@ const galleryData = [
   { id: "stg-flw-3", src: "/gallery/stage/stageflowerdeco/3.jpg", category: "Stage Arrangements", subCategory: "Stage Flower Decorations", title: "Stage Flower Decorations" },
   { id: "stg-flw-4", src: "/gallery/stage/stageflowerdeco/4.jpg", category: "Stage Arrangements", subCategory: "Stage Flower Decorations", title: "Stage Flower Decorations" },
   { id: "stg-flw-5", src: "/gallery/stage/stageflowerdeco/5.jpg", category: "Stage Arrangements", subCategory: "Stage Flower Decorations", title: "Stage Flower Decorations" },
+  { id: "stg-flw-6", src: "/gallery/stage/stageflowerdeco/6.jpg", category: "Stage Arrangements", subCategory: "Stage Flower Decorations", title: "Stage Flower Decorations" },
 
   { id: "stg-hd-1", src: "/gallery/stage/headtabledeco/1.jpg", category: "Stage Arrangements", subCategory: "Head Table Decorations", title: "Head Table Decorations" },
   { id: "stg-hd-2", src: "/gallery/stage/headtabledeco/2.jpg", category: "Stage Arrangements", subCategory: "Head Table Decorations", title: "Head Table Decorations" },
+  { id: "stg-hd-3", src: "/gallery/stage/headtabledeco/3.jpg", category: "Stage Arrangements", subCategory: "Head Table Decorations", title: "Head Table Decorations" },
+  { id: "stg-hd-4", src: "/gallery/stage/headtabledeco/4.jpg", category: "Stage Arrangements", subCategory: "Head Table Decorations", title: "Head Table Decorations" },
 
   { id: "stg-gar-1", src: "/gallery/stage/garlands/1.jpg", category: "Stage Arrangements", subCategory: "Flower Garlands & Baskets", title: "Flower Garlands & Baskets" },
   { id: "stg-gar-2", src: "/gallery/stage/garlands/2.jpg", category: "Stage Arrangements", subCategory: "Flower Garlands & Baskets", title: "Flower Garlands & Baskets" },
@@ -192,7 +202,6 @@ const galleryData = [
   { id: "ent-light-3", src: "/gallery/entertainment/light/3.jpg", category: "Entertainment", subCategory: "Light Dance", title: "Light Dance Performance" },
   { id: "ent-light-4", src: "/gallery/entertainment/light/4.jpg", category: "Entertainment", subCategory: "Light Dance", title: "Light Dance Performance" },
   { id: "ent-light-5", src: "/gallery/entertainment/light/5.jpg", category: "Entertainment", subCategory: "Light Dance", title: "Light Dance Performance" },
-  { id: "ent-light-6", src: "/gallery/entertainment/light/6.jpg", category: "Entertainment", subCategory: "Light Dance", title: "Light Dance Performance" },
 
   // Wes Dance
   { id: "ent-west-1", src: "/gallery/entertainment/wes/1.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
@@ -202,6 +211,7 @@ const galleryData = [
   { id: "ent-west-5", src: "/gallery/entertainment/wes/5.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
   { id: "ent-west-6", src: "/gallery/entertainment/wes/6.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
   { id: "ent-west-7", src: "/gallery/entertainment/wes/7.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
+  { id: "ent-west-8", src: "/gallery/entertainment/wes/8.jpg", category: "Entertainment", subCategory: "Wes Dance", title: "Wes Dance Performance" },
 
   // Puja Dancers
   { id: "ent-puja-1", src: "/gallery/entertainment/puja/1.jpg", category: "Entertainment", subCategory: "Puja Dancers", title: "Puja Dancers" },
@@ -211,6 +221,8 @@ const galleryData = [
   { id: "ent-puja-5", src: "/gallery/entertainment/puja/5.jpg", category: "Entertainment", subCategory: "Puja Dancers", title: "Puja Dancers" },
   { id: "ent-puja-6", src: "/gallery/entertainment/puja/6.jpg", category: "Entertainment", subCategory: "Puja Dancers", title: "Puja Dancers" },
   { id: "ent-puja-7", src: "/gallery/entertainment/puja/7.jpg", category: "Entertainment", subCategory: "Puja Dancers", title: "Puja Dancers" },
+  { id: "ent-puja-8", src: "/gallery/entertainment/puja/8.jpg", category: "Entertainment", subCategory: "Puja Dancers", title: "Puja Dancers" },
+  { id: "ent-puja-9", src: "/gallery/entertainment/puja/9.jpg", category: "Entertainment", subCategory: "Puja Dancers", title: "Puja Dancers" },
 
   // latin Dance
   { id: "ent-latin-1", src: "/gallery/entertainment/latin/1.jpg", category: "Entertainment", subCategory: "Latin Dance", title: "Latin Dance Performance" },
@@ -229,11 +241,17 @@ const galleryData = [
   { id: "pc-flag-3", src: "/gallery/pc/flags/3.jpg", category: "Printing & Certificates", subCategory: "Flags", title: "Printing & Certificates" },
   { id: "pc-flag-4", src: "/gallery/pc/flags/4.jpg", category: "Printing & Certificates", subCategory: "Flags", title: "Printing & Certificates" },
   { id: "pc-flag-5", src: "/gallery/pc/flags/5.jpg", category: "Printing & Certificates", subCategory: "Flags", title: "Printing & Certificates" },
+  
   { id: "pc-token-1", src: "/gallery/pc/tokens/1.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
   { id: "pc-token-2", src: "/gallery/pc/tokens/2.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
   { id: "pc-token-3", src: "/gallery/pc/tokens/3.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
-  { id: "pc-suvour-1", src: "/gallery/pc/suvour/1.jpg", category: "Printing & Certificates", subCategory: "Suvourniers", title: "Printing & Certificates" },
-  { id: "pc-suvour-2", src: "/gallery/pc/suvour/2.jpg", category: "Printing & Certificates", subCategory: "Suvourniers", title: "Printing & Certificates" },
+  { id: "pc-token-4", src: "/gallery/pc/tokens/4.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
+  
+  { id: "pc-suvour-1", src: "/gallery/pc/suvour/1.jpg", category: "Printing & Certificates", subCategory: "Souvenirs", title: "Printing & Certificates" },
+  { id: "pc-suvour-2", src: "/gallery/pc/suvour/2.jpg", category: "Printing & Certificates", subCategory: "Souvenirs", title: "Printing & Certificates" },
+  { id: "pc-suvour-3", src: "/gallery/pc/suvour/3.jpg", category: "Printing & Certificates", subCategory: "Souvenirs", title: "Printing & Certificates" },
+  { id: "pc-suvour-4", src: "/gallery/pc/suvour/4.jpg", category: "Printing & Certificates", subCategory: "Souvenirs", title: "Printing & Certificates" },
+  
   { id: "pc-pouches-1", src: "/gallery/graduationitems/pouches/1.jpg", category: "Printing & Certificates", subCategory: "Certificate Pouches", title: "Premium Certificate Holder Pouches" },
 
   { id: "grad-garl-1", src: "/gallery/graduationitems/garland/1.jpg", category: "Graduation Items", subCategory: "Garlands", title: "Premium Garlands" },
@@ -241,12 +259,14 @@ const galleryData = [
   { id: "grad-garl-3", src: "/gallery/graduationitems/garland/3.jpeg", category: "Graduation Items", subCategory: "Garlands", title: "Premium Garlands" },
 
   { id: "grad-scroll-1", src: "/gallery/graduationitems/scrolls/1.jpg", category: "Graduation Items", subCategory: "Scrolls", title: "Premium Scrolls" },
-  { id: "grad-scroll-2", src: "/gallery/graduationitems/scrolls/2.jpeg", category: "Graduation Items", subCategory: "Scrolls", title: "Premium Scrolls" },
+  { id: "grad-scroll-2", src: "/gallery/graduationitems/scrolls/2.jpg", category: "Graduation Items", subCategory: "Scrolls", title: "Premium Scrolls" },
   { id: "grad-scroll-3", src: "/gallery/graduationitems/scrolls/3.jpeg", category: "Graduation Items", subCategory: "Scrolls", title: "Premium Scrolls" },
   { id: "grad-scroll-4", src: "/gallery/graduationitems/scrolls/4.jpeg", category: "Graduation Items", subCategory: "Scrolls", title: "Premium Scrolls" },
   { id: "grad-scroll-5", src: "/gallery/graduationitems/scrolls/5.jpeg", category: "Graduation Items", subCategory: "Scrolls", title: "Premium Scrolls" },
   { id: "grad-scroll-6", src: "/gallery/graduationitems/scrolls/6.jpeg", category: "Graduation Items", subCategory: "Scrolls", title: "Premium Scrolls" },
   { id: "grad-scroll-7", src: "/gallery/graduationitems/scrolls/7.jpeg", category: "Graduation Items", subCategory: "Scrolls", title: "Premium Scrolls" },
+  { id: "grad-scroll-8", src: "/gallery/graduationitems/scrolls/8.jpg", category: "Graduation Items", subCategory: "Scrolls", title: "Premium Scrolls" },
+  { id: "grad-scroll-9", src: "/gallery/graduationitems/scrolls/9.jpeg", category: "Graduation Items", subCategory: "Scrolls", title: "Premium Scrolls" },
 
   { id: "grad-hoods-1", src: "/gallery/graduationitems/hoods/1.jpg", category: "Graduation Items", subCategory: "Hoods", title: "Premium Hoods" },
   { id: "grad-hoods-2", src: "/gallery/graduationitems/hoods/2.jpg", category: "Graduation Items", subCategory: "Hoods", title: "Premium Hoods" },
