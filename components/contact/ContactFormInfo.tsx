@@ -111,7 +111,7 @@ export default function ContactFormInfo() {
               </div>
               <div>
                 <h4 className="font-bold text-gray-900 mb-1">Direct Lines</h4>
-                <p className="text-sm text-gray-600 font-medium hover:text-[#a40049] transition-colors cursor-pointer">+94 112 248 181 (Hotline)</p>
+                <p className="text-sm text-gray-600 font-medium hover:text-[#a40049] transition-colors cursor-pointer">+94 701 22 33 22 (Hotline)</p>
               </div>
             </motion.div>
 
@@ -183,7 +183,7 @@ export default function ContactFormInfo() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Phone Number */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 ml-1">Contact Number <span className="text-gray-400 normal-case font-normal">(Optional)</span></label>
+                  <label className="text-sm font-bold text-gray-700 ml-1">Contact Number <span className="text-red-500">*</span></label>
                   <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="e.g. +94 7X XXX XXXX" className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#a40049]/30 focus:border-[#a40049] transition-all" />
                 </div>
                 {/* Subject / Company */}

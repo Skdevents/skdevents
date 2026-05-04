@@ -125,7 +125,7 @@ export default function Cta() {
                 <div className="p-2 rounded-full bg-white/5 group-hover:bg-[#a40049]/20 transition-colors">
                   <PhoneCall className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ff4d94]" />
                 </div>
-                <span className="text-[13px] sm:text-sm font-semibold tracking-wide">+94 112 248 181</span>
+                <span className="text-[13px] sm:text-sm font-semibold tracking-wide">+94 701 22 33 22</span>
               </a>
               
               <a href="mailto:info@skdevents.lk" className="flex items-center gap-2 sm:gap-2.5 text-gray-300 hover:text-white transition-colors group">

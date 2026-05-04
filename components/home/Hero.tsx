@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Sparkles, ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 
 const backgroundImages = [
   "/graduatebg.jpg",
@@ -22,14 +22,10 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative h-[100dvh] w-full flex items-center justify-center overflow-hidden bg-[#050505] group"> 
+    // min-h-[100dvh] ensures it never squishes on small screens
+    <section className="relative min-h-[100dvh] w-full flex items-center justify-center overflow-hidden bg-[#050505] group"> 
       
-      {/* ========================================================================
-          PERFORMANCE & ANIMATION FIX:
-          Restored Framer Motion (<motion.img>) for the beautiful initial load animation!
-          Kept images permanently in the DOM to prevent lag.
-          Base image is always opacity 1 after load, top image fades in/out over it.
-          ======================================================================== */}
+      {/* Background Animations */}
       {backgroundImages.map((src, index) => {
         const isBaseImage = index === 0;
         const isActive = index === currentImageIndex;
@@ -42,7 +38,6 @@ export default function Hero() {
             loading="eager"
             fetchPriority={isBaseImage ? "high" : "auto"}
             decoding="async"
-            // The beautiful initial load animation is back!
             initial={{ opacity: 0, scale: 1.05 }}
             animate={{ 
               opacity: isBaseImage ? 1 : (isActive ? 1 : 0), 
@@ -61,8 +56,12 @@ export default function Hero() {
       <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#a40049]/20 to-transparent" />
       <div className="absolute inset-0 z-[15] bg-transparent group-hover:bg-black/50 transition-colors duration-[1500ms] pointer-events-none" />
       
-      {/* Content wrapper - Added pb-20 to prevent collision with scroll arrow on small screens */}
-      <div className="relative z-20 text-center px-4 w-full max-w-6xl mx-auto flex flex-col items-center pt-16 md:pt-20 pb-20 md:pb-0">
+      {/* 
+        PERFORMANCE & RESPONSIVE FIX: 
+        - pt-32 on mobile pushes content safely below the fixed Navbar.
+        - pb-28 gives space so content doesn't hit the bouncing arrow at the bottom.
+      */}
+      <div className="relative z-20 text-center px-4 w-full max-w-6xl mx-auto flex flex-col items-center pt-32 sm:pt-28 md:pt-28 pb-28 sm:pb-24 lg:pb-16">
   
         {/* Animated Badge */}
         <motion.div 
@@ -114,7 +113,6 @@ export default function Hero() {
               className="w-full sm:w-auto group relative px-8 sm:px-10 py-4 bg-gradient-to-r from-[#a40049] to-[#4d002c] rounded-full font-bold text-white text-base sm:text-lg shadow-[0_10px_30px_rgba(164,0,73,0.4)] hover:shadow-[0_15px_40px_rgba(164,0,73,0.6)] transition-all duration-300 flex items-center justify-center gap-3 border border-[#ff4d94]/30 transform-gpu overflow-hidden"
             >
               <div className="absolute inset-0 bg-black/30 opacity-0 group-active:opacity-100 transition-opacity duration-100 pointer-events-none" />
-              
               <span className="relative z-10">Request a Quote</span>
               <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-2 transition-transform duration-300" />
             </motion.button>
@@ -127,27 +125,26 @@ export default function Hero() {
               className="w-full sm:w-auto group relative px-8 sm:px-10 py-4 rounded-full font-bold text-white border border-white/30 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 transform-gpu overflow-hidden"
             >
               <div className="absolute inset-0 bg-white/20 opacity-0 group-active:opacity-100 transition-opacity duration-100 pointer-events-none" />
-              
               <span className="relative z-10">Explore Services</span>
             </motion.button>
           </Link>
         </motion.div>
       </div>
 
-      {/* Scroll Down Indicator - Minimal Bouncing Arrow */}
+      {/* Scroll Down Indicator - Removed hidden sm:block so it shows everywhere */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 1 }}
-        className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
+        className="absolute bottom-6 sm:bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
         onClick={() => window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })}
       >
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-          className="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-md flex items-center justify-center hover:bg-white/10 transition-colors"
+          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-md flex items-center justify-center hover:bg-white/10 transition-colors"
         >
-          <ChevronDown className="w-6 h-6 text-white/80" />
+          <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 text-white/80" />
         </motion.div>
       </motion.div>
 

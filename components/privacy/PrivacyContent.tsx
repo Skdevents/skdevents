@@ -264,7 +264,7 @@ export default function PrivacyContent() {
                 </div>
                 <div>
                   <span className="block text-sm text-gray-400 font-medium">Hotline</span>
-                  <span className="font-bold text-lg md:text-xl tracking-wide">+94 112 248 181</span>
+                  <span className="font-bold text-lg md:text-xl tracking-wide">+94 701 22 33 22</span>
                 </div>
               </div>
               <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl hover:bg-white/10 transition-colors">

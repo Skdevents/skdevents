@@ -42,7 +42,7 @@ export default function HomeAbout() {
               
               {/* FIXED: Typography for Mobile. Added text-center sm:text-left (handled by parent), max-w, and leading-relaxed */}
               <p className="text-base sm:text-lg text-gray-600 leading-relaxed sm:leading-loose mb-6 font-medium max-w-xl lg:max-w-none">
-                Welcome to SKD Event Management an extension of SKD Manufacturer (Pvt) Ltd. We combine Creativity, Precision, and Innovation to deliver exceptional, world-class events. From elegant convocations to large-scale corporate launches, we turn every vision into a memorable experience.
+                Welcome to SKD Event Management an extension of SKD Manufacturing (Pvt) Ltd. We combine Creativity, Precision, and Innovation to deliver exceptional, world-class events. From elegant convocations to large-scale corporate launches, we turn every vision into a memorable experience.
               </p>
 
               {/* ISO Certification Highlight - NEW */}
@@ -147,7 +147,7 @@ export default function HomeAbout() {
                   
                   <div className="absolute bottom-4 left-4 right-4 p-2 sm:p-3 rounded-2xl bg-white/95 backdrop-blur-md shadow-xl border border-gray-100 text-center transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-400 ease-out z-20 transform-gpu will-change-[transform,opacity]">
                     <span className="text-[#a40049] font-bold text-xs sm:text-sm block">ISO Certified</span>
-                    <span className="text-gray-500 text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider">SKD Manufacturer</span>
+                    <span className="text-gray-500 text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider">SKD Manufacturing (Pvt) Ltd</span>
                   </div>
                 </motion.div>
 

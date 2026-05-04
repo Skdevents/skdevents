@@ -28,7 +28,7 @@ export default function AboutDetails() {
                 </h2>
                 <div className="w-20 h-2 bg-[#a40049] rounded-full mb-6" />
                 <p className="text-gray-500 text-lg font-medium leading-relaxed border-l-4 border-gray-200 pl-4 mb-10">
-                  An extended division of SKD Manufacturer (Pvt) Ltd.
+                  An extended division of SKD Manufacturing (Pvt) Ltd.
                 </p>
 
                 {/* ISO Certification Details - NEW */}
