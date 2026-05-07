@@ -5,7 +5,7 @@ import { Crown } from "lucide-react";
 
 export default function ServicesHero() {
   return (
-    <section className="relative pt-32 pb-14 md:pt-40 md:pb-18 bg-[#FAFAFA] overflow-hidden border-b border-gray-100">
+    <section className="relative pt-32 pb-8 md:pt-40 md:pb-10 bg-[#FAFAFA] overflow-hidden border-b border-gray-100">
       
       {/* GPU Accelerated Smooth Background Glows */}
       <div className="absolute top-0 left-1/4 w-[40vw] h-[40vw] bg-gradient-to-b from-[#a40049]/5 to-transparent rounded-full blur-[100px] pointer-events-none transform-gpu will-change-transform" />

@@ -4,15 +4,16 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ClipboardCheck, Rows3, Camera, Video, Mic, LayoutTemplate, 
-  Music, Speaker, Printer, GraduationCap, Plus, Check, ShoppingBag, Send, ExternalLink, Trash2, CheckCircle2
+  Music, Speaker, Printer, GraduationCap, Plus, Check, ShoppingBag, Send, ExternalLink, Trash2, CheckCircle2,
+  ChevronDown
 } from "lucide-react";
 import WhatsAppModal from "./WhatsAppModal"; 
 
-// --- ADVANCED HIERARCHICAL DATA STRUCTURE WITH DESCRIPTIONS ---
 const structuredServices = [
   {
     id: "C1", category: "Registration", icon: ClipboardCheck,
     desc: "A front desk for guest check-in, gown distribution, and verification of graduate details.",
+    hideSelectAll: true,
     items: [
       "Student Seat Number Allocation", 
       "Distribution of Student Cloaks & Garlands", 
@@ -23,8 +24,8 @@ const structuredServices = [
   {
     id: "C2", category: "Seating Arrangements", icon: Rows3,
     desc: "Comfortable and organized seating for graduates, faculty, VIPs, and guests with proper numbering.",
+    hideSelectAll: true,
     items: [
-      "Sesath Holders",
       "Student Procession (Perahara) Arrangement", 
       "Award Receiving Arrangements & Time Management"
     ],
@@ -41,10 +42,11 @@ const structuredServices = [
   {
     id: "C3", category: "Event Photography", icon: Camera,
     desc: "Professional photo coverage to capture stage moments, group photos, and event highlights.",
+    extraDesc: "Fully Edited | Printed | Laminated Photobooth - Group - 12\"x18\" | Bust -12\"x15\" or Full 12\"x18\" | Family - 12\"x18\" | Couple -12\"x18\" | Stage - 12\"x15\"",
     subCategories: [
-      { name: "Event Coverage", items: ["Fully Edited Highlight Photos", "Stage Photos"] },
-      { name: "Photobooth Coverage", items: ["Full & Bust Photos", "Family Photos", "Couple Photos", "Group Photos"] },
-      { name: "Photo Backdrops", items: ["Custom Themed Photo Backdrop"] }
+      { name: "Event Coverage", items: ["Fully Edited Highlight Photos", "Group Photos"] },
+      { name: "Photobooth Coverage ( Photo Package)", items: ["Full & Bust Photos", "Family Photos", "Couple Photos", "Award Receiving Stage Photos"] },
+      { name: "Photo Backdrops", items: ["Custom Themed Photo Backdrop | Selfie Background"], desc: "8'x12' Flex matte print with red Carpet" }
     ]
   },
   {
@@ -60,7 +62,7 @@ const structuredServices = [
         name: "360 Video Booth", 
         items: [
           "04-Hour Package", 
-          "Full-Day Package", 
+          "Full-Day (08 hours) Package", 
           "7'x3' Matte Flex Print University & Campus Branding Boards"
         ] 
       }
@@ -78,17 +80,18 @@ const structuredServices = [
       },
       {
         title: "Review & Testimonial video Host ",
+        singleSelect: true,
         options: ["Male", "Female"]
       }
     ]
   },
   {
     id: "C6", category: "Stage Arrangements", icon: LayoutTemplate,
-    desc: "A professionally designed stage with podium, backdrop, lighting, and floral decorations.",
+    desc: "A professionally designed stage with podium, LED video wall, lighting, and floral decorations.",
     subCategories: [
       { 
         name: "Stage Flower Decorations", 
-        items: ["Oil Lamp Decoration", "Podium Decoration", "Head Table Decoration", "Flower Garlands & Baskets"],
+        items: ["Oil Lamp Decoration", "Podium Decoration", "Head Table Decoration", "Flower Garlands & Baskets", "Stage Edge Decoration - Flower Band",],
         nestedGroups: [
           {
             title: "Stage Decoration",
@@ -103,8 +106,11 @@ const structuredServices = [
         nestedGroups: [
           {
             title: "LED Video Wall",
+            desc: "P3 LED Video Wall on 3' Hight platform | Live on Wall | Arena Play Back",
             singleSelect: true,
-            options: ["50’x12’", "40’x10’", "30’x10’", "20’x10’"]
+            options: ["50’x12’", "40’x10’", "30’x10’", "20’x10’"],
+            moreOptions: ["8'x6'", "12'x7'", "15'x7'", "16'x10'", "12'x10'"], // New sizes added
+            hasCustom: true // Enables the custom button
           }
         ]
       }
@@ -114,7 +120,7 @@ const structuredServices = [
     id: "C7", category: "Entertainment", icon: Music,
     desc: "Cultural, traditional, and modern entertainment acts to captivate your audience.",
     hideSelectAll: true, // Hides the Select All button for this category
-    items: ["Traditional Welcome Dance (Wes Dance)", "Puja Dance (Girls)", "Light Performance Dance", "Latin Dance", "Indian Dance Act", "Comedian Act", "Solo Dance", "Belly Dance", "Mask Dance Act"],
+    items: ["Traditional Welcome Dance (Wes Dance)", "Sesath Holders", "Puja Dance (Girls)", "Light Performance Dance", "Latin Dance", "Indian Dance Act", "Comedian Act", "Solo Dance", "Belly Dance", "Mask Dance Act"],
     subCategories: [
       { name: "Instrumental Items", items: ["Drum Orchestra", "Indian Doll Act with Dancers"] }
     ]
@@ -122,14 +128,14 @@ const structuredServices = [
   {
     id: "C8", category: "Printing & Certificates", icon: Printer,
     desc: "Official certificates, secure folders, flags, and promotional materials.",
-    items: ["Promo Flag Printing", "Promo Flag Poles"],
+    items: ["Promo Flag Printing - 10' x 2.5'", "Promo Flag Poles"],
     subCategories: [
-      { name: "Stage Flag Printing", items: ["University Flag", "Campus Flag", "Department Flag"] }
+      { name: "Stage Flag Printing - 6' x 4'", items: ["University Flag", "Campus Flag", "Department Flag"] }
     ]
   },
   {
     id: "C9", category: "Graduation Items", icon: GraduationCap,
-    desc: "Premium graduation cloaks, ceremonial gowns, and beautiful garlands for your special day.",
+    desc: "Premium graduation cloaks, ceremonial gowns, and high quality garlands for your special day.",
     hideSelectAll: true, // Hides the Select All button for this category
     subCategories: [
       { name: "Graduation Cloak", items: ["Black", "Ash", "Blue", "Maroon", "Red"] },
@@ -148,6 +154,10 @@ const structuredServices = [
 export default function ServicesContent() {
   const [cart, setCart] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
+  const toggleGroupExpand = (title: string) => {
+    setExpandedGroups(prev => prev.includes(title) ? prev.filter(t => t !== title) : [...prev, title]);
+  };
 
   useEffect(() => {
     const savedCart = localStorage.getItem("skd_services_cart");
@@ -162,10 +172,54 @@ export default function ServicesContent() {
 
   const toggleCart = (itemFullString: string, isSingleSelect: boolean = false, categoryPrefix: string = "") => {
     setCart(prev => {
+      let newCart = [...prev];
+
+      // 1. Registration Package Auto-Select
+      if (itemFullString.startsWith("Registration: ")) {
+        const regItems = [
+          "Registration: Student Seat Number Allocation", 
+          "Registration: Distribution of Student Cloaks & Garlands", 
+          "Registration: Distribution of Guest & Parent Entrance Passes", 
+          "Registration: Distribution of Refreshment Tokens"
+        ];
+        const isSelected = regItems.every(i => prev.includes(i));
+        if (isSelected) return prev.filter(i => !regItems.includes(i)); // Deselect all
+        regItems.forEach(i => { if (!newCart.includes(i)) newCart.push(i); }); // Select all
+        return newCart;
+      }
+
+      // 2. Stage Flower Decorations Auto-Select (Except Fresh/Artificial button)
+      if (itemFullString.startsWith("Stage Arrangements - Stage Flower Decorations: ") && !itemFullString.includes("Stage Decoration -")) {
+        const flowerItems = [
+          "Stage Arrangements - Stage Flower Decorations: Oil Lamp Decoration",
+          "Stage Arrangements - Stage Flower Decorations: Podium Decoration",
+          "Stage Arrangements - Stage Flower Decorations: Head Table Decoration",
+          "Stage Arrangements - Stage Flower Decorations: Flower Garlands & Baskets",
+          "Stage Arrangements - Stage Flower Decorations: Stage Edge Decoration - Flower Band"
+        ];
+        const isSelected = flowerItems.every(i => prev.includes(i));
+        if (isSelected) return prev.filter(i => !flowerItems.includes(i));
+        flowerItems.forEach(i => { if (!newCart.includes(i)) newCart.push(i); });
+        return newCart;
+      }
+
+      // 3. Event Videography (Coverage + Highlight) Auto-Select
+      if (itemFullString === "Event Videography: Fully Edited Event Coverage Video" || itemFullString === "Event Videography: Fully Edited Highlight Video") {
+        const videoItems = [
+          "Event Videography: Fully Edited Event Coverage Video",
+          "Event Videography: Fully Edited Highlight Video"
+        ];
+        const isSelected = videoItems.every(i => prev.includes(i));
+        if (isSelected) return prev.filter(i => !videoItems.includes(i));
+        videoItems.forEach(i => { if (!newCart.includes(i)) newCart.push(i); });
+        return newCart;
+      }
+
+      // --- Standard Selection Logic ---
       if (prev.includes(itemFullString)) {
         return prev.filter(i => i !== itemFullString);
       }
-      let newCart = [...prev];
+      
       if (isSingleSelect && categoryPrefix) {
          newCart = newCart.filter(item => !item.startsWith(categoryPrefix));
       }
@@ -279,7 +333,7 @@ export default function ServicesContent() {
   return (
     <>
       {/* FIXED: Reduced pb-24 md:pb-40 to pb-12 md:pb-20 to reduce bottom spacing */}
-      <section className="pb-12 md:pb-20 pt-16 bg-white relative">
+      <section className="pb-12 md:pb-20 pt-8 md:pt-10 bg-white relative">
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
 
          <div className="columns-1 lg:columns-2 gap-6 lg:gap-8 space-y-6 lg:space-y-8">
@@ -301,10 +355,10 @@ export default function ServicesContent() {
                 >
                   <div className="absolute inset-0 rounded-[2rem] sm:rounded-[2.5rem] bg-gradient-to-br from-gray-200 to-gray-100 group-hover:from-[#ff4d94] group-hover:to-[#a40049] transition-colors duration-500" />
                   
-                  <div className="relative bg-white rounded-[1.9rem] sm:rounded-[2.4rem] px-6 py-8 sm:p-8 md:p-10 flex flex-col h-full">
+                  <div className="relative bg-white rounded-[1.9rem] sm:rounded-[2.4rem] px-5 py-6 sm:px-7 sm:py-7 md:p-8 flex flex-col h-full">  
                     
                     {/* Header Section */}
-                    <div className="mb-6 sm:mb-8">
+                    <div className="mb-4 sm:mb-6">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                         <div className="flex items-center gap-3 sm:gap-4">
                           <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-[#a40049]/10 to-[#ff4d94]/5 border border-[#a40049]/10 flex items-center justify-center flex-shrink-0">
@@ -338,9 +392,14 @@ export default function ServicesContent() {
                         )}
                       </div>
                       {cat.desc && <p className="text-sm sm:text-base text-gray-500 font-medium leading-relaxed">{cat.desc}</p>}
+  {(cat as any).extraDesc && (
+    <p className="mt-2 text-[11px] sm:text-xs text-[#a40049] font-bold leading-relaxed bg-[#a40049]/5 p-3 rounded-xl border border-[#a40049]/10">
+      {(cat as any).extraDesc}
+    </p>
+  )}
                     </div>
 
-                    <div className="flex-grow space-y-6">
+                    <div className="flex-grow space-y-4">
                       
                       {/* Direct Items */}
                       {cat.items && cat.items.length > 0 && (
@@ -358,9 +417,9 @@ export default function ServicesContent() {
 
                       {/* NEW: Direct Nested Groups (e.g. for Master of Ceremony) */}
                       {cat.nestedGroups && cat.nestedGroups.length > 0 && (
-                        <div className="mt-4 space-y-4">
+                        <div className="space-y-4">
                           {cat.nestedGroups.map((nested: any) => (
-                            <div key={nested.title} className="bg-[#FAFAFA] border border-gray-200/60 p-4 sm:p-5 rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.02)]">
+                            <div key={nested.title} className="bg-[#FAFAFA] border border-gray-200/60 p-3.5 sm:p-4 rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.02)]">
                               <div className="flex items-center gap-3 mb-4">
                                 <div className="w-1.5 h-4 bg-[#a40049] rounded-full shrink-0" />
                                 <h5 className="text-xs sm:text-sm font-extrabold text-gray-800 uppercase tracking-wide">
@@ -385,14 +444,14 @@ export default function ServicesContent() {
 
                       {/* Sub Categories */}
                       {cat.subCategories && (
-                        <div className="space-y-4 mt-4">
+                        <div className="space-y-4">
                           {cat.subCategories.map((sub: any) => (
-                            <div key={sub.name} className="bg-[#FAFAFA] border border-gray-200/60 p-4 sm:p-5 rounded-2xl">
+                            <div key={sub.name} className="bg-[#FAFAFA] border border-gray-200/60 p-3.5 sm:p-4 rounded-2xl">
                               <div className="flex items-center gap-3 mb-4">
                                 <div className="w-1.5 h-4 bg-[#a40049] rounded-full shrink-0" />
                                 <h4 className="text-xs sm:text-sm font-extrabold text-gray-800 uppercase tracking-wide">{sub.name}</h4>
                               </div>
-                              
+                              {sub.desc && <p className="text-[10px] sm:text-xs text-gray-500 mb-3 -mt-2 font-medium leading-snug">{sub.desc}</p>}
                               {/* Standard Sub-category Items */}
                               {sub.items && sub.items.length > 0 && (
                                 <div className="flex flex-wrap gap-2.5 mb-2">
@@ -403,28 +462,65 @@ export default function ServicesContent() {
                               )}
 
                               {/* Nested Deep Sub-Categories */}
-                              {sub.nestedGroups && sub.nestedGroups.length > 0 && (
-                                <div className="mt-4 space-y-3">
-                                  {sub.nestedGroups.map((nested: any) => (
-                                    <div key={nested.title} className="bg-white border border-gray-100 p-3 sm:p-4 rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
-                                      <h5 className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                                        Select {nested.title}
-                                      </h5>
-                                      <div className="flex flex-wrap gap-2.5">
-                                        {nested.options.map((opt: string) => (
-                                          <SelectablePill 
-                                            key={opt} 
-                                            label={`${nested.title} - ${opt}`} 
-                                            categoryName={`${cat.category} - ${sub.name}`} 
-                                            isSingleSelect={nested.singleSelect} 
-                                            groupPrefix={`${nested.title} -`} 
-                                          />
-                                        ))}
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
+                              {/* Nested Deep Sub-Categories */}
+{sub.nestedGroups && sub.nestedGroups.length > 0 && (
+  <div className="mt-4 space-y-3">
+    {sub.nestedGroups.map((nested: any) => {
+      const isExpanded = expandedGroups.includes(nested.title);
+      return (
+      <div key={nested.title} className="bg-white border border-gray-100 p-3 sm:p-4 rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+        <h5 className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
+          Select {nested.title}
+        </h5>
+        
+        {/* LED Video Wall Description එක */}
+        {nested.desc && <p className="text-[10px] sm:text-[11px] text-[#a40049] font-semibold mb-3 leading-snug">{nested.desc}</p>}
+        
+        <div className="flex flex-wrap gap-2.5 mt-2">
+          {nested.options.map((opt: string) => (
+            <SelectablePill 
+              key={opt} 
+              label={`${nested.title} - ${opt}`} 
+              categoryName={`${cat.category} - ${sub.name}`} 
+              isSingleSelect={nested.singleSelect} 
+              groupPrefix={`${nested.title} -`} 
+            />
+          ))}
+
+          {/* More Options / Custom Button / "More Sizes" Toggle */}
+          {nested.moreOptions && isExpanded && nested.moreOptions.map((opt: string) => (
+            <SelectablePill 
+              key={opt}
+              label={`${nested.title} - ${opt}`} 
+              categoryName={`${cat.category} - ${sub.name}`} 
+              isSingleSelect={nested.singleSelect} 
+              groupPrefix={`${nested.title} -`} 
+            />
+          ))}
+
+          {nested.hasCustom && isExpanded && (
+            <SelectablePill 
+              label={`${nested.title} - Custom Size`} 
+              categoryName={`${cat.category} - ${sub.name}`} 
+              isSingleSelect={nested.singleSelect} 
+              groupPrefix={`${nested.title} -`} 
+            />
+          )}
+
+          {(nested.moreOptions || nested.hasCustom) && (
+            <button 
+              onClick={() => toggleGroupExpand(nested.title)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-full text-[10px] sm:text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors border border-gray-200"
+            >
+              {isExpanded ? "Hide Sizes" : "More Sizes"} 
+              <ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+            </button>
+          )}
+        </div>
+      </div>
+    )})}
+  </div>
+)}
 
                             </div>
                           ))}
