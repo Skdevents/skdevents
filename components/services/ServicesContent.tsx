@@ -42,17 +42,9 @@ const structuredServices = [
   {
     id: "C3", category: "Event Photography", icon: Camera,
     desc: "Professional photo coverage to capture stage moments, group photos, and event highlights.",
-    photoSizes: [
-      { name: "Group", size: '12"x18"' },
-      { name: "Bust", size: '12"x15"' },
-      { name: "Full", size: '12"x18"' },
-      { name: "Family", size: '12"x18"' },
-      { name: "Couple", size: '12"x18"' },
-      { name: "Stage", size: '12"x15"' }
-    ],
     subCategories: [
-      { name: "Event Coverage", items: ["Fully Edited Highlight Photos", "Group Photos"] },
-      { name: "Photobooth Coverage ( Photo Package)", items: ["Full & Bust Photos", "Family Photos", "Couple Photos", "Award Receiving Stage Photos"] },
+      { name: "Event Coverage", items: ["Fully Edited Highlight Photos", "Group Photo - 16”x24”"] },
+      { name: "Photobooth Coverage ( Photo Package)", items: ["Award Receiving Stage Photos - 12” x 15”", "Full Photos - 12” x 18”", "Bust Photos - 12” x 15”", "Family Photos - 12” x 18”", "Couple Photos - 12” x 18”", "Group Photo ( Soft Copy ) - 12” x 18”"] },
       { name: "Photo Backdrops", items: ["Custom Themed Photo Backdrop | Selfie Background"], desc: "8'x12' Flex matte print with red Carpet" }
     ]
   },
@@ -64,6 +56,7 @@ const structuredServices = [
       "Fully Edited Guest Speeches", "Live Streaming on Facebook & YouTube", 
       "Review & Testimonial Video Clips"
     ],
+    
     subCategories: [
       { 
         name: "360 Video Booth", 
@@ -411,32 +404,6 @@ export default function ServicesContent() {
                           </button>
                         )}
                       </div>
-                      {/* අලුතින් හදපු Photo Sizes Grid එක */}
-                      {(cat as any).photoSizes && (
-                        <div className="mt-4 bg-[#a40049]/5 p-3.5 sm:p-4 rounded-xl border border-[#a40049]/10">
-                          
-                          {/* 1 Row Left-Middle-Right Title with Dots */}
-                          <div className="flex items-center justify-between w-full text-[8.5px] min-[375px]:text-[9.5px] sm:text-xs text-[#a40049] font-extrabold mb-3">
-                            {["Fully Edited", "Printed", "Laminated Photobooth"].reduce((acc: any[], part: string, i: number, arr: string[]) => {
-                              acc.push(<span key={`text-${i}`} className="whitespace-nowrap truncate">{part}</span>);
-                              if (i < arr.length - 1) {
-                                acc.push(<span key={`dot-${i}`} className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#a40049]/50 shrink-0 mx-1 sm:mx-2"></span>);
-                              }
-                              return acc;
-                            }, [])}
-                          </div>
-
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
-                            {(cat as any).photoSizes.map((sizeObj: any) => (
-                              <div key={sizeObj.name} className="flex items-center justify-between text-[11px] sm:text-xs font-bold">
-                                <span className="text-gray-600">{sizeObj.name}</span>
-                                <div className="flex-1 mx-3 border-b border-dashed border-[#a40049]/20" />
-                                <span className="text-[#a40049]">{sizeObj.size}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
 
                     <div className="flex-grow space-y-4">
