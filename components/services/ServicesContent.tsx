@@ -114,7 +114,6 @@ const structuredServices = [
           {
             title: "LED Video Wall",
             desc: "P3 LED Video Wall on 3' Hight platform | Live on Wall | Arena Play Back",
-            singleSelect: true,
             options: ["50’x12’", "40’x10’", "30’x10’", "20’x10’"],
             moreOptions: ["8'x6'", "12'x7'", "15'x7'", "16'x10'", "12'x10'"], // New sizes added
             hasCustom: true // Enables the custom button
@@ -414,10 +413,19 @@ export default function ServicesContent() {
                       </div>
                       {/* අලුතින් හදපු Photo Sizes Grid එක */}
                       {(cat as any).photoSizes && (
-                        <div className="mt-4 bg-[#a40049]/5 p-4 rounded-xl border border-[#a40049]/10">
-                          <p className="text-[11px] sm:text-xs text-[#a40049] font-extrabold mb-3 text-center sm:text-left">
-                            Fully Edited | Printed | Laminated Photobooth
-                          </p>
+                        <div className="mt-4 bg-[#a40049]/5 p-3.5 sm:p-4 rounded-xl border border-[#a40049]/10">
+                          
+                          {/* 1 Row Left-Middle-Right Title with Dots */}
+                          <div className="flex items-center justify-between w-full text-[8.5px] min-[375px]:text-[9.5px] sm:text-xs text-[#a40049] font-extrabold mb-3">
+                            {["Fully Edited", "Printed", "Laminated Photobooth"].reduce((acc: any[], part: string, i: number, arr: string[]) => {
+                              acc.push(<span key={`text-${i}`} className="whitespace-nowrap truncate">{part}</span>);
+                              if (i < arr.length - 1) {
+                                acc.push(<span key={`dot-${i}`} className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#a40049]/50 shrink-0 mx-1 sm:mx-2"></span>);
+                              }
+                              return acc;
+                            }, [])}
+                          </div>
+
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
                             {(cat as any).photoSizes.map((sizeObj: any) => (
                               <div key={sizeObj.name} className="flex items-center justify-between text-[11px] sm:text-xs font-bold">
@@ -505,8 +513,18 @@ export default function ServicesContent() {
           Select {nested.title}
         </h5>
         
-        {/* LED Video Wall Description එක */}
-        {nested.desc && <p className="text-[10px] sm:text-[11px] text-[#a40049] font-semibold mb-3 leading-snug">{nested.desc}</p>}
+        {/* LED Video Wall Description එක (Left-Middle-Right) */}
+        {nested.desc && (
+          <div className="flex items-center justify-between w-full text-[7.5px] min-[375px]:text-[8.5px] md:text-[10px] lg:text-[11px] text-[#a40049] font-semibold mb-3">
+            {nested.desc.split(' | ').reduce((acc: any[], part: string, i: number, arr: string[]) => {
+              acc.push(<span key={`text-${i}`} className="whitespace-nowrap truncate">{part.trim()}</span>);
+              if (i < arr.length - 1) {
+                acc.push(<span key={`dot-${i}`} className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#a40049]/50 shrink-0 mx-1 sm:mx-2"></span>);
+              }
+              return acc;
+            }, [])}
+          </div>
+        )}
         
         <div className="flex flex-wrap gap-2.5 mt-2">
           {nested.options.map((opt: string) => (
