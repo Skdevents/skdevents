@@ -42,7 +42,14 @@ const structuredServices = [
   {
     id: "C3", category: "Event Photography", icon: Camera,
     desc: "Professional photo coverage to capture stage moments, group photos, and event highlights.",
-    extraDesc: "Fully Edited | Printed | Laminated Photobooth - Group - 12\"x18\" | Bust -12\"x15\" or Full 12\"x18\" | Family - 12\"x18\" | Couple -12\"x18\" | Stage - 12\"x15\"",
+    photoSizes: [
+      { name: "Group", size: '12"x18"' },
+      { name: "Bust", size: '12"x15"' },
+      { name: "Full", size: '12"x18"' },
+      { name: "Family", size: '12"x18"' },
+      { name: "Couple", size: '12"x18"' },
+      { name: "Stage", size: '12"x15"' }
+    ],
     subCategories: [
       { name: "Event Coverage", items: ["Fully Edited Highlight Photos", "Group Photos"] },
       { name: "Photobooth Coverage ( Photo Package)", items: ["Full & Bust Photos", "Family Photos", "Couple Photos", "Award Receiving Stage Photos"] },
@@ -91,7 +98,7 @@ const structuredServices = [
     subCategories: [
       { 
         name: "Stage Flower Decorations", 
-        items: ["Oil Lamp Decoration", "Podium Decoration", "Head Table Decoration", "Flower Garlands & Baskets", "Stage Edge Decoration - Flower Band",],
+        items: ["Stage Edge Decoration - Flower Band", "Oil Lamp Decoration", "Podium Decoration", "Head Table Decoration", "Flower Garlands & Baskets", ],
         nestedGroups: [
           {
             title: "Stage Decoration",
@@ -185,6 +192,20 @@ export default function ServicesContent() {
         const isSelected = regItems.every(i => prev.includes(i));
         if (isSelected) return prev.filter(i => !regItems.includes(i)); // Deselect all
         regItems.forEach(i => { if (!newCart.includes(i)) newCart.push(i); }); // Select all
+        return newCart;
+      }
+
+      // --- අලුතින් එකතු කරන Seating Arrangements Auto-Select කොටස ---
+      if (itemFullString.startsWith("Seating Arrangements: ") || itemFullString.startsWith("Seating Arrangements - Auditorium: ")) {
+        const seatingItems = [
+          "Seating Arrangements: Student Procession (Perahara) Arrangement", 
+          "Seating Arrangements: Award Receiving Arrangements & Time Management",
+          "Seating Arrangements - Auditorium: Student Seating Arrangement",
+          "Seating Arrangements - Auditorium: Guest & Parent Seating Arrangement"
+        ];
+        const isSelected = seatingItems.every(i => prev.includes(i));
+        if (isSelected) return prev.filter(i => !seatingItems.includes(i)); // Deselect all
+        seatingItems.forEach(i => { if (!newCart.includes(i)) newCart.push(i); }); // Select all
         return newCart;
       }
 
@@ -391,12 +412,23 @@ export default function ServicesContent() {
                           </button>
                         )}
                       </div>
-                      {cat.desc && <p className="text-sm sm:text-base text-gray-500 font-medium leading-relaxed">{cat.desc}</p>}
-  {(cat as any).extraDesc && (
-    <p className="mt-2 text-[11px] sm:text-xs text-[#a40049] font-bold leading-relaxed bg-[#a40049]/5 p-3 rounded-xl border border-[#a40049]/10">
-      {(cat as any).extraDesc}
-    </p>
-  )}
+                      {/* අලුතින් හදපු Photo Sizes Grid එක */}
+                      {(cat as any).photoSizes && (
+                        <div className="mt-4 bg-[#a40049]/5 p-4 rounded-xl border border-[#a40049]/10">
+                          <p className="text-[11px] sm:text-xs text-[#a40049] font-extrabold mb-3 text-center sm:text-left">
+                            Fully Edited | Printed | Laminated Photobooth
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
+                            {(cat as any).photoSizes.map((sizeObj: any) => (
+                              <div key={sizeObj.name} className="flex items-center justify-between text-[11px] sm:text-xs font-bold">
+                                <span className="text-gray-600">{sizeObj.name}</span>
+                                <div className="flex-1 mx-3 border-b border-dashed border-[#a40049]/20" />
+                                <span className="text-[#a40049]">{sizeObj.size}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex-grow space-y-4">
