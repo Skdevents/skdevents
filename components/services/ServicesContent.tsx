@@ -44,7 +44,28 @@ const structuredServices = [
     desc: "Professional photo coverage to capture stage moments, group photos, and event highlights.",
     subCategories: [
       { name: "Event Coverage", items: ["Fully Edited Highlight Photos", "Group Photo - 16”x24”"] },
-      { name: "Photobooth Coverage ( Photo Package)", items: ["Award Receiving Stage Photos - 12” x 15”", "Full Photos - 12” x 18”", "Bust Photos - 12” x 15”", "Family Photos - 12” x 18”", "Couple Photos - 12” x 18”", "Group Photo ( Soft Copy ) - 12” x 18”"] },
+      { 
+        name: "Photobooth Coverage ( Photo Package)", 
+        packages: [
+          {
+            id: "P1", name: "Package 1",
+            features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”"]
+          },
+          {
+            id: "P2", name: "Package 2",
+            features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x18”"]
+          },
+          {
+            id: "P3", name: "Package 3",
+            features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x18”", "Group Photo - Soft Copy - 12”x18”"]
+          },
+          {
+            id: "P4", name: "Package 4",
+            features: ["Customized Selection (Build your own)"],
+            isCustom: true
+          }
+        ],
+       },
       { name: "Photo Backdrops", items: ["Custom Themed Photo Backdrop | Selfie Background"], desc: "8'x12' Flex matte print with red Carpet" }
     ]
   },
@@ -109,7 +130,7 @@ const structuredServices = [
             desc: "P3 LED Video Wall on 3' Hight platform | Live on Wall | Arena Play Back",
             options: ["50’x12’", "40’x10’", "30’x10’", "20’x10’"],
             moreOptions: ["8'x6'", "12'x7'", "15'x7'", "16'x10'", "12'x10'"], // New sizes added
-            hasCustom: true // Enables the custom button
+            hasCustom: true 
           }
         ]
       }
@@ -216,6 +237,18 @@ export default function ServicesContent() {
         return newCart;
       }
 
+      // 4. Event Photography - Event Coverage Auto-Select
+      if (itemFullString.startsWith("Event Photography - Event Coverage: ")) {
+        const coverageItems = [
+          "Event Photography - Event Coverage: Fully Edited Highlight Photos",
+          "Event Photography - Event Coverage: Group Photo - 16”x24”"
+        ];
+        const isSelected = coverageItems.every(i => prev.includes(i));
+        if (isSelected) return prev.filter(i => !coverageItems.includes(i)); // Deselect all
+        coverageItems.forEach(i => { if (!newCart.includes(i)) newCart.push(i); }); // Select all
+        return newCart;
+      }
+
       // 3. Event Videography (Coverage + Highlight) Auto-Select
       if (itemFullString === "Event Videography: Fully Edited Event Coverage Video" || itemFullString === "Event Videography: Fully Edited Highlight Video") {
         const videoItems = [
@@ -227,6 +260,7 @@ export default function ServicesContent() {
         videoItems.forEach(i => { if (!newCart.includes(i)) newCart.push(i); });
         return newCart;
       }
+
 
       // --- Standard Selection Logic ---
       if (prev.includes(itemFullString)) {
@@ -460,12 +494,50 @@ export default function ServicesContent() {
                               </div>
                               {sub.desc && <p className="text-[10px] sm:text-xs text-gray-500 mb-3 -mt-2 font-medium leading-snug">{sub.desc}</p>}
                               {/* Standard Sub-category Items */}
-                              {sub.items && sub.items.length > 0 && (
-                                <div className="flex flex-wrap gap-2.5 mb-2">
+                              {sub.packages && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                                  {sub.packages.map((pkg: any) => {
+                                    const fullString = `${cat.category} - ${sub.name}: ${pkg.name}`;
+                                    const isSelected = cart.includes(fullString);
+                                    
+                                    return (
+                                      <motion.div 
+                                        key={pkg.id}
+                                        whileTap={{ scale: 0.98 }}
+                                        onClick={() => toggleCart(fullString)}
+                                        className={`cursor-pointer p-4 rounded-2xl border transition-all duration-300 ${isSelected ? 'bg-[#a40049]/5 border-[#a40049] shadow-md scale-[1.02]' : 'bg-white border-gray-200 hover:border-[#a40049]/30 hover:shadow-sm'}`}
+                                      >
+                                        <div className="flex items-center justify-between mb-2.5">
+                                          <h6 className={`font-extrabold text-xs sm:text-sm ${isSelected ? 'text-[#a40049]' : 'text-gray-800'}`}>{pkg.name}</h6>
+                                          <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center border transition-colors ${isSelected ? 'bg-[#a40049] border-[#a40049]' : 'border-gray-300'}`}>
+                                            {isSelected && <Check className="w-3 h-3 text-white" />}
+                                          </div>
+                                        </div>
+                                        <ul className="space-y-1.5">
+                                          {pkg.features.map((f: string, i: number) => (
+                                            <li key={i} className="text-[10px] sm:text-[11px] text-gray-600 font-medium flex items-start gap-1.5 leading-snug">
+                                              <div className={`w-1 h-1 rounded-full mt-1.5 shrink-0 transition-colors ${isSelected ? 'bg-[#a40049]' : 'bg-gray-300'}`} />
+                                              <span>{f}</span>
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      </motion.div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+
+                              {/* Standard Sub-category Items (Package 4 තේරුවොත් විතරක් මේක පේනවා) */}
+                              {sub.items && sub.items.length > 0 && !sub.packages && (
+                                <motion.div 
+                                  initial={{ opacity: 0, y: -10 }} 
+                                  animate={{ opacity: 1, y: 0 }} 
+                                  className="flex flex-wrap gap-1.5 sm:gap-2 mb-2 pt-1"
+                                >
                                   {sub.items.map((item: string) => (
                                     <SelectablePill key={item} label={item} categoryName={`${cat.category} - ${sub.name}`} />
                                   ))}
-                                </div>
+                                </motion.div>
                               )}
 
                               {/* Nested Deep Sub-Categories */}
