@@ -5,9 +5,40 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ClipboardCheck, Rows3, Camera, Video, Mic, LayoutTemplate, 
   Music, Speaker, Printer, GraduationCap, Plus, Check, ShoppingBag, Send, ExternalLink, Trash2, CheckCircle2,
-  ChevronDown
+  ChevronDown, Info 
 } from "lucide-react";
 import WhatsAppModal from "./WhatsAppModal"; 
+
+const boothDetails: Record<string, any> = {
+  "Glam Booth": {
+    desc: "Our Glam Booth captures studio-quality photos and trendy slow-motion videos with professional lighting, luxury filters, and instant sharing options — giving every guest a red-carpet experience.",
+    features: ["HD photo & video capture", "Luxury black & white glam effect", "Instant digital sharing", "Custom event branding", "Professional lighting setup", "Fun props & guest interaction", "Unlimited sessions during booking time"]
+  },
+  "AI Photo Booth": {
+    desc: "Our AI-powered booth transforms guests into creative, cinematic, and themed digital portraits instantly using advanced artificial intelligence effects. From luxury magazine covers to fantasy, superhero, graduation, royal, or movie-style transformations the possibilities are endless.",
+    features: ["Instant AI-generated portraits", "Multiple creative themes & styles", "Custom event branding", "High-quality digital outputs", "Instant sharing via QR or email", "Interactive guest experience", "Fast processing with live preview"]
+  },
+  "360 Video Booth": {
+    desc: "Our 360 booth captures stunning slow-motion videos from every angle using a rotating camera platform, creating cinematic, social-media-ready content instantly. Guests can pose, dance, and celebrate while the camera spins around them to create high-impact videos with music, effects, and custom branding.",
+    features: ["360° slow-motion video capture", "Instant social media sharing", "Custom overlays & branding", "Professional lighting setup", "Fun props & interactive experience", "HD cinematic quality", "Music & visual effects integration"]
+  },
+  "Instant iPad Photo Booth": {
+    desc: "Create fun, instant memories with the Instant iPad Photo Booth. Our modern iPad Photo Booth offers a sleek and interactive experience where guests can capture photos, boomerangs, GIFs, and short videos instantly with professional lighting and live preview features. (Rs. 55,000/-)",
+    features: ["Instant photo capture", "GIF & boomerang support", "Touchscreen iPad interface", "Instant sharing via QR, email, or AirDrop", "Custom photo templates & branding", "Professional LED lighting", "Compact and stylish setup"]
+  },
+  "Instant Sharing DSLR Photo": {
+    desc: "Capture professional-quality memories instantly with the Instant Sharing DSLR Photo Booth. Powered by a high-resolution DSLR camera and professional studio lighting, our photo booth delivers sharp, vibrant, and premium-quality photos with instant digital sharing for every guest. (Rs. 55,000/-)",
+    features: ["Professional DSLR camera quality", "Instant photo sharing via QR, email, or AirDrop", "Studio lighting for premium results", "Custom photo templates & event branding", "Live preview display", "Unlimited photo sessions", "Fast and interactive guest experience"]
+  },
+  "Mirror Photo Booth": {
+    desc: "Add elegance and excitement to your event with the Mirror Photo Booth. Our interactive full-length mirror booth combines a stylish mirror display with a professional photo experience, allowing guests to take stunning photos through a fun touchscreen interface with animations, voice guidance, and instant sharing.",
+    features: ["Interactive touchscreen mirror display", "DSLR-quality photo capture", "Instant photo sharing", "Animated effects & voice guidance", "Custom photo templates & branding", "Signature & emoji feature", "Professional lighting setup", "Elegant premium design"]
+  },
+  "SLO-MO Video Booth": {
+    desc: "Capture cinematic slow-motion moments with fun poses, props, music, and instant sharing — perfect for weddings, parties, and corporate events. A SLO-MO Video Booth is an interactive event booth that records short high-frame-rate videos and plays them back in dramatic slow motion.",
+    features: ["Slow-motion HD/4K recording", "Instant replay", "Music & visual effects", "Props and themed setup", "Instant sharing via QR / WhatsApp / Email", "Branding options for events and companies"]
+  }
+};
 
 const structuredServices = [
   {
@@ -77,16 +108,39 @@ const structuredServices = [
       "Fully Edited Guest Speeches", "Live Streaming on Facebook & YouTube", 
       "Review & Testimonial Video Clips"
     ],
-    
+    // --- පොදුවේ තෝරන Duration එක ---
+    nestedGroups: [
+      {
+        title: "Booth Duration",
+        singleSelect: true,
+        options: ["04-Hour Package", "Full-Day (08 hours) Package"]
+      }
+    ],
     subCategories: [
       { 
         name: "360 Video Booth", 
-        items: [
-          "04-Hour Package", 
-          "Full-Day (08 hours) Package", 
-          "7'x3' Matte Flex Print University & Campus Branding Boards"
-        ] 
-      }
+        items: ["Standard Video Booth", "Advanced Video Booth", "7'x3' Matte Flex Print University & Campus Branding Boards"] 
+      },
+      { name: "Glam Booth", items: ["Include Glam Booth"] },
+      { 
+        name: "Mirror Photo Booth", 
+        items: ["Without Print"],
+        nestedGroups: [
+          {
+            title: "Print QTY",
+            singleSelect: true,
+            options: ["200", "500", "1000", "1500"]
+          },
+          {
+            title: "With Print",
+            options: ["Passport - ( 2 x 3 )", "4R - ( 4 x 6 )", "6R - ( 6 x 8 )"]
+          }
+        ]
+      },
+      { name: "SLO-MO Video Booth", items: ["Include SLO-MO Video Booth"] },
+      { name: "AI Photo Booth", items: ["Include AI Photo Booth"] },
+      { name: "Instant iPad Photo Booth", items: ["Include iPad Photo Booth"] },
+      { name: "Instant Sharing DSLR Photo", items: ["Include DSLR Photo Booth"] }
     ]
   },
   {
@@ -178,6 +232,7 @@ export default function ServicesContent() {
   const toggleGroupExpand = (title: string) => {
     setExpandedGroups(prev => prev.includes(title) ? prev.filter(t => t !== title) : [...prev, title]);
   };
+  const [infoModalData, setInfoModalData] = useState<any>(null);
 
   useEffect(() => {
     const savedCart = localStorage.getItem("skd_services_cart");
@@ -488,10 +543,21 @@ export default function ServicesContent() {
                         <div className="space-y-4">
                           {cat.subCategories.map((sub: any) => (
                             <div key={sub.name} className="bg-[#FAFAFA] border border-gray-200/60 p-3.5 sm:p-4 rounded-2xl">
-                              <div className="flex items-center gap-3 mb-4">
-                                <div className="w-1.5 h-4 bg-[#a40049] rounded-full shrink-0" />
-                                <h4 className="text-xs sm:text-sm font-extrabold text-gray-800 uppercase tracking-wide">{sub.name}</h4>
-                              </div>
+                              <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-4 bg-[#a40049] rounded-full shrink-0" />
+            <h4 className="text-xs sm:text-sm font-extrabold text-gray-800 uppercase tracking-wide">{sub.name}</h4>
+          </div>
+          
+          {boothDetails[sub.name] && (
+            <button 
+              onClick={() => setInfoModalData({ name: sub.name, ...boothDetails[sub.name] })}
+              className="w-7 h-7 rounded-full bg-[#a40049]/10 text-[#a40049] flex items-center justify-center hover:bg-[#a40049] hover:text-white transition-colors ml-auto shadow-sm"
+            >
+              <Info className="w-4 h-4" />
+            </button>
+          )}
+        </div>
                               {sub.desc && <p className="text-[10px] sm:text-xs text-gray-500 mb-3 -mt-2 font-medium leading-snug">{sub.desc}</p>}
                               {/* Standard Sub-category Items */}
                               {sub.packages && (
@@ -669,8 +735,77 @@ export default function ServicesContent() {
             </motion.div>
           )}
         </AnimatePresence>
+        <AnimatePresence>
+        {infoModalData && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6"
+            onClick={() => setInfoModalData(null)}
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-lg bg-white rounded-[2rem] shadow-2xl overflow-hidden"
+            >
+              {/* Top Banner */}
+              <div className="bg-gradient-to-r from-[#a40049] to-[#ff4d94] p-6 sm:p-8 text-white relative">
+                <button 
+                  onClick={() => setInfoModalData(null)}
+                  className="absolute top-4 right-4 w-8 h-8 bg-white/20 hover:bg-white hover:text-[#a40049] rounded-full flex items-center justify-center transition-colors"
+                >
+                  <Trash2 className="w-4 h-4 hidden" /> {/* Just for spacing, using X below */}
+                  <div className="absolute font-bold text-lg leading-none rotate-45">+</div>
+                </button>
+                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md mb-4 border border-white/30">
+                  <Camera className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold leading-tight">{infoModalData.name}</h2>
+              </div>
+
+              {/* Content */}
+              <div className="p-6 sm:p-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                <p className="text-sm sm:text-[15px] text-gray-600 font-medium leading-relaxed mb-6">
+                  {infoModalData.desc}
+                </p>
+
+                <h4 className="text-xs sm:text-sm font-extrabold text-gray-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#a40049]" /> Included Features
+                </h4>
+                
+                <ul className="space-y-3">
+                  {infoModalData.features.map((feature: string, idx: number) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-full bg-[#a40049]/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Check className="w-3 h-3 text-[#a40049]" />
+                      </div>
+                      <span className="text-sm text-gray-700 font-medium leading-snug">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              {/* Bottom Action */}
+              <div className="p-5 border-t border-gray-100 bg-gray-50 flex justify-end">
+                <button 
+                  onClick={() => setInfoModalData(null)}
+                  className="px-6 py-2.5 rounded-full bg-gray-900 text-white text-sm font-bold shadow-md hover:bg-gray-800 transition-colors"
+                >
+                  Got it
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       </section>
+
+      
 
       <WhatsAppModal 
         isOpen={isModalOpen} 
