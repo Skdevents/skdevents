@@ -113,7 +113,8 @@ const structuredServices = [
       {
         title: "Booth Duration",
         singleSelect: true,
-        options: ["04-Hour Package", "Full-Day (08 hours) Package"]
+        hideTitleInPill: true, // Title එක button එකේ පේන්නෙ නෑ
+        options: ["04-Hour Package", "Full-Day Package"]
       }
     ],
     subCategories: [
@@ -124,16 +125,23 @@ const structuredServices = [
       { name: "Glam Booth", items: ["Include Glam Booth"] },
       { 
         name: "Mirror Photo Booth", 
-        items: ["Without Print"],
         nestedGroups: [
+          {
+            title: "Print Option",
+            singleSelect: true,
+            hideTitleInPill: true, // Title එක button එකේ පේන්නෙ නෑ
+            options: ["Without Print", "With Print"]
+          },
           {
             title: "Print QTY",
             singleSelect: true,
-            options: ["200", "500", "1000", "1500"]
+            options: ["200", "500", "1000", "1500"],
+            dependsOn: "With Print" // මේක පේන්නේ With Print තේරුවොත් විතරයි
           },
           {
-            title: "With Print",
-            options: ["Passport - ( 2 x 3 )", "4R - ( 4 x 6 )", "6R - ( 6 x 8 )"]
+            title: "Print Size",
+            options: ["Passport - ( 2\" x 3\" )", "4R - ( 4\" x 6\" )", "6R - ( 6\" x 8\" )"],
+            dependsOn: "With Print" // මේක පේන්නේ With Print තේරුවොත් විතරයි
           }
         ]
       },
@@ -316,6 +324,28 @@ export default function ServicesContent() {
         return newCart;
       }
 
+      // 5. Booth Duration Single Select Logic
+      if (itemFullString === "Event Videography: 04-Hour Package" || itemFullString === "Event Videography: Full-Day Package") {
+        let cleaned = prev.filter(i => i !== "Event Videography: 04-Hour Package" && i !== "Event Videography: Full-Day Package");
+        if (prev.includes(itemFullString)) return cleaned;
+        cleaned.push(itemFullString);
+        return cleaned;
+      }
+
+      // 6. Mirror Photo Booth Print Options Logic
+      if (itemFullString === "Event Videography - Mirror Photo Booth: Without Print" || itemFullString === "Event Videography - Mirror Photo Booth: With Print") {
+        let cleaned = prev.filter(i => 
+          i !== "Event Videography - Mirror Photo Booth: Without Print" && 
+          i !== "Event Videography - Mirror Photo Booth: With Print"
+        );
+        // Without Print තේරුවොත් යටින් තෝරලා තියෙන QTY සහ Sizes ඔක්කොම Auto Clear වෙනවා
+        if (itemFullString === "Event Videography - Mirror Photo Booth: Without Print") {
+          cleaned = cleaned.filter(i => !i.includes("Mirror Photo Booth: Print QTY") && !i.includes("Mirror Photo Booth: Print Size"));
+        }
+        if (prev.includes(itemFullString)) return cleaned;
+        cleaned.push(itemFullString);
+        return cleaned;
+      }
 
       // --- Standard Selection Logic ---
       if (prev.includes(itemFullString)) {
@@ -522,44 +552,64 @@ export default function ServicesContent() {
                                   Select {nested.title}
                                 </h5>
                               </div>
-                              <div className="flex flex-wrap gap-2.5">
-                                {nested.options.map((opt: string) => (
-                                  <SelectablePill 
-                                    key={opt} 
-                                    label={`${nested.title} - ${opt}`} 
-                                    categoryName={cat.category} 
-                                    isSingleSelect={nested.singleSelect} 
-                                    groupPrefix={`${nested.title} -`} 
-                                  />
-                                ))}
+                              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                                {nested.options.map((opt: string) => {
+                                  const pillLabel = nested.hideTitleInPill ? opt : `${nested.title} - ${opt}`;
+                                  const clearPrefix = nested.hideTitleInPill ? "" : `${nested.title} -`;
+                                  return (
+                                    <SelectablePill 
+                                      key={opt} 
+                                      label={pillLabel} 
+                                      categoryName={cat.category} 
+                                      isSingleSelect={nested.singleSelect} 
+                                      groupPrefix={clearPrefix} 
+                                    />
+                                  )
+                                })}
                               </div>
                             </div>
                           ))}
                         </div>
                       )}
-
                       {/* Sub Categories */}
                       {cat.subCategories && (
                         <div className="space-y-4">
-                          {cat.subCategories.map((sub: any) => (
-                            <div key={sub.name} className="bg-[#FAFAFA] border border-gray-200/60 p-3.5 sm:p-4 rounded-2xl">
+                          {cat.subCategories.map((sub: any) => {
+                            // --- C4 Disable Logic (Duration එක තෝරලාද බලනවා) ---
+                            const isC4Booths = cat.id === "C4";
+                            const isDurationSelected = cart.includes("Event Videography: 04-Hour Package") || cart.includes("Event Videography: Full-Day Package");
+                            const disableBooths = isC4Booths && !isDurationSelected;
+
+                            return (
+                            <div key={sub.name} className={`bg-[#FAFAFA] border border-gray-200/60 p-3.5 sm:p-4 rounded-2xl relative transition-all duration-300 ${disableBooths ? 'opacity-50 grayscale-[30%] pointer-events-none' : ''}`}>
+                              
                               <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-1.5 h-4 bg-[#a40049] rounded-full shrink-0" />
-            <h4 className="text-xs sm:text-sm font-extrabold text-gray-800 uppercase tracking-wide">{sub.name}</h4>
-          </div>
-          
-          {boothDetails[sub.name] && (
-            <button 
-              onClick={() => setInfoModalData({ name: sub.name, ...boothDetails[sub.name] })}
-              className="w-7 h-7 rounded-full bg-[#a40049]/10 text-[#a40049] flex items-center justify-center hover:bg-[#a40049] hover:text-white transition-colors ml-auto shadow-sm"
-            >
-              <Info className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-                              {sub.desc && <p className="text-[10px] sm:text-xs text-gray-500 mb-3 -mt-2 font-medium leading-snug">{sub.desc}</p>}
-                              {/* Standard Sub-category Items */}
+                                <div className="flex items-center gap-3">
+                                  <div className="w-1.5 h-4 bg-[#a40049] rounded-full shrink-0" />
+                                  <h4 className="text-xs sm:text-sm font-extrabold text-gray-800 uppercase tracking-wide">
+                                    {sub.name}
+                                  </h4>
+                                </div>
+                                
+                                {/* Info Button */}
+                                {boothDetails && boothDetails[sub.name] && (
+                                  <button 
+                                    onClick={() => setInfoModalData({ name: sub.name, ...boothDetails[sub.name] })}
+                                    className={`w-7 h-7 rounded-full bg-[#a40049]/10 text-[#a40049] flex items-center justify-center hover:bg-[#a40049] hover:text-white transition-colors ml-auto shadow-sm ${disableBooths ? 'hidden' : ''}`}
+                                  >
+                                    <Info className="w-4 h-4" />
+                                  </button>
+                                )}
+                              </div>
+
+                              {/* Warning Message if Disabled */}
+                              {disableBooths && (
+                                <p className="text-[10px] sm:text-xs text-red-500 font-bold mb-3 -mt-2">
+                                  Please Select Booth Duration First!
+                                </p>
+                              )}
+
+                              {sub.desc && <p className="text-[10px] sm:text-xs text-gray-500 mb-3 -mt-2 font-medium leading-snug">{sub.desc}</p>}{/* Standard Sub-category Items */}
                               {sub.packages && (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                                   {sub.packages.map((pkg: any) => {
@@ -607,10 +657,14 @@ export default function ServicesContent() {
                               )}
 
                               {/* Nested Deep Sub-Categories */}
-                              {/* Nested Deep Sub-Categories */}
 {sub.nestedGroups && sub.nestedGroups.length > 0 && (
   <div className="mt-4 space-y-3">
     {sub.nestedGroups.map((nested: any) => {
+      // --- Mirror Booth Dependency Check ---
+      if (nested.dependsOn === "With Print" && !cart.includes(`${cat.category} - ${sub.name}: With Print`)) {
+        return null; // With Print තෝරලා නැත්තන් මේ කොටස පෙන්නන්නේ නෑ
+      }
+
       const isExpanded = expandedGroups.includes(nested.title);
       return (
       <div key={nested.title} className="bg-white border border-gray-100 p-3 sm:p-4 rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
@@ -631,16 +685,20 @@ export default function ServicesContent() {
           </div>
         )}
         
-        <div className="flex flex-wrap gap-2.5 mt-2">
-          {nested.options.map((opt: string) => (
-            <SelectablePill 
-              key={opt} 
-              label={`${nested.title} - ${opt}`} 
-              categoryName={`${cat.category} - ${sub.name}`} 
-              isSingleSelect={nested.singleSelect} 
-              groupPrefix={`${nested.title} -`} 
-            />
-          ))}
+       <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
+          {nested.options.map((opt: string) => {
+            const pillLabel = nested.hideTitleInPill ? opt : `${nested.title} - ${opt}`;
+            const clearPrefix = nested.hideTitleInPill ? "" : `${nested.title} -`;
+            return (
+              <SelectablePill 
+                key={opt} 
+                label={pillLabel} 
+                categoryName={`${cat.category} - ${sub.name}`} 
+                isSingleSelect={nested.singleSelect} 
+                groupPrefix={clearPrefix} 
+              />
+            )
+          })}
 
           {/* More Options / Custom Button / "More Sizes" Toggle */}
           {nested.moreOptions && isExpanded && nested.moreOptions.map((opt: string) => (
@@ -678,7 +736,8 @@ export default function ServicesContent() {
 )}
 
                             </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       )}
                     </div>
@@ -804,8 +863,6 @@ export default function ServicesContent() {
       </AnimatePresence>
 
       </section>
-
-      
 
       <WhatsAppModal 
         isOpen={isModalOpen} 
