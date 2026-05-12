@@ -107,6 +107,7 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
     officeNumber: "", 
     whatsappNumber: "", 
     eventName: "Convocation",
+    otherEventName: "",
     eventDate: "",
     eventStartTime: "",
     eventEndTime: "", 
@@ -217,10 +218,21 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
         ? formData.otherLocation 
         : formData.eventLocation;
 
+      const finalEventName = formData.eventName === "Other" && formData.otherEventName
+        ? formData.otherEventName
+        : formData.eventName;
+
+      const finalGraduates = formData.eventName === "Convocation" ? formData.graduates : "N/A";
+
       const generatedId = `SKD-REQ-${Math.floor(10000 + Math.random() * 90000)}`;
 
       const payload = {
-        organizationDetails: { ...formData, finalLocation },
+        organizationDetails: { 
+          ...formData, 
+          finalLocation, 
+          eventName: finalEventName, 
+          graduates: finalGraduates 
+        },
         selectedPackage: groupedCart,
         rawCart: cart,
         generatedId: generatedId
@@ -446,8 +458,15 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
                               name="eventName"
                               value={formData.eventName}
                               onChange={handleDropdownChange}
-                              options={["Convocation", "Corporate", "Seminar", "Product Launched", "Award Ceremony"]}
+                              options={["Convocation", "Corporate", "Seminar", "Product Launched", "Award Ceremony", "Other"]}
                             />
+                            <AnimatePresence>
+                              {formData.eventName === "Other" && (
+                                <motion.div initial={{ opacity: 0, height: 0, marginTop: 0 }} animate={{ opacity: 1, height: "auto", marginTop: 12 }} exit={{ opacity: 0, height: 0, marginTop: 0 }}>
+                                  <input type="text" name="otherEventName" placeholder="Please specify your event name..." value={formData.otherEventName} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#a40049]/30 focus:border-[#a40049] outline-none transition-all" required />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
 
                           {/* Event Date & No of Sessions (Same Row on Desktop) */}
@@ -520,15 +539,19 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
                           </div>
 
                           {/* No of Graduates & Total Visitors (Same Row on Desktop) */}
-                          <div className="space-y-1.5">
-                            <label className="text-[11px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">No of Graduates <span className="text-red-500">*</span></label>
-                            <input required type="number" min="1" placeholder="e.g. 500" name="graduates" value={formData.graduates} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#a40049]/30 focus:border-[#a40049] outline-none transition-all"/>
-                          </div>
-                          <div className="space-y-1.5">
+                          <AnimatePresence>
+                            {formData.eventName === "Convocation" && (
+                              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="space-y-1.5">
+                                <label className="text-[11px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">No of Graduates <span className="text-red-500">*</span></label>
+                                <input required type="number" min="1" placeholder="e.g. 500" name="graduates" value={formData.graduates} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#a40049]/30 focus:border-[#a40049] outline-none transition-all"/>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                          
+                          <div className={`space-y-1.5 transition-all duration-300 ${formData.eventName !== "Convocation" ? "sm:col-span-2" : ""}`}>
                             <label className="text-[11px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Total Visitors <span className="text-red-500">*</span></label>
                             <input required type="number" min="1" placeholder="e.g. 1500" name="visitors" value={formData.visitors} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#a40049]/30 focus:border-[#a40049] outline-none transition-all"/>
                           </div>
-
                         </div>
                       </div>
                     </form>

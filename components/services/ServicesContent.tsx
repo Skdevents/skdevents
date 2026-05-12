@@ -171,6 +171,7 @@ const structuredServices = [
   {
     id: "C6", category: "Stage Arrangements", icon: LayoutTemplate,
     desc: "A professionally designed stage with podium, LED video wall, lighting, and floral decorations.",
+    hideSelectAll: true,
     subCategories: [
       { 
         name: "Stage Flower Decorations", 
@@ -542,32 +543,16 @@ export default function ServicesContent() {
                           <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 leading-tight">{cat.category}</h3>
                         </div>
                         
-                        {/* Right Side Actions (External Link & Select All) */}
-                        <div className="flex items-center gap-2 self-start sm:self-auto">
-                          
-                          {/* NEW: Custom External Link for Graduation Items (C9) */}
-                          {cat.id === "C9" && (
-                            <a 
-                              href="https://skdcloaks.com/home" 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 bg-[#a40049]/10 text-[#a40049] border border-[#a40049]/20 hover:bg-[#a40049] hover:text-white group"
-                            >
-                              <span>Visit SKD Cloaks</span>
-                              <ExternalLink className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-                            </a>
-                          )}
-
-                          {/* Show Select All button only if hideSelectAll is NOT true */}
-                          {!cat.hideSelectAll && (
-                            <button 
-                              onClick={() => handleSelectAllCategory(cat)}
-                              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-colors shrink-0 border ${
-                                areAllSelected 
-                                  ? "bg-red-50 text-red-600 border-red-100 hover:bg-red-100" 
-                                  : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
-                              }`}
-                            >
+                        {/* Show Select All button only if hideSelectAll is NOT true */}
+                        {!cat.hideSelectAll && (
+                          <button 
+                            onClick={() => handleSelectAllCategory(cat)}
+                            className={`flex items-center self-start sm:self-auto gap-2 px-4 py-2 rounded-full text-xs font-bold transition-colors shrink-0 border ${
+                              areAllSelected 
+                                ? "bg-red-50 text-red-600 border-red-100 hover:bg-red-100" 
+                                : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
+                            }`}
+                          >
                             {areAllSelected ? (
                               <>
                                 <span>Deselect All</span>
@@ -578,10 +563,9 @@ export default function ServicesContent() {
                                 <span>Select All</span>
                                 <CheckCircle2 className="w-3.5 h-3.5" />
                               </>
-                              )}
-                            </button>
-                          )}
-                        </div>
+                            )}
+                          </button>
+                        )}
                       </div>
                     </div>
 

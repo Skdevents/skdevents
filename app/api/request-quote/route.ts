@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { 
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, 
-  WidthType, AlignmentType, BorderStyle, PageBreak, VerticalAlign
+  WidthType, AlignmentType, BorderStyle, PageBreak, VerticalAlign,
+  Footer
 } from 'docx';
 import nodemailer from 'nodemailer';
 
@@ -9,12 +10,12 @@ import nodemailer from 'nodemailer';
 const createCell = (text1: string, text2: string = "", colSpan: number = 1) => {
   return new TableCell({
     columnSpan: colSpan,
-    margins: { top: 200, bottom: 200, left: 200, right: 200 },
+    margins: { top: 100, bottom: 100, left: 150, right: 150 }, 
     verticalAlign: VerticalAlign.CENTER,
     shading: { fill: "FAFAFA" }, 
     children: [
-      new Paragraph({ children: [new TextRun({ text: text1, bold: true, size: 20, color: "A40049" })] }), 
-      ...(text2 ? [new Paragraph({ children: [new TextRun({ text: text2, size: 24, bold: true, color: "111827" })], spacing: { before: 80 } })] : [])
+      new Paragraph({ children: [new TextRun({ text: text1, bold: true, size: 18, color: "A40049" })] }), // <-- size 20 ඉඳන් 18ට අඩු කළා
+      ...(text2 ? [new Paragraph({ children: [new TextRun({ text: text2, size: 22, bold: true, color: "111827" })], spacing: { before: 40 } })] : []) // <-- before 80 ඉඳන් 40ට අඩු කළා, size 22 කළා
     ],
   });
 };
@@ -91,8 +92,8 @@ const getPrice = (name: string): number | "TBD" | "Included" => {
   if (name.includes("Drum Orchestra") || name.includes("Indian Doll")) return 55000;
 
   if (name.includes("Promo Flag Printing")) return 5500;
-  if (name.includes("Promo Flag Poles")) return 900;
   if (name.includes("University Flag") || name.includes("Campus Flag") || name.includes("Department Flag")) return 5800;
+  if (name.includes("Promo Flag Poles")) return 900;
 
   return "TBD";
 };
@@ -168,12 +169,124 @@ export async function POST(req: Request) {
     if (vidCov.length > 0) {
       finalItems.push({ category: "Event Videography", desc: "Event Videography Full Package", subItems: vidCov.map((i: string) => i.split(": ")[1]), price: 90000 });
     }
-    const otherVid = rawCart.filter((i: string) => i.startsWith("Event Videography") && !vidCov.includes(i));
+
+    // Duration Checks
+    const isFullDay = rawCart.includes("Event Videography: Full-Day Package");
+    const is4Hour = rawCart.includes("Event Videography: 04-Hour Package");
+
+    // Separate Mirror Booth from other Video items
+    const mirrorBoothItems = rawCart.filter((i: string) => i.startsWith("Event Videography - Mirror Photo Booth:"));
+    const otherVid = rawCart.filter((i: string) => 
+      i.startsWith("Event Videography") && 
+      !vidCov.includes(i) && 
+      !i.includes("Mirror Photo Booth:") && 
+      !i.includes("04-Hour Package") && 
+      !i.includes("Full-Day Package")
+    );
+
+    // Standard Video & Other Booths Logic
     otherVid.forEach((v: string) => {
-      const name = v.split(": ")[1];
-      finalItems.push({ category: "Event Videography", desc: name, subItems: [], price: getPrice(name) });
+      let name = v.split(": ")[1];
+      if (v.includes(" - ")) {
+          name = v.split(": ")[1]; // extract inner name if sub-category exists
+      }
+      
+      let price: number | "TBD" | "Included" = getPrice(name); // fallback to standard prices
+      
+      // Booth Pricing Logic for 4 Hours
+      const boothPrices4h: Record<string, number> = {
+          "Standard Video Booth": 25000,
+          "Advanced Video Booth": 55000,
+          "7'x3' Matte Flex Print University & Campus Branding Boards": 35000,
+          "Include Glam Booth": 90000,
+          "Include AI Photo Booth": 75000,
+          "Include iPad Photo Booth": 55000,
+          "Include DSLR Photo Booth": 55000,
+      };
+
+      if (boothPrices4h[name]) {
+          if (isFullDay) price = "TBD";
+          else if (is4Hour) price = boothPrices4h[name];
+          else price = "TBD"; // If no duration selected
+      }
+      if (name === "Include SLO-MO Video Booth") {
+          price = "TBD";
+      }
+
+      finalItems.push({ category: "Event Videography", desc: name, subItems: [], price });
     });
 
+    // Mirror Booth Dynamic Calculation Logic
+    if (mirrorBoothItems.length > 0) {
+       const hasWithoutPrint = mirrorBoothItems.some((i: string) => i.includes("Without Print"));
+       const hasWithPrint = mirrorBoothItems.some((i: string) => i.includes("With Print"));
+       
+       if (hasWithoutPrint) {
+           finalItems.push({ 
+               category: "Event Videography", 
+               desc: "Mirror Photo Booth - Without Print", 
+               subItems: [], 
+               price: isFullDay ? "TBD" : (is4Hour ? 65000 : "TBD") 
+           });
+       } else if (hasWithPrint) {
+           // QTY එක හොයාගන්නවා
+           const qtyItem = mirrorBoothItems.find((i: string) => i.includes("Print QTY"));
+           let qty = 100; // Default QTY
+           if (qtyItem) {
+               qty = parseInt(qtyItem.split("Print QTY - ")[1]) || 100;
+           }
+
+           // FIX: තෝරපු SIZES ඔක්කොම හොයාගන්නවා (.find වෙනුවට .filter දැම්මා)
+           const sizeItems = mirrorBoothItems.filter((i: string) => i.includes("Print Size"));
+           
+           // මොකුත්ම size එකක් තෝරලා නැත්තන් Default එක Passport විදිහට ගන්නවා
+           const sizesToProcess: string[] = sizeItems.length > 0 ? sizeItems : ["Print Size - Passport - ( 2\" x 3\" )"];
+
+           // තෝරපු හැම Size එකකටම වෙන වෙනම Line Item එකක් සහ Price එකක් හදනවා
+           sizesToProcess.forEach((sizeItem: string) => { // <-- මෙතන (sizeItem: string) කියලා type එක දුන්නා
+               const sizeStr = sizeItem.split("Print Size - ")[1];
+               let displaySize = sizeStr;
+               let sizeType = "Passport";
+               
+               if (sizeStr.includes("4R")) sizeType = "4R";
+               else if (sizeStr.includes("6R")) sizeType = "6R";
+               
+               let finalPrice: number | "TBD" = "TBD";
+               
+               if (is4Hour && !isFullDay) {
+                   if (qty === 100) {
+                       if (sizeType === "Passport") finalPrice = 15000;
+                       if (sizeType === "4R") finalPrice = 20000;
+                       if (sizeType === "6R") finalPrice = 30000;
+                   } else if (qty === 200) {
+                       if (sizeType === "Passport") finalPrice = 30000;
+                       if (sizeType === "4R") finalPrice = 40000;
+                       if (sizeType === "6R") finalPrice = 60000;
+                   } else if (qty === 500) {
+                       if (sizeType === "Passport") finalPrice = 75000;
+                       if (sizeType === "4R") finalPrice = 100000;
+                       if (sizeType === "6R") finalPrice = 150000;
+                   } else if (qty === 1000) {
+                       if (sizeType === "Passport") finalPrice = 150000;
+                       if (sizeType === "4R") finalPrice = 200000;
+                       if (sizeType === "6R") finalPrice = 300000;
+                   } else if (qty === 1500) {
+                       if (sizeType === "Passport") finalPrice = 225000;
+                       if (sizeType === "4R") finalPrice = 300000;
+                       if (sizeType === "6R") finalPrice = 450000;
+                   }
+               }
+
+               // මෙතනදී desc එකට size එකත් දානවා පැහැදිලි වෙන්න
+               finalItems.push({ 
+                   category: "Event Videography", 
+                   desc: `Mirror Photo Booth - With Print (${sizeType})`, 
+                   subItems: [`Print Quantity: ${qty}`, `Print Size: ${displaySize}`], 
+                   price: finalPrice 
+               });
+           });
+       }
+    }
     // C5: MC
     const mcItems = rawCart.filter((i: string) => i.startsWith("Master of Ceremony & Compere"));
     mcItems.forEach((mc: string) => {
@@ -209,10 +322,63 @@ export async function POST(req: Request) {
     });
 
     // C8: Print
-    const print = rawCart.filter((i: string) => i.startsWith("Manufacturing & Printing"));
-    print.forEach((p: string) => {
-      const name = p.split(": ")[1];
-      finalItems.push({ category: "Manufacturing & Printing", desc: name, subItems: [], price: getPrice(name) });
+    const printItems = rawCart.filter((i: string) => i.startsWith("Manufacturing & Printing"));
+    const printGroups: Record<string, string[]> = {};
+    
+    // Grouping properties under main items
+    printItems.forEach((p: string) => {
+      if (p.includes(" - ")) {
+          const subCatPart = p.split(" - ")[1]; 
+          const [subCat, item] = subCatPart.split(": ");
+          if (!printGroups[subCat]) printGroups[subCat] = [];
+          printGroups[subCat].push(item);
+      } else {
+          const name = p.split(": ")[1];
+          if (!printGroups["General"]) printGroups["General"] = [];
+          printGroups["General"].push(name);
+      }
+    });
+
+    Object.keys(printGroups).forEach(subCat => {
+      printGroups[subCat].sort((a, b) => {
+          if (a.includes("Promo Flag Poles")) return 1;
+          if (b.includes("Promo Flag Poles")) return -1;
+          return 0;
+      });
+
+      if (subCat === "General") {
+          printGroups[subCat].forEach(item => {
+              finalItems.push({ category: "Manufacturing & Printing", desc: item, subItems: [], price: "TBD" });
+              
+              if (item.includes("Promo Flag Poles")) {
+                  finalItems.push({ category: "Manufacturing & Printing", desc: "Transport (Up & Down)", subItems: [], price: "TBD" });
+                  finalItems.push({ category: "Manufacturing & Printing", desc: "Labor (Fix and Remove)", subItems: [], price: "TBD" });
+              }
+          });
+      } else {
+          const mainItems = printGroups[subCat].filter(i => !i.includes("Colors -") && !i.includes("Material -"));
+          const props = printGroups[subCat].filter(i => i.includes("Colors -") || i.includes("Material -"));
+          
+          if (mainItems.length > 0) {
+              mainItems.forEach(mainItem => {
+                  finalItems.push({ 
+                      category: "Manufacturing & Printing", 
+                      desc: `${subCat} - ${mainItem}`, 
+                      subItems: props, 
+                      price: "TBD" 
+                  });
+                  
+                  if (mainItem.includes("Promo Flag Poles")) {
+                      finalItems.push({ category: "Manufacturing & Printing", desc: "Transport (Up & Down)", subItems: [], price: "TBD" });
+                      finalItems.push({ category: "Manufacturing & Printing", desc: "Labor (Fix and Remove)", subItems: [], price: "TBD" });
+                  }
+              });
+          } else {
+             props.forEach(prop => {
+                 finalItems.push({ category: "Manufacturing & Printing", desc: `${subCat}: ${prop}`, subItems: [], price: "TBD" });
+             });
+          }
+      }
     });
 
     // C9: Grad
@@ -306,8 +472,7 @@ export async function POST(req: Request) {
 
     // Add Additional Costs at the End
     const extraCosts = [
-      { name: "Transport (Up & Down)", price: 20000 },
-      { name: "Labor (Fix and Remove)", price: 15000 }
+      { name: "SKD EVENT MANAGEMENT FEE [ Coordination | Responsibility | Arrangements | Facilitation | Administration Cost ]", price: 150000 }
     ];
 
     if (extraCosts.length > 0 && finalItems.length > 0) {
@@ -317,7 +482,7 @@ export async function POST(req: Request) {
               new TableCell({
                 columnSpan: 5,
                 shading: { fill: "F3F4F6" },
-                margins: { top: 350, bottom: 350, left: 200 }, // <-- මෙතනත් margin වැඩිකළා
+                margins: { top: 350, bottom: 350, left: 200 }, 
                 children: [new Paragraph({ children: [new TextRun({ text: "Additional Requirements", bold: true, size: 22, color: "111827" })] })]
               })
             ]
@@ -355,7 +520,7 @@ export async function POST(req: Request) {
         new TableRow({
           children: [
             createCell("Event Name", organizationDetails.eventName),
-            createCell(" ", " ") 
+            createCell("Event Location", organizationDetails.finalLocation) // <-- හිස්ව තිබ්බ තැනට Event Location එක ගෙනාවා
           ]
         }),
         new TableRow({
@@ -374,22 +539,17 @@ export async function POST(req: Request) {
           children: [
             new TableCell({
               columnSpan: 2,
-              margins: { top: 150, bottom: 150, left: 200, right: 200 },
+              margins: { top: 125, bottom: 125, left: 175, right: 175 }, // <-- meke margins th ganata haduwa
               shading: { fill: "FDF2F8" },
               children: [
                 new Paragraph({
                   children: [
-                    new TextRun({ text: "Total Duration: ", size: 20, color: "A40049", bold: true }),
-                    new TextRun({ text: eventDuration, size: 22, bold: true, color: "111827" })
+                    new TextRun({ text: "Total Duration: ", size: 19, color: "A40049", bold: true }),
+                    new TextRun({ text: eventDuration, size: 23, bold: true, color: "111827" })
                   ]
                 })
               ]
             })
-          ]
-        }),
-        new TableRow({
-          children: [
-            createCell("Event Location", organizationDetails.finalLocation, 2)
           ]
         }),
         new TableRow({
@@ -401,6 +561,18 @@ export async function POST(req: Request) {
       ]
     });
 
+    const createBottomFooter = () => {
+      return new Footer({
+        children: [
+          new Paragraph({ 
+            children: [new TextRun({ text: "This is a system-generated document and does not require a physical signature.", italics: true, size: 18 })],
+            border: { top: { style: BorderStyle.SINGLE, size: 6, color: "A0A0A0", space: 10 } }, // Page eke yatama A4 Line border eka demma
+            alignment: AlignmentType.CENTER
+          })
+        ]
+      });
+    };
+
     const doc = new Document({
       styles: {
         default: { document: { run: { font: "Calibri", size: 22 } } },
@@ -408,6 +580,11 @@ export async function POST(req: Request) {
       sections: [{
         properties: {
           page: { margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 } },
+          titlePage: true, // Title page kiyala demma meken footer first page ekata witharak set wenawa
+        },
+        footers: {
+            default: new Footer({ children: [] }), // Page 2 ekata footer na empty demma
+            first: createBottomFooter(), // Page 1 ekata special footer eka dammama
         },
         children: [
           new Paragraph({
@@ -459,15 +636,27 @@ export async function POST(req: Request) {
           }),
           emptyLine(),
           
-          new Paragraph({ text: "Thank You & Best Regards," }), // <-- Capital letters standard විදිහට හැදුවා
+          new Paragraph({ text: "Thank You & Best Regards," }), 
+          emptyLine(),
+          new Paragraph({ children: [new TextRun({ text: "Thilina Madurawala", bold: true })] }),
+          new Paragraph({ text: "MBA (UK)" }),
+          new Paragraph({ children: [new TextRun({ text: "Director | Events", bold: true })] }),
           emptyLine(),
           new Paragraph({ children: [new TextRun({ text: "SKD Event Management (Pvt) Ltd.", bold: true })] }),
-          new Paragraph({ text: "077 005 6674" }),
-          new Paragraph({ text: "info@skdevents.lk" }),
+
+          // Dynamic TabStop with perfectly aligned separators '-'
+          ...["Hotline", "Office", "Mobile", "Website", "Email"].map(key => {
+            let value = key === "Hotline" ? "+94 701 22 33 22" : key === "Office" ? "+94 112 24 18 18" : key === "Mobile" ? "+94 770 05 66 74" : key === "Website" ? "www.skdevents.lk" : "info@skdevents.lk";
+            return new Paragraph({
+              children: [
+                new TextRun({ text: key, size: 20 }),
+                new TextRun({ text: "\t-\t", size: 20 }),
+                new TextRun({ text: value, size: 20 }),
+              ],
+              tabStops: [{ type: "left", position: 1440 * 1.3 }], // Kelin wenna TabStop demma (1.3 inches yatata set kala)
+            });
+          }),
           emptyLine(),
-          new Paragraph({ text: "____________________________________" }),
-          emptyLine(),
-          new Paragraph({ children: [new TextRun({ text: "This is a system-generated document and does not require a physical signature.", italics: true, size: 18 })] }),
 
           new Paragraph({ children: [new PageBreak()] }), // PAGE 2
 
@@ -577,21 +766,21 @@ export async function POST(req: Request) {
           
           new Paragraph({ text: "Warm regards," }),
           new Paragraph({ children: [new TextRun({ text: "Thilina Madurawala", bold: true })] }),
-          new Paragraph({ text: "Event Director" }),
+          new Paragraph({ text: "MBA (UK)" }),
+          new Paragraph({ children: [new TextRun({ text: "Director | Events", bold: true })] }),
+          emptyLine(),
           new Paragraph({ children: [new TextRun({ text: "SKD Event Management (Pvt) Ltd.", bold: true })] }),
-          new Paragraph({ text: "Hotline - +94 11 224 1818" }),
-          new Paragraph({ text: "📞 +94 77 005 6674" }),
-          new Paragraph({ text: "✉️ thilina@skdevents.lk" }),
-          
+          new Paragraph({ text: "Mobile\t-\t+94 770 05 66 74" }),
+          new Paragraph({ text: "Email\t-\tthilina@skdevents.lk" }),
           emptyLine(),
-          new Paragraph({ text: "____________________________________" }),
           emptyLine(),
-          new Paragraph({ children: [new TextRun({ text: "This is a system-generated document and does not require a physical signature.", italics: true, size: 18 })] }),
-          new Paragraph({ text: "____________________________________" }),
+          new Paragraph({ 
+            children: [new TextRun({ text: "This is a system-generated document and does not require a physical signature.", italics: true, size: 18 })],
+            border: { top: { style: BorderStyle.SINGLE, size: 6, color: "A0A0A0", space: 10 } }
+          }),
           emptyLine(),
 
-          new Paragraph({ children: [new TextRun({ text: "Payment Details", bold: true, color: "A40049", size: 24 })] }),
-          emptyLine(),
+          new Paragraph({ children: [new TextRun({ text: "Payment Details", bold: true, color: "A40049", size: 24 })] }),emptyLine(),
           new Paragraph({ text: "• Bank Name: [Insert Bank Name]" }),
           new Paragraph({ text: "• Account Name: SKD Event Management" }),
           new Paragraph({ text: "• Account Number: [Insert Account Number]" }),
