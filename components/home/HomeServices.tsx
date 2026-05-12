@@ -50,7 +50,7 @@ const services = [
   },
   {
     id: 8,
-    title: "Flags, Certificates & Pouches Print",
+    title: "Manufacturing & Printing",
     desc: "Official printed materials, secure certificate pouches, and custom flags tailored to your institution.",
     img: "/services/print.jpg",
   },

@@ -208,7 +208,7 @@ const structuredServices = [
     ]
   },
   {
-    id: "C8", category: "Printing & Certificates", icon: Printer,
+    id: "C8", category: "Manufacturing & Printing", icon: Printer,
     desc: "Official certificates, secure folders, flags, and promotional materials.",
     items: ["Promo Flag Printing - 10' x 2.5'", "Promo Flag Poles"],
     subCategories: [

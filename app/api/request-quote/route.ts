@@ -100,7 +100,7 @@ const getPrice = (name: string): number | "TBD" | "Included" => {
 const CATEGORIES = [
   "Registration", "Seating Arrangements", "Event Photography", "Event Videography",
   "Master of Ceremony & Compere", "Stage Arrangements", "Entertainment",
-  "Printing & Certificates", "Graduation Items", "Sound & Lighting Systems"
+  "Manufacturing & Printing", "Graduation Items", "Sound & Lighting Systems"
 ];
 
 export async function POST(req: Request) {
@@ -209,10 +209,10 @@ export async function POST(req: Request) {
     });
 
     // C8: Print
-    const print = rawCart.filter((i: string) => i.startsWith("Printing & Certificates"));
+    const print = rawCart.filter((i: string) => i.startsWith("Manufacturing & Printing"));
     print.forEach((p: string) => {
       const name = p.split(": ")[1];
-      finalItems.push({ category: "Printing & Certificates", desc: name, subItems: [], price: getPrice(name) });
+      finalItems.push({ category: "Manufacturing & Printing", desc: name, subItems: [], price: getPrice(name) });
     });
 
     // C9: Grad

@@ -32,7 +32,7 @@ const categoriesConfig = [
   },
   
   { name: "Entertainment", icon: Music, subCategories: ["Wes Dance", "Puja Dancers", "Light Dance", "Latin Dance", "Indian Classical Dance"] },
-  { name: "Printing & Certificates" , icon: Printer, subCategories: ["Flags", "Token Of Appreciation", "Souvenirs" , "Certificate Pouches"]},
+  { name: "Manufacturing & Printing" , icon: Printer, subCategories: ["Flags", "Token Of Appreciation", "Souvenirs" , "Certificate Pouches"]},
   { name: "Graduation Items" , icon: GraduationCap, subCategories: ["Cloaks", "Ceremonial Cloaks", "Hats", "Scrolls", "Garlands", "Stoles", "Hoods",]},
 ];
 
@@ -218,22 +218,22 @@ const galleryData = [
   { id: "ent-indian-4", src: "/gallery/entertainment/indian/4.jpg", category: "Entertainment", subCategory: "Indian Classical Dance", title: "Indian Classical Dance" },
 
   // Flags
-  { id: "pc-flag-1", src: "/gallery/pc/flags/1.jpg", category: "Printing & Certificates", subCategory: "Flags", title: "Printing & Certificates" },
-  { id: "pc-flag-2", src: "/gallery/pc/flags/2.jpg", category: "Printing & Certificates", subCategory: "Flags", title: "Printing & Certificates" },
-  { id: "pc-flag-3", src: "/gallery/pc/flags/3.jpg", category: "Printing & Certificates", subCategory: "Flags", title: "Printing & Certificates" },
-  { id: "pc-flag-4", src: "/gallery/pc/flags/4.jpg", category: "Printing & Certificates", subCategory: "Flags", title: "Printing & Certificates" },
-  { id: "pc-flag-5", src: "/gallery/pc/flags/5.jpg", category: "Printing & Certificates", subCategory: "Flags", title: "Printing & Certificates" },
+  { id: "pc-flag-1", src: "/gallery/pc/flags/1.jpg", category: "Manufacturing & Printing", subCategory: "Flags", title: "Manufacturing & Printing" },
+  { id: "pc-flag-2", src: "/gallery/pc/flags/2.jpg", category: "Manufacturing & Printing", subCategory: "Flags", title: "Manufacturing & Printing" },
+  { id: "pc-flag-3", src: "/gallery/pc/flags/3.jpg", category: "Manufacturing & Printing", subCategory: "Flags", title: "Manufacturing & Printing" },
+  { id: "pc-flag-4", src: "/gallery/pc/flags/4.jpg", category: "Manufacturing & Printing", subCategory: "Flags", title: "Manufacturing & Printing" },
+  { id: "pc-flag-5", src: "/gallery/pc/flags/5.jpg", category: "Manufacturing & Printing", subCategory: "Flags", title: "Manufacturing & Printing" },
   
-  { id: "pc-token-1", src: "/gallery/pc/tokens/1.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
-  { id: "pc-token-2", src: "/gallery/pc/tokens/2.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
-  { id: "pc-token-3", src: "/gallery/pc/tokens/3.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
-  { id: "pc-token-4", src: "/gallery/pc/tokens/4.jpg", category: "Printing & Certificates", subCategory: "Token Of Appreciation", title: "Printing & Certificates" },
+  { id: "pc-token-1", src: "/gallery/pc/tokens/1.jpg", category: "Manufacturing & Printing", subCategory: "Token Of Appreciation", title: "Manufacturing & Printing" },
+  { id: "pc-token-2", src: "/gallery/pc/tokens/2.jpg", category: "Manufacturing & Printing", subCategory: "Token Of Appreciation", title: "Manufacturing & Printing" },
+  { id: "pc-token-3", src: "/gallery/pc/tokens/3.jpg", category: "Manufacturing & Printing", subCategory: "Token Of Appreciation", title: "Manufacturing & Printing" },
+  { id: "pc-token-4", src: "/gallery/pc/tokens/4.jpg", category: "Manufacturing & Printing", subCategory: "Token Of Appreciation", title: "Manufacturing & Printing" },
   
-  { id: "pc-suvour-1", src: "/gallery/pc/suvour/1.jpg", category: "Printing & Certificates", subCategory: "Souvenirs", title: "Printing & Certificates" },
-  { id: "pc-suvour-3", src: "/gallery/pc/suvour/3.jpg", category: "Printing & Certificates", subCategory: "Souvenirs", title: "Printing & Certificates" },
-  { id: "pc-suvour-4", src: "/gallery/pc/suvour/4.jpg", category: "Printing & Certificates", subCategory: "Souvenirs", title: "Printing & Certificates" },
+  { id: "pc-suvour-1", src: "/gallery/pc/suvour/1.jpg", category: "Manufacturing & Printing", subCategory: "Souvenirs", title: "Manufacturing & Printing" },
+  { id: "pc-suvour-3", src: "/gallery/pc/suvour/3.jpg", category: "Manufacturing & Printing", subCategory: "Souvenirs", title: "Manufacturing & Printing" },
+  { id: "pc-suvour-4", src: "/gallery/pc/suvour/4.jpg", category: "Manufacturing & Printing", subCategory: "Souvenirs", title: "Manufacturing & Printing" },
   
-  { id: "pc-pouches-1", src: "/gallery/graduationitems/pouches/1.jpg", category: "Printing & Certificates", subCategory: "Certificate Pouches", title: "Premium Certificate Holder Pouches" },
+  { id: "pc-pouches-1", src: "/gallery/graduationitems/pouches/1.jpg", category: "Manufacturing & Printing", subCategory: "Certificate Pouches", title: "Premium Certificate Holder Pouches" },
 
   { id: "grad-garl-1", src: "/gallery/graduationitems/garland/1.jpg", category: "Graduation Items", subCategory: "Garlands", title: "Premium Garlands" },
   { id: "grad-garl-2", src: "/gallery/graduationitems/garland/2.jpeg", category: "Graduation Items", subCategory: "Garlands", title: "Premium Garlands" },
