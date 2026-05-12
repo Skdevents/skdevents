@@ -209,10 +209,53 @@ const structuredServices = [
   },
   {
     id: "C8", category: "Manufacturing & Printing", icon: Printer,
-    desc: "Official certificates, secure folders, flags, and promotional materials.",
-    items: ["Promo Flag Printing - 10' x 2.5'", "Promo Flag Poles"],
+    desc: "Official certificates, secure folders, flags, graduation teddies, and promotional materials.",
     subCategories: [
-      { name: "Stage Flag Printing - 6' x 4'", items: ["University Flag", "Campus Flag", "Department Flag"] }
+      {
+        name: "Graduation Teddy",
+        items: [
+          "Mini Graduation Teddy – 20 cm",
+          "Premium Graduation Teddy Bear – 40 cm",
+          "Jumbo Convocation Teddy – 90 cm"
+        ],
+        nestedGroups: [
+          {
+            title: "Colors",
+            hideTitleInPill: true,
+            options: ["Pink", "Blue", "Brown", "Ash", "Cream", "Red", "Yellow"]
+          }
+        ]
+      },
+      {
+        name: "Flag Printing (University | Department)",
+        items: [
+          "Stage Flags - 6’x4’",
+          "Promo Flags - 10’x2.5’",
+          "Promo Flag Poles"
+        ]
+      },
+      {
+        name: "Certificate Pouch",
+        items: [
+          "Standard pouch - A4 size (23 × 31 cm)",
+          "Premium PU leather",
+          "Hard cover padded - 24 × 32 cm"
+        ],
+        nestedGroups: [
+          {
+            title: "Material",
+            hideTitleInPill: true,
+            options: ["Velvet finish", "Rexine", "PU leather", "Hardboard laminated", "Magnetic flap folders"]
+          }
+        ]
+      },
+      {
+        name: "Token of Appreciation & Souvenirs",
+        items: [
+          "Metal Plaque in Red Velvet Box",
+          "Glass Plaque"
+        ]
+      }
     ]
   },
   {
