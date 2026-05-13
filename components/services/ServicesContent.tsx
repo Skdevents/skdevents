@@ -73,6 +73,7 @@ const structuredServices = [
   {
     id: "C3", category: "Event Photography", icon: Camera,
     desc: "Professional photo coverage to capture stage moments, group photos, and event highlights.",
+    hideSelectAll: true,
     subCategories: [
       { name: "Event Coverage", items: ["Fully Edited Highlight Photos", "Group Photo - 16”x24”"] },
       { 
@@ -211,6 +212,7 @@ const structuredServices = [
   {
     id: "C8", category: "Manufacturing & Printing", icon: Printer,
     desc: "Official certificates, secure folders, flags, graduation teddies, and promotional materials.",
+    hideSelectAll: true,
     subCategories: [
       {
         name: "Graduation Teddy",
@@ -419,6 +421,10 @@ export default function ServicesContent() {
       cat.items.forEach((item: string) => {
         allItems.push(`${cat.category}: ${item}`);
       });
+    }
+    
+    if (cat.id === "C4") {
+      return allItems; 
     }
 
     // Direct nested groups (Skip singleSelect items)

@@ -631,7 +631,7 @@ export async function POST(req: Request) {
           }),
           emptyLine(),
           new Paragraph({ 
-            text: "Thank you once again for considering SKD Event Management. We sincerely look forward to the prospect of working with you.", 
+            text: "Thank you once again for considering SKD Event Management (Pvt) Ltd as your event partner. Please feel free to contact me should you require any further information or clarification regarding the attached quotation. We sincerely look forward to the prospect of working with you.", 
             alignment: AlignmentType.JUSTIFIED 
           }),
           emptyLine(),
@@ -653,7 +653,10 @@ export async function POST(req: Request) {
                 new TextRun({ text: "\t-\t", size: 20 }),
                 new TextRun({ text: value, size: 20 }),
               ],
-              tabStops: [{ type: "left", position: 1440 * 1.3 }], // Kelin wenna TabStop demma (1.3 inches yatata set kala)
+              tabStops: [
+                { type: "left", position: 1440 * 0.8 }, // <-- '-' ලකුණ වම් පැත්තට ගොඩක් ලං කළා (0.8 inches)
+                { type: "left", position: 1440 * 1.0 }  // <-- නම්බර් එක/ඊමේල් එක පටන් ගන්න තැන (1.0 inches)
+              ], 
             });
           }),
           emptyLine(),
@@ -769,23 +772,26 @@ export async function POST(req: Request) {
           new Paragraph({ text: "MBA (UK)" }),
           new Paragraph({ children: [new TextRun({ text: "Director | Events", bold: true })] }),
           emptyLine(),
-          new Paragraph({ children: [new TextRun({ text: "SKD Event Management (Pvt) Ltd.", bold: true })] }),
-          new Paragraph({ text: "Mobile\t-\t+94 770 05 66 74" }),
-          new Paragraph({ text: "Email\t-\tthilina@skdevents.lk" }),
+          new Paragraph({ 
+            text: "Mobile\t-\t+94 770 05 66 74",
+            tabStops: [
+              { type: "left", position: 1440 * 0.8 }, 
+              { type: "left", position: 1440 * 1.0 }
+            ]
+          }),
+          new Paragraph({ 
+            text: "Email\t-\tthilina@skdevents.lk",
+            tabStops: [
+              { type: "left", position: 1440 * 0.8 }, 
+              { type: "left", position: 1440 * 1.0 }
+            ]
+          }),
           emptyLine(),
           emptyLine(),
           new Paragraph({ 
             children: [new TextRun({ text: "This is a system-generated document and does not require a physical signature.", italics: true, size: 18 })],
             border: { top: { style: BorderStyle.SINGLE, size: 6, color: "A0A0A0", space: 10 } }
           }),
-          emptyLine(),
-
-          new Paragraph({ children: [new TextRun({ text: "Payment Details", bold: true, color: "A40049", size: 24 })] }),emptyLine(),
-          new Paragraph({ text: "• Bank Name: [Insert Bank Name]" }),
-          new Paragraph({ text: "• Account Name: SKD Event Management" }),
-          new Paragraph({ text: "• Account Number: [Insert Account Number]" }),
-          new Paragraph({ text: "• Branch: [Insert Branch]" }),
-
         ],
       }],
     });
