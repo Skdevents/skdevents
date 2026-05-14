@@ -187,7 +187,7 @@ const structuredServices = [
       },
       { 
         name: "LED Video Wall", 
-        items: ['55" LED TV on Stage', "Digital Podium", "Welcome Panadol - Digital"],
+        items: ['55" LED TV on Stage', "Digital Podium", "Welcome Pandal - Digital"],
         nestedGroups: [
           {
             title: "LED Video Wall",

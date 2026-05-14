@@ -59,7 +59,7 @@ const emptyLine = () => new Paragraph({ text: "" });
 const getPrice = (name: string): number | "TBD" | "Included" => {
   if (name.includes("55\" LED TV")) return 15000;
   if (name.includes("Digital Podium")) return 20000;
-  if (name.includes("Welcome Panadol")) return 45000;
+  if (name.includes("Welcome Pandal")) return 45000;
 
   if (name.includes("50’x12’") || name.includes("50'X10'")) return 220000;
   if (name.includes("40’x10’") || name.includes("40'X10'")) return 185000;

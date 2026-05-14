@@ -28,7 +28,7 @@ const categoriesConfig = [
   },
   { 
     name: "Stage Arrangements", icon: Theater,
-    subCategories: ["Welcome Panadol- Digital", "Stage Flower Decorations", "LED Video Wall", "Podium Decorations", "Oil Lamps Decorations", "Digital Podium", '55" LED TV', "Head Table Decorations", "Flower Garlands & Baskets"] 
+    subCategories: ["Welcome Pandal- Digital", "Stage Flower Decorations", "LED Video Wall", "Podium Decorations", "Oil Lamps Decorations", "Digital Podium", '55" LED TV', "Head Table Decorations", "Flower Garlands & Baskets"] 
   },
   
   { name: "Entertainment", icon: Music, subCategories: ["Wes Dance", "Puja Dancers", "Light Dance", "Latin Dance", "Indian Classical Dance"] },
@@ -164,8 +164,8 @@ const galleryData = [
   { id: "stg-digipod-1", src: "/gallery/stage/digipodium/1.jpg", category: "Stage Arrangements", subCategory: "Digital Podium", title: "Digital Podium" },
   { id: "stg-digipod-2", src: "/gallery/stage/digipodium/2.jpg", category: "Stage Arrangements", subCategory: "Digital Podium", title: "Digital Podium" },
 
-  { id: "stg-wel-1", src: "/gallery/stage/welcome/1.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
-  { id: "stg-wel-3", src: "/gallery/stage/welcome/3.jpg", category: "Stage Arrangements", subCategory: "Welcome Panadol- Digital", title: "Welcome Signage" },
+  { id: "stg-wel-1", src: "/gallery/stage/welcome/1.jpg", category: "Stage Arrangements", subCategory: "Welcome Pandal- Digital", title: "Welcome Signage" },
+  { id: "stg-wel-3", src: "/gallery/stage/welcome/3.jpg", category: "Stage Arrangements", subCategory: "Welcome Pandal- Digital", title: "Welcome Signage" },
 
   { id: "stg-tv-1", src: "/gallery/stage/tv/1.jpg", category: "Stage Arrangements", subCategory: '55" LED TV', title: '55" LED TV' },
 
