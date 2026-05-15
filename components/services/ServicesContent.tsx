@@ -10,8 +10,8 @@ import {
 import WhatsAppModal from "./WhatsAppModal"; 
 
 const boothDetails: Record<string, any> = {
-  "Glam Booth": {
-    desc: "Our Glam Booth captures studio-quality photos and trendy slow-motion videos with professional lighting, luxury filters, and instant sharing options — giving every guest a red-carpet experience.",
+  "Glam Bot Video Booth": {
+    desc: "Our Bot Video Booth captures studio-quality photos and trendy slow-motion videos with professional lighting, luxury filters, and instant sharing options — giving every guest a red-carpet experience.",
     features: ["HD photo & video capture", "Luxury black & white glam effect", "Instant digital sharing", "Custom event branding", "Professional lighting setup", "Fun props & guest interaction", "Unlimited sessions during booking time"]
   },
   "AI Photo Booth": {
@@ -26,7 +26,7 @@ const boothDetails: Record<string, any> = {
     desc: "Create fun, instant memories with the Instant iPad Photo Booth. Our modern iPad Photo Booth offers a sleek and interactive experience where guests can capture photos, boomerangs, GIFs, and short videos instantly with professional lighting and live preview features. (Rs. 55,000/-)",
     features: ["Instant photo capture", "GIF & boomerang support", "Touchscreen iPad interface", "Instant sharing via QR, email, or AirDrop", "Custom photo templates & branding", "Professional LED lighting", "Compact and stylish setup"]
   },
-  "Instant Sharing DSLR Photo": {
+  "Instant Sharing DSLR Photo Booth": {
     desc: "Capture professional-quality memories instantly with the Instant Sharing DSLR Photo Booth. Powered by a high-resolution DSLR camera and professional studio lighting, our photo booth delivers sharp, vibrant, and premium-quality photos with instant digital sharing for every guest. (Rs. 55,000/-)",
     features: ["Professional DSLR camera quality", "Instant photo sharing via QR, email, or AirDrop", "Studio lighting for premium results", "Custom photo templates & event branding", "Live preview display", "Unlimited photo sessions", "Fast and interactive guest experience"]
   },
@@ -43,7 +43,7 @@ const boothDetails: Record<string, any> = {
 const structuredServices = [
   {
     id: "C1", category: "Registration", icon: ClipboardCheck,
-    desc: "A front desk for guest check-in, gown distribution, and verification of graduate details.",
+    desc: "Efficient check-in system ensuring smooth graduate and guest processing.",
     hideSelectAll: true,
     items: [
       "Student Seat Number Allocation", 
@@ -54,7 +54,7 @@ const structuredServices = [
   },
   {
     id: "C2", category: "Seating Arrangements", icon: Rows3,
-    desc: "Comfortable and organized seating for graduates, faculty, VIPs, and guests with proper numbering.",
+    desc: "Precision seating plans for a dignified, organized ceremony flow.",
     hideSelectAll: true,
     items: [
       "Student Procession (Perahara) Arrangement", 
@@ -72,7 +72,7 @@ const structuredServices = [
   },
   {
     id: "C3", category: "Event Photography", icon: Camera,
-    desc: "Professional photo coverage to capture stage moments, group photos, and event highlights.",
+    desc: "Expert photography capturing key moments with professional quality and emotion.",
     hideSelectAll: true,
     subCategories: [
       { name: "Event Coverage", items: ["Fully Edited Highlight Photos", "Group Photo - 16”x24”"] },
@@ -103,7 +103,7 @@ const structuredServices = [
   },
   {
     id: "C4", category: "Event Videography", icon: Video,
-    desc: "Professional video coverage, highlight videos, live streaming, and interactive 360 booths.",
+    desc: "Full ceremony videography delivered in sharp, cinematic high-definition quality.",
     items: [
       "Fully Edited Event Coverage Video", "Fully Edited Highlight Video", 
       "Fully Edited Guest Speeches", "Live Streaming on Facebook & YouTube", 
@@ -114,47 +114,74 @@ const structuredServices = [
       {
         title: "Booth Duration",
         singleSelect: true,
-        hideTitleInPill: true, // Title එක button එකේ පේන්නෙ නෑ
+        hideTitleInPill: true,
         options: ["04-Hour Package", "Full-Day Package"]
       }
     ],
     subCategories: [
+      // ==========================================
+      // VIDEO BOOTHS SECTION
+      // ==========================================
+      { isSectionHeader: true, title: "Video Booths", iconName: "Video" },
       { 
         name: "360 Video Booth", 
         items: ["Standard Video Booth", "Advanced Video Booth", "7'x3' Matte Flex Print University & Campus Branding Boards"] 
       },
-      { name: "Glam Booth", items: ["Include Glam Booth"] },
+      { name: "Glam Bot Video Booth", items: ["Include Glam Bot Video Booth"] },
+      { 
+        name: "SLO-MO Video Booth", 
+        nestedGroups: [
+          {
+            title: "Lighting Backdrop",
+            singleSelect: true,
+            hideTitleInPill: true, 
+            options: ["Include SLO-MO Video Booth", "With Lighting Backdrop"]
+          }
+        ]
+      },
+      // ==========================================
+      // PHOTO BOOTHS SECTION
+      // ==========================================
+      { isSectionHeader: true, title: "Photo Booths", iconName: "Camera" },
       { 
         name: "Mirror Photo Booth", 
         nestedGroups: [
           {
             title: "Print Option",
             singleSelect: true,
-            hideTitleInPill: true, // Title එක button එකේ පේන්නෙ නෑ
+            hideTitleInPill: true,
             options: ["Without Print", "With Print"]
           },
           {
-            title: "Print QTY",
-            singleSelect: true,
-            options: ["200", "500", "1000", "1500"],
-            dependsOn: "With Print" // මේක පේන්නේ With Print තේරුවොත් විතරයි
-          },
-          {
             title: "Print Size",
-            options: ["Passport - ( 2\" x 3\" )", "4R - ( 4\" x 6\" )", "6R - ( 6\" x 8\" )"],
-            dependsOn: "With Print" // මේක පේන්නේ With Print තේරුවොත් විතරයි
+            options: ["Passport - ( 2\" x 3\" )", "4R - ( 4\" x 6\" )", "5R - ( 5\" x 7\" )", "6R - ( 6\" x 8\" )"],
+            dependsOn: "With Print" 
           }
         ]
       },
-      { name: "SLO-MO Video Booth", items: ["Include SLO-MO Video Booth"] },
-      { name: "AI Photo Booth", items: ["Include AI Photo Booth"] },
+      { 
+        name: "Instant Sharing DSLR Photo Booth", 
+        nestedGroups: [
+          {
+            title: "Print Option",
+            singleSelect: true,
+            hideTitleInPill: true,
+            options: ["Without Print", "With Print"]
+          },
+          {
+            title: "Print Size",
+            options: ["4R - ( 4\" x 6\" )", "6R - ( 6\" x 8\" )"], // <-- 4R saha 6R witharai
+            dependsOn: "With Print" 
+          }
+        ]
+      },
       { name: "Instant iPad Photo Booth", items: ["Include iPad Photo Booth"] },
-      { name: "Instant Sharing DSLR Photo", items: ["Include DSLR Photo Booth"] }
+      { name: "AI Photo Booth", items: ["Include AI Photo Booth"] }
     ]
   },
   {
     id: "C5", category: "Master of Ceremony & Compere", icon: Mic,
-    desc: "Professional announcers and comperes to guide the event smoothly in multiple languages.",
+    desc: "Confident, engaging hosting to maintain flawless event timing.",
     hideSelectAll: true,
     items: ["Sinhala Compere", "English Compere", "Tamil Compere"],
     nestedGroups: [
@@ -171,7 +198,7 @@ const structuredServices = [
   },
   {
     id: "C6", category: "Stage Arrangements", icon: LayoutTemplate,
-    desc: "A professionally designed stage with podium, LED video wall, lighting, and floral decorations.",
+    desc: "Sophisticated stage designs that elevate academic ceremony prestige.",
     hideSelectAll: true,
     subCategories: [
       { 
@@ -202,8 +229,8 @@ const structuredServices = [
   },
   {
     id: "C7", category: "Entertainment", icon: Music,
-    desc: "Cultural, traditional, and modern entertainment acts to captivate your audience.",
-    hideSelectAll: true, // Hides the Select All button for this category
+    desc: "Curated live performances adding elegance and cultural vibrancy to events.",
+    hideSelectAll: true,
     items: ["Traditional Welcome Dance (Wes Dance)", "Sesath Holders", "Puja Dance (Girls)", "Light Performance Dance", "Latin Dance", "Indian Dance Act", "Comedian Act", "Solo Dance", "Belly Dance", "Mask Dance Act"],
     subCategories: [
       { name: "Instrumental Items", items: ["Drum Orchestra", "Indian Doll Act with Dancers"] }
@@ -211,7 +238,7 @@ const structuredServices = [
   },
   {
     id: "C8", category: "Manufacturing & Printing", icon: Printer,
-    desc: "Official certificates, secure folders, flags, graduation teddies, and promotional materials.",
+    desc: "Premium custom printing for certificates, banners, and branded materials.",
     hideSelectAll: true,
     subCategories: [
       {
@@ -263,8 +290,8 @@ const structuredServices = [
   },
   {
     id: "C9", category: "Graduation Items", icon: GraduationCap,
-    desc: "Premium graduation cloaks, ceremonial gowns, and high quality garlands for your special day.",
-    hideSelectAll: true, // Hides the Select All button for this category
+    desc: "High quality graduation gowns, caps, hoods, garlands & scrolls for every graduate.",
+    hideSelectAll: true,
     subCategories: [
       { name: "Graduation Cloak", items: ["Black", "Ash", "Blue", "Maroon", "Red"] },
       { name: "Ceremonial Cloak", items: ["Red", "Blue", "Maroon"] },
@@ -274,7 +301,7 @@ const structuredServices = [
   },
   {
     id: "C10", category: "Sound & Lighting Systems", icon: Speaker,
-    desc: "Clear audio equipment and atmospheric stage lighting to enhance visibility and atmosphere.",
+    desc: "Professional audio and lighting for clear, impactful presentations.",
     items: ["Professional Sound System Setup", "Dynamic Stage Lighting Setup"]
   },
 ];
@@ -384,15 +411,30 @@ export default function ServicesContent() {
           i !== "Event Videography - Mirror Photo Booth: Without Print" && 
           i !== "Event Videography - Mirror Photo Booth: With Print"
         );
-        // Without Print තේරුවොත් යටින් තෝරලා තියෙන QTY සහ Sizes ඔක්කොම Auto Clear වෙනවා
+        // Without Print තේරුවොත් යටින් තෝරලා තියෙන Sizes Auto Clear වෙනවා (QTY අයින් කළා)
         if (itemFullString === "Event Videography - Mirror Photo Booth: Without Print") {
-          cleaned = cleaned.filter(i => !i.includes("Mirror Photo Booth: Print QTY") && !i.includes("Mirror Photo Booth: Print Size"));
+          cleaned = cleaned.filter(i => !i.includes("Mirror Photo Booth: Print Size"));
         }
         if (prev.includes(itemFullString)) return cleaned;
         cleaned.push(itemFullString);
         return cleaned;
       }
 
+      // 7. DSLR Photo Booth Print Options Logic
+      if (itemFullString === "Event Videography - Instant Sharing DSLR Photo Booth: Without Print" || itemFullString === "Event Videography - Instant Sharing DSLR Photo Booth: With Print") {
+        let cleaned = prev.filter(i => 
+          i !== "Event Videography - Instant Sharing DSLR Photo Booth: Without Print" && 
+          i !== "Event Videography - Instant Sharing DSLR Photo Booth: With Print"
+        );
+        // Without Print theruwoth yatin thorala thiyena Sizes Auto Clear wenawa
+        if (itemFullString === "Event Videography - Instant Sharing DSLR Photo Booth: Without Print") {
+          cleaned = cleaned.filter(i => !i.includes("Instant Sharing DSLR Photo Booth: Print Size"));
+        }
+        if (prev.includes(itemFullString)) return cleaned;
+        cleaned.push(itemFullString);
+        return cleaned;
+      }
+      
       // --- Standard Selection Logic ---
       if (prev.includes(itemFullString)) {
         return prev.filter(i => i !== itemFullString);
@@ -573,6 +615,15 @@ export default function ServicesContent() {
                           </button>
                         )}
                       </div>
+
+                    {cat.desc && (
+  <div className="mt-2 sm:mt-4 p-3 sm:p-4 bg-gradient-to-br from-[#a40049]/[0.03] to-transparent border border-[#a40049]/[0.06] rounded-2xl shadow-[inset_0_1px_4px_rgba(164,0,73,0.03)] relative overflow-hidden">
+    <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-[#a40049] to-[#ff4d94] rounded-l-2xl" />
+    <p className="text-[11.5px] sm:text-[13px] text-gray-500 font-semibold leading-relaxed pl-2 sm:pl-3">
+      {cat.desc}
+    </p>
+  </div>
+)}
                     </div>
 
                     <div className="flex-grow space-y-4">
@@ -624,7 +675,21 @@ export default function ServicesContent() {
                       {/* Sub Categories */}
                       {cat.subCategories && (
                         <div className="space-y-4">
-                          {cat.subCategories.map((sub: any) => {
+                          {cat.subCategories.map((sub: any, subIdx: number) => {
+                            
+                            // --- NEW: Section Header Rendering ---
+                            if (sub.isSectionHeader) {
+                              return (
+                                <div key={`header-${subIdx}`} className="flex items-center gap-3 pt-3 pb-1">
+                                  <div className="w-8 h-8 rounded-[10px] bg-[#a40049]/10 flex items-center justify-center shrink-0">
+                                    {sub.iconName === "Video" ? <Video className="w-4 h-4 text-[#a40049]" /> : <Camera className="w-4 h-4 text-[#a40049]" />}
+                                  </div>
+                                  <h4 className="text-sm font-extrabold text-gray-800 uppercase tracking-wider">{sub.title}</h4>
+                                  <div className="flex-grow h-[1px] bg-gray-200 ml-2" />
+                                </div>
+                              );
+                            }
+
                             // --- C4 Disable Logic (Duration එක තෝරලාද බලනවා) ---
                             const isC4Booths = cat.id === "C4";
                             const isDurationSelected = cart.includes("Event Videography: 04-Hour Package") || cart.includes("Event Videography: Full-Day Package");

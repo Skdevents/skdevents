@@ -111,6 +111,7 @@ export async function POST(req: Request) {
 
     let subTotal = 0;
     let itemCounter = 1;
+    let hasMirrorPrint = false;
 
     // --- Calculate Duration ---
     let eventDuration = "N/A";
@@ -132,8 +133,8 @@ export async function POST(req: Request) {
 
     const todayDate = new Date().toISOString().split('T')[0];
 
-    // --- PROCESS CART INTO PACKAGES & CATEGORIES ---
-    let finalItems: { category: string, desc: string, subItems: string[], price: number | "TBD" | "Included" }[] = [];
+   // --- PROCESS CART INTO PACKAGES & CATEGORIES ---
+    let finalItems: { category: string, desc: string, subItems: string[], price: number | string, isDisclaimer?: boolean, isMirrorItem?: boolean, isSubRow?: boolean }[] = [];
 
     // C1: Registration
     const regItems = rawCart.filter((i: string) => i.startsWith("Registration:"));
@@ -174,12 +175,15 @@ export async function POST(req: Request) {
     const isFullDay = rawCart.includes("Event Videography: Full-Day Package");
     const is4Hour = rawCart.includes("Event Videography: 04-Hour Package");
 
-    // Separate Mirror Booth from other Video items
+    // Separate Mirror Booth & DSLR Booth from other Video items
     const mirrorBoothItems = rawCart.filter((i: string) => i.startsWith("Event Videography - Mirror Photo Booth:"));
+    const dslrBoothItems = rawCart.filter((i: string) => i.startsWith("Event Videography - Instant Sharing DSLR Photo Booth:"));
+    
     const otherVid = rawCart.filter((i: string) => 
       i.startsWith("Event Videography") && 
       !vidCov.includes(i) && 
       !i.includes("Mirror Photo Booth:") && 
+      !i.includes("Instant Sharing DSLR Photo Booth:") && // <-- DSLR එකත් මේකෙන් අයින් කළා
       !i.includes("04-Hour Package") && 
       !i.includes("Full-Day Package")
     );
@@ -191,29 +195,35 @@ export async function POST(req: Request) {
           name = v.split(": ")[1]; // extract inner name if sub-category exists
       }
       
-      let price: number | "TBD" | "Included" = getPrice(name); // fallback to standard prices
+      let price: number | string = getPrice(name); // fallback to standard prices
+      let desc = name;
       
-      // Booth Pricing Logic for 4 Hours
-      const boothPrices4h: Record<string, number> = {
-          "Standard Video Booth": 25000,
-          "Advanced Video Booth": 55000,
-          "7'x3' Matte Flex Print University & Campus Branding Boards": 35000,
-          "Include Glam Booth": 90000,
-          "Include AI Photo Booth": 75000,
-          "Include iPad Photo Booth": 55000,
-          "Include DSLR Photo Booth": 55000,
-      };
-
-      if (boothPrices4h[name]) {
-          if (isFullDay) price = "TBD";
-          else if (is4Hour) price = boothPrices4h[name];
-          else price = "TBD"; // If no duration selected
+      // Booth Pricing Logic for 4 Hours & Full Day
+      if (name === "Standard Video Booth") {
+          price = isFullDay ? 55000 : (is4Hour ? 25000 : "TBD");
+      } else if (name === "Advanced Video Booth") {
+          price = isFullDay ? 70000 : (is4Hour ? 40000 : "TBD");
+      } else if (name === "7'x3' Matte Flex Print University & Campus Branding Boards") {
+          price = 35000;
+      } else if (name === "Include Glam Bot Video Booth") {
+          price = isFullDay ? 160000 : (is4Hour ? 95000 : "TBD");
+      } else if (name === "Include iPad Photo Booth") {
+          price = isFullDay ? 65000 : (is4Hour ? 40000 : "TBD");
+      } else if (name === "Include DSLR Photo Booth") {
+          price = isFullDay ? 70000 : (is4Hour ? 40000 : "TBD");
+      } else if (name === "Include SLO-MO Video Booth") {
+          price = isFullDay ? 70000 : (is4Hour ? 45000 : "TBD");
+      } else if (name === "With Lighting Backdrop") {
+          price = 40000;
+          desc = "SLO-MO Video Booth - Lighting Backdrop";
+      } else if (name === "Without Lighting Backdrop") {
+          return; // Skip adding to quote
+      } else if (name === "Include AI Photo Booth") {
+          price = isFullDay ? 85000 : (is4Hour ? 60000 : "TBD");
+          desc = `AI Photo Booth (${isFullDay ? '800 Snaps' : (is4Hour ? '500 Snaps' : 'TBD')})`;
       }
-      if (name === "Include SLO-MO Video Booth") {
-          price = "TBD";
-      }
 
-      finalItems.push({ category: "Event Videography", desc: name, subItems: [], price });
+      finalItems.push({ category: "Event Videography", desc, subItems: [], price });
     });
 
     // Mirror Booth Dynamic Calculation Logic
@@ -221,72 +231,136 @@ export async function POST(req: Request) {
        const hasWithoutPrint = mirrorBoothItems.some((i: string) => i.includes("Without Print"));
        const hasWithPrint = mirrorBoothItems.some((i: string) => i.includes("With Print"));
        
+       // Base Price එක (4h වලට 55000, Full Day වලට 90000)
+       let mirrorBasePrice: number | "TBD" = isFullDay ? 90000 : (is4Hour ? 55000 : "TBD");
+
        if (hasWithoutPrint) {
            finalItems.push({ 
                category: "Event Videography", 
-               desc: "Mirror Photo Booth - Without Print", 
+               desc: "Mirror Photo Booth", 
                subItems: [], 
-               price: isFullDay ? "TBD" : (is4Hour ? 65000 : "TBD") 
+               price: mirrorBasePrice,
+               isMirrorItem: true
            });
        } else if (hasWithPrint) {
-           // QTY එක හොයාගන්නවා
-           const qtyItem = mirrorBoothItems.find((i: string) => i.includes("Print QTY"));
-           let qty = 100; // Default QTY
-           if (qtyItem) {
-               qty = parseInt(qtyItem.split("Print QTY - ")[1]) || 100;
-           }
+           hasMirrorPrint = true; 
 
-           // FIX: තෝරපු SIZES ඔක්කොම හොයාගන්නවා (.find වෙනුවට .filter දැම්මා)
+           finalItems.push({
+               category: "Event Videography",
+               desc: "Mirror Photo Booth", 
+               subItems: [],
+               price: mirrorBasePrice,
+               isMirrorItem: true
+           });
+
+           // 2. අර කලින් දාපු Disclaimer Note එක
+           finalItems.push({
+               category: "Event Videography",
+               desc: "The print prices listed below for the Mirror Photo Booth are strictly on a 'Per Photo' basis and are NOT included in the Net Total. These prints are optional and can be provided upon the students' requests. The final cost will be calculated based on the total number of prints taken during the event.",
+               subItems: [],
+               price: "",
+               isDisclaimer: true,
+               isMirrorItem: true
+           });
+
+           // 3. Print Sizes ටික (Total එකට එකතු වෙන්නේ නෑ)
            const sizeItems = mirrorBoothItems.filter((i: string) => i.includes("Print Size"));
-           
-           // මොකුත්ම size එකක් තෝරලා නැත්තන් Default එක Passport විදිහට ගන්නවා
            const sizesToProcess: string[] = sizeItems.length > 0 ? sizeItems : ["Print Size - Passport - ( 2\" x 3\" )"];
+           
+           // රෝම ඉලක්කම් (Roman Numerals) Array එක
+           const romanNumerals = ["I", "II", "III", "IV", "V", "VI"];
 
-           // තෝරපු හැම Size එකකටම වෙන වෙනම Line Item එකක් සහ Price එකක් හදනවා
-           sizesToProcess.forEach((sizeItem: string) => { // <-- මෙතන (sizeItem: string) කියලා type එක දුන්නා
+           sizesToProcess.forEach((sizeItem: string, index: number) => { 
                const sizeStr = sizeItem.split("Print Size - ")[1];
                let displaySize = sizeStr;
                let sizeType = "Passport";
                
                if (sizeStr.includes("4R")) sizeType = "4R";
+               else if (sizeStr.includes("5R")) sizeType = "5R";
                else if (sizeStr.includes("6R")) sizeType = "6R";
                
-               let finalPrice: number | "TBD" = "TBD";
+               let finalPriceStr = "TBD";
+               if (sizeType === "Passport") finalPriceStr = "200.00";
+               if (sizeType === "4R") finalPriceStr = "300.00";
+               if (sizeType === "5R") finalPriceStr = "350.00";
+               if (sizeType === "6R") finalPriceStr = "400.00";
                
-               if (is4Hour && !isFullDay) {
-                   if (qty === 100) {
-                       if (sizeType === "Passport") finalPrice = 15000;
-                       if (sizeType === "4R") finalPrice = 20000;
-                       if (sizeType === "6R") finalPrice = 30000;
-                   } else if (qty === 200) {
-                       if (sizeType === "Passport") finalPrice = 30000;
-                       if (sizeType === "4R") finalPrice = 40000;
-                       if (sizeType === "6R") finalPrice = 60000;
-                   } else if (qty === 500) {
-                       if (sizeType === "Passport") finalPrice = 75000;
-                       if (sizeType === "4R") finalPrice = 100000;
-                       if (sizeType === "6R") finalPrice = 150000;
-                   } else if (qty === 1000) {
-                       if (sizeType === "Passport") finalPrice = 150000;
-                       if (sizeType === "4R") finalPrice = 200000;
-                       if (sizeType === "6R") finalPrice = 300000;
-                   } else if (qty === 1500) {
-                       if (sizeType === "Passport") finalPrice = 225000;
-                       if (sizeType === "4R") finalPrice = 300000;
-                       if (sizeType === "6R") finalPrice = 450000;
-                   }
-               }
-
-               // මෙතනදී desc එකට size එකත් දානවා පැහැදිලි වෙන්න
                finalItems.push({ 
                    category: "Event Videography", 
-                   desc: `Mirror Photo Booth - With Print (${sizeType})`, 
-                   subItems: [`Print Quantity: ${qty}`, `Print Size: ${displaySize}`], 
-                   price: finalPrice 
+                   desc: `${romanNumerals[index]}. Mirror Photo Booth - Print (${sizeType})`, 
+                   subItems: [`Print Size: ${displaySize}`], 
+                   price: finalPriceStr,
+                   isMirrorItem: true,
+                   isSubRow: true // <-- මෙතන අලුතින් දැම්මා Number එක අයින් කරන්න
                });
            });
        }
     }
+
+    // DSLR Photo Booth Dynamic Calculation Logic
+    if (dslrBoothItems.length > 0) {
+       const hasWithoutPrint = dslrBoothItems.some((i: string) => i.includes("Without Print"));
+       const hasWithPrint = dslrBoothItems.some((i: string) => i.includes("With Print"));
+       
+       // Base Price (4h වලට 40000, Full Day වලට 70000)
+       let dslrBasePrice: number | "TBD" = isFullDay ? 70000 : (is4Hour ? 40000 : "TBD");
+
+       if (hasWithoutPrint) {
+           finalItems.push({ 
+               category: "Event Videography", 
+               desc: "Instant Sharing DSLR Photo Booth", 
+               subItems: [], 
+               price: dslrBasePrice,
+               isMirrorItem: true // <-- Sort කරද්දි යටට යවන්න මේකම පාවිච්චි කරනවා
+           });
+       } else if (hasWithPrint) {
+           hasMirrorPrint = true; // Disclaimer එක පෙන්වන්න මේක True කරනවා
+           
+           finalItems.push({
+               category: "Event Videography",
+               desc: "Instant Sharing DSLR Photo Booth",
+               subItems: [],
+               price: dslrBasePrice,
+               isMirrorItem: true
+           });
+
+           finalItems.push({
+               category: "Event Videography",
+               desc: "The print prices listed below for the DSLR Photo Booth are strictly on a 'Per Photo' basis and are NOT included in the Net Total. These prints are optional and can be provided upon the students' requests. The final cost will be calculated based on the total number of prints taken during the event.",
+               subItems: [],
+               price: "",
+               isDisclaimer: true,
+               isMirrorItem: true
+           });
+
+           const sizeItems = dslrBoothItems.filter((i: string) => i.includes("Print Size"));
+           const sizesToProcess: string[] = sizeItems.length > 0 ? sizeItems : ["Print Size - 4R - ( 4\" x 6\" )"];
+           
+           const romanNumerals = ["I", "II", "III", "IV", "V", "VI"];
+
+           sizesToProcess.forEach((sizeItem: string, index: number) => { 
+               const sizeStr = sizeItem.split("Print Size - ")[1];
+               let displaySize = sizeStr;
+               let sizeType = "4R";
+               
+               if (sizeStr.includes("6R")) sizeType = "6R";
+               
+               let finalPriceStr = "TBD";
+               if (sizeType === "4R") finalPriceStr = "300.00";
+               if (sizeType === "6R") finalPriceStr = "400.00";
+               
+               finalItems.push({ 
+                   category: "Event Videography", 
+                   desc: `${romanNumerals[index]}. DSLR Photo Booth - Print (${sizeType})`, 
+                   subItems: [`Print Size: ${displaySize}`], 
+                   price: finalPriceStr,
+                   isMirrorItem: true,
+                   isSubRow: true
+               });
+           });
+       }
+    }
+
     // C5: MC
     const mcItems = rawCart.filter((i: string) => i.startsWith("Master of Ceremony & Compere"));
     mcItems.forEach((mc: string) => {
@@ -412,8 +486,17 @@ export async function POST(req: Request) {
     );
 
     CATEGORIES.forEach(cat => {
-      const itemsInCat = finalItems.filter(i => i.category === cat);
+      let itemsInCat = finalItems.filter(i => i.category === cat);
       if (itemsInCat.length > 0) {
+        
+        // --- NEW: Event Videography වල Mirror Booth items ටික අන්තිමටම යවන්න Sorting ---
+        if (cat === "Event Videography") {
+            itemsInCat.sort((a, b) => {
+                if (a.isMirrorItem && !b.isMirrorItem) return 1;
+                if (!a.isMirrorItem && b.isMirrorItem) return -1;
+                return 0;
+            });
+        }
         
         // Category Highlight Header Row
         tableRows.push(
@@ -430,34 +513,64 @@ export async function POST(req: Request) {
         );
 
         itemsInCat.forEach(item => {
+          // --- Handle Disclaimer Row specially ---
+          if (item.isDisclaimer) {
+            tableRows.push(
+              new TableRow({
+                children: [
+                  new TableCell({
+                    columnSpan: 5,
+                    shading: { fill: "FFFFFF" }, // <-- සුදු පාට (White) Background එක දුන්නා
+                    margins: { top: 150, bottom: 150, left: 150, right: 150 }, // Margins ගාණට adjust කළා
+                    children: [
+                      new Paragraph({
+                        children: [
+                          new TextRun({ text: "Important Note: ", bold: true, color: "A40049", size: 18 }),
+                          new TextRun({ text: item.desc, italics: true, color: "A40049", size: 18 }) // රතු පාටින් Note එක පෙන්වනවා
+                        ]
+                      })
+                    ]
+                  })
+                ]
+              })
+            );
+            return;
+          }
+          
           let priceDisplay = "TBD";
           if (typeof item.price === "number") {
              priceDisplay = item.price.toLocaleString() + ".00";
              subTotal += item.price;
-          } else if (item.price === "Included") {
-             priceDisplay = "Included";
+          } else if (typeof item.price === "string" && item.price !== "") {
+             priceDisplay = item.price; 
           }
+
+          let itemNumberStr = item.isSubRow ? "" : itemCounter.toString().padStart(2, '0');
+          let qtyStr = item.isSubRow ? "-" : "01"; // Print ගාණක් නැති නිසා Qty එක "-" කරලා පෙන්නනවා (Per photo නිසා)
 
           tableRows.push(
             new TableRow({
               children: [
-                createBodyCell(itemCounter.toString().padStart(2, '0'), true, true),
+                createBodyCell(itemNumberStr, true, true), // හිස් කරනවා isSubRow නම්
                 createBodyCell(item.desc, false, true),
-                createBodyCell("01", true, false),
+                createBodyCell(qtyStr, true, false), // Sub item නම් Qty එක "-" වෙනවා
                 createBodyCell(priceDisplay, true, false),
                 createBodyCell(priceDisplay, true, true),
               ]
             })
           );
-          itemCounter++;
+          
+          if (!item.isSubRow) {
+             itemCounter++; // Main item එකක් නම් විතරක් counter එක වැඩි කරනවා
+          }
 
           if (item.subItems && item.subItems.length > 0) {
             item.subItems.forEach(sub => {
               tableRows.push(
                 new TableRow({
                   children: [
-                    createBodyCell("", false, false, "111827", true), // <-- isSubItem = true කරා
-                    createBodyCell(`•  ${sub}`, false, false, "555555", true), // <-- isSubItem = true කරා
+                    createBodyCell("", false, false, "111827", true), 
+                    createBodyCell(`•  ${sub}`, false, false, "555555", true), 
                     createBodyCell("", false, false, "111827", true),
                     createBodyCell("", false, false, "111827", true),
                     createBodyCell("", false, false, "111827", true),
@@ -468,7 +581,7 @@ export async function POST(req: Request) {
           }
         });
       } 
-    }); 
+    });
 
     // Add Additional Costs at the End
     const extraCosts = [
@@ -735,7 +848,7 @@ export async function POST(req: Request) {
                   new TableCell({ children: [] }),
                   new TableCell({ 
                     shading: { fill: "F3F4F6" }, // ලා අළු පාට Background
-                    borders: { left: { style: BorderStyle.SINGLE, size: 36, color: "A40049" } }, // වම් පැත්තේ ලොකු තද රෝස ඉර
+                    borders: { left: { style: BorderStyle.SINGLE, size: 36, color: "A40049" } }, 
                     margins: { top: 200, bottom: 200, left: 100 }, 
                     children: [new Paragraph({ children: [new TextRun({ text: "Net Total :", bold: true, size: 26, color: "111827" })], alignment: AlignmentType.RIGHT })] 
                   }),
@@ -748,6 +861,24 @@ export async function POST(req: Request) {
               })
             ]
           }),
+
+          emptyLine(),
+          emptyLine(),
+          emptyLine(),
+
+          // --- Photo Booth Disclaimer ---
+          ...(hasMirrorPrint ? [
+            new Paragraph({ 
+              children: [new TextRun({ text: "Note Regarding Photo Booth Prints", bold: true, color: "A40049", size: 24 })],
+              spacing: { after: 150 } 
+            }),
+            new Paragraph({ 
+              text: "The print prices listed for the Photo Booths are strictly on a 'Per Photo' basis. These prints are optional and can be provided upon the students' requests. The final cost for these prints will be calculated based on the total number of prints taken during the event. These costs are NOT included in the Net Total shown above and will be billed separately.", 
+              alignment: AlignmentType.JUSTIFIED,
+              spacing: { before: 100, line: 300 } 
+            }),
+            emptyLine(),
+          ] : []),
 
           new Paragraph({ children: [new PageBreak()] }), // PAGE 3
 
