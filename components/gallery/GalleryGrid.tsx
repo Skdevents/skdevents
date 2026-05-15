@@ -277,7 +277,7 @@ const galleryData = [
 // --- CATEGORY TO YOUTUBE VIDEO MAPPING ---
 const categoryVideos: Record<string, string[]> = {
   // Main Categories
-  "Event Videography": ["ig-q_lhvFNs", "kfLKCrPA5Ak","wkGEiVu_duQ" ],
+  "Event Videography": ["ig-q_lhvFNs", "kfLKCrPA5Ak","wkGEiVu_duQ", "ck9JnVzFZBY", "829t9TeCpcw", "vE5ASwt1kW0", "pBUWe9swlXw"],
   "Master of Ceremony & Compere": ["8Se9Yrl3snc", "sWrWX_07ZAo", "e36gEPxbbIc"],
   "Entertainment": ["kQIsAfJ8b7U"],
   "Review Interview Host": ["wstLEbIYKxY", "ktAR2r4iuOQ", "1dkBXxJrpC0" , "u4y1WLayo8A", "j6H1kxlTQO4"],
