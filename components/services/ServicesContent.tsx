@@ -37,9 +37,43 @@ const boothDetails: Record<string, any> = {
   "SLO-MO Video Booth": {
     desc: "Capture cinematic slow-motion moments with fun poses, props, music, and instant sharing — perfect for weddings, parties, and corporate events. A SLO-MO Video Booth is an interactive event booth that records short high-frame-rate videos and plays them back in dramatic slow motion.",
     features: ["Slow-motion HD/4K recording", "Instant replay", "Music & visual effects", "Props and themed setup", "Instant sharing via QR / WhatsApp / Email", "Branding options for events and companies"]
+  },
+  "Dronegraphy Video": {
+    desc: "Professional aerial video coverage using high-quality drones to capture cinematic views of your event, venue, crowd, and special moments from the sky. Ideal for convocations, weddings, concerts, exhibitions, and corporate events.",
+    features: [
+      "HD / 4K aerial video coverage", 
+      "Dynamic cinematic shots", 
+      "Venue overview and crowd coverage", 
+      "Highlight reel footage", 
+      "Safe and licensed drone operation", 
+      "Suitable for day and evening events"
+    ]
+  },
+  "FLOWER DROPPING DRONES": {
+    desc: "Create a grand and unforgettable celebration moment with aerial flower showers from professional drones. We provide 30KG (Medium-scale) and heavy-capacity 100KG drones, along with specialized 20KG and 30KG fresh flower bags for a premium visual experience.",
+    features: [
+      "Carries 30KG or 100KG flower loads", 
+      "Smooth aerial flower dropping effects", 
+      "Perfect for VIP welcomes, graduations, and stage entrances", 
+      "Premium visual experience for stadiums and large gatherings", 
+      "Safe flight operation by trained pilots and professional crew", 
+      "Suitable for indoor/outdoor large venues",
+      "Fresh flower petals prepared for large-scale displays"
+    ]
+  },
+  "LED SCREEN DRONE DISPLAYS": {
+    desc: "Advanced aerial LED display system that carries giant LED screens in the sky for branding, live display, and audience engagement. Available in 18FT and massive 30FT Large Sri Lankan LED Screen options (1 Time Fly).",
+    features: [
+      "18FT or massive 30FT aerial LED screen displays", 
+      "High-visibility aerial advertising & live branding", 
+      "Ideal for national events, mega functions, and sponsor branding", 
+      "Unique attraction for night events", 
+      "High brightness for long-distance visibility", 
+      "One-time fly display operation included", 
+      "Professional technical and flight crew included"
+    ]
   }
 };
-
 const structuredServices = [
   {
     id: "C1", category: "Registration", icon: ClipboardCheck,
@@ -176,7 +210,31 @@ const structuredServices = [
         ]
       },
       { name: "Instant iPad Photo Booth", items: ["Include iPad Photo Booth"] },
-      { name: "AI Photo Booth", items: ["Include AI Photo Booth"] }
+      { name: "AI Photo Booth", items: ["Include AI Photo Booth"] },
+      { isSectionHeader: true, title: "DRONEGRAPHY VIDEO PACKAGE", iconName: "Video" },
+      { 
+        name: "Dronegraphy Video", 
+        items: ["DRONEGRAPHY VIDEO"],
+        isDrone: true 
+      },
+      { 
+        name: "FLOWER DROPPING DRONES", 
+        desc: "Choose your preferred drone package",
+        items: ["30KG Flower Dropping", "100KG Flower Dropping"],
+        nestedGroups: [
+          {
+            title: "Flower Bag Sizes",
+            hideTitleInPill: true,
+            options: ["30KG Flower Bag", "20KG Flower Bag"]
+          }
+        ],
+        isDrone: true
+      },
+      { 
+        name: "LED SCREEN DRONE DISPLAYS", 
+        items: ["18FT LED Screen – 1 Time Fly", "30FT Large Sri Lankan LED Screen – 1 Time Fly"],
+        isDrone: true
+      }
     ]
   },
   {
@@ -693,7 +751,7 @@ export default function ServicesContent() {
                             // --- C4 Disable Logic (Duration එක තෝරලාද බලනවා) ---
                             const isC4Booths = cat.id === "C4";
                             const isDurationSelected = cart.includes("Event Videography: 04-Hour Package") || cart.includes("Event Videography: Full-Day Package");
-                            const disableBooths = isC4Booths && !isDurationSelected;
+                            const disableBooths = isC4Booths && !isDurationSelected && !sub.isDrone;
 
                             return (
                             <div key={sub.name} className={`bg-[#FAFAFA] border border-gray-200/60 p-3.5 sm:p-4 rounded-2xl relative transition-all duration-300 ${disableBooths ? 'opacity-50 grayscale-[30%] pointer-events-none' : ''}`}>

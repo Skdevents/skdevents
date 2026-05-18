@@ -57,6 +57,14 @@ const emptyLine = () => new Paragraph({ text: "" });
 
 // --- SMART PRICING FUNCTION FOR INDIVIDUAL ITEMS ---
 const getPrice = (name: string): number | "TBD" | "Included" => {
+  if (name.includes("DRONEGRAPHY VIDEO")) return 40000;
+  if (name.includes("30KG Flower Dropping")) return 95000;
+  if (name.includes("100KG Flower Dropping")) return 110000;
+  if (name.includes("30KG Flower Bag")) return 15000;
+  if (name.includes("20KG Flower Bag")) return 10000;
+  if (name.includes("18FT LED Screen")) return 160000;
+  if (name.includes("30FT Large Sri Lankan LED Screen")) return 260000;
+  
   if (name.includes("55\" LED TV")) return 15000;
   if (name.includes("Digital Podium")) return 20000;
   if (name.includes("Welcome Pandal")) return 45000;
@@ -222,6 +230,12 @@ export async function POST(req: Request) {
           price = isFullDay ? 85000 : (is4Hour ? 60000 : "TBD");
           desc = `AI Photo Booth (${isFullDay ? '800 Snaps' : (is4Hour ? '500 Snaps' : 'TBD')})`;
       }
+      if (name.includes("30KG Flower Dropping")) desc = "30KG Flower Dropping Drone";
+      if (name.includes("100KG Flower Dropping")) desc = "100KG Flower Dropping Drone";
+      if (name.includes("30KG Flower Bag")) desc = "30KG Flower Bag";
+      if (name.includes("20KG Flower Bag")) desc = "20KG Flower Bag";
+      if (name.includes("18FT LED Screen")) desc = "18FT LED Screen – 1 Time Fly";
+      if (name.includes("30FT Large Sri Lankan LED Screen")) desc = "30FT Large Sri Lankan LED Screen – 1 Time Fly";
 
       finalItems.push({ category: "Event Videography", desc, subItems: [], price });
     });
