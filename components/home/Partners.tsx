@@ -27,7 +27,7 @@ const partnerLogos = [
 
 export default function Partners() {
   return (
-    <section className="py-18 bg-white relative overflow-hidden border-t border-gray-100">
+    <section className="py-14 bg-white relative overflow-hidden border-t border-gray-100">
       
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes marquee-slide-fast {

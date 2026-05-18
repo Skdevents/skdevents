@@ -535,7 +535,7 @@ export default function GalleryGrid() {
   }, [selectedImage, filteredImages]);
 
   return (
-    <section className="bg-[#FAFAFA] min-h-screen pt-8 pb-20">
+    <section className="bg-[#FAFAFA] min-h-screen pt-4 pb-20">
       
       {/* ==============================================
           MOBILE STICKY FILTER BAR (FIXED LAYOUT)

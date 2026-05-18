@@ -58,7 +58,7 @@ const services = [
 
 export default function HomeServices() {
   return (
-    <section className="py-12 md:py-24 bg-white relative overflow-hidden">
+    <section className="py-10 md:py-16 bg-white relative overflow-hidden">
       
       {/* PERFORMANCE FIX & SPEED INCREASE (80s -> 45s for faster mobile scroll) */}
       <style dangerouslySetInnerHTML={{__html: `
