@@ -1,16 +1,24 @@
 import { NextResponse } from 'next/server';
 
-const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
+// පියවර 1න් ඔයාට ලැබුණු අලුත් Web App URL එක මෙතනට පේස්ට් කරන්න
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOx5giZdp1ptIkgBU-oUoD7R-XNX8JhGgOyWMndJmSOusm8KqUo8vHqxHCeBdDHC5g5g/exec';
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-
+    
     const file = formData.get('paymentSlip') as File;
-    let fileInfo = 'No File Attached';
+    let fileBase64 = '';
+    let fileName = '';
+    let fileType = '';
 
-    if (file) {
-      fileInfo = `File: ${file.name} (Uploaded safely via UI)`;
+    // පින්තූරය කියවලා ආරක්ෂිතව Base64 string එකක් බවට පරිවර්තනය කිරීම (Secured for 2026)
+    if (file && file.size > 0) {
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      fileBase64 = buffer.toString('base64');
+      fileName = file.name;
+      fileType = file.type;
     }
 
     const payload = {
@@ -27,10 +35,12 @@ export async function POST(request: Request) {
       mobile1: formData.get('mobile1'),
       mobile2: formData.get('mobile2'),
       email: formData.get('email'),
-      paymentSlipUrl: fileInfo
+      fileBase64: fileBase64,  // පින්තූරය data එකක් ලෙස යවයි
+      fileName: fileName,
+      fileType: fileType
     };
 
-    const response = await fetch(GOOGLE_SCRIPT_URL as string, {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: {
@@ -39,7 +49,13 @@ export async function POST(request: Request) {
     });
 
     if (response.ok) {
-      return NextResponse.json({ success: true });
+      const result = await response.json();
+      if (result.status === 'success') {
+        return NextResponse.json({ success: true });
+      } else {
+        console.error('Apps Script Error:', result.error);
+        return NextResponse.json({ success: false, error: result.error }, { status: 500 });
+      }
     } else {
       return NextResponse.json({ success: false }, { status: 500 });
     }
