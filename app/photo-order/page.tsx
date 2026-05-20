@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { UploadCloud, CheckCircle2, Building, Calendar, MapPin, User, Phone, Mail } from 'lucide-react';
+import { UploadCloud, CheckCircle2, Calendar, User, Phone, Mail } from 'lucide-react';
 
-// Districts of Sri Lanka
 const DISTRICTS = [
   "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", 
   "Jaffna", "Kalutara", "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar", "Matale", 
@@ -18,14 +17,14 @@ const PACKAGES = [
   { id: 'pkg4', name: 'Digital Only', price: 'Rs. 1,000', details: 'All High-Res Softcopies via Email' }
 ];
 
-export default function PhotoOrderPage() {
+export default function PhotoOrderForm() {
   const [fileError, setFileError] = useState('');
   const [selectedPackage, setSelectedPackage] = useState('');
   const [isOtherInstitute, setIsOtherInstitute] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [fileName, setFileName] = useState('');
 
-  // Get today's date in YYYY-MM-DD format to disable past dates
+  // 418 Error එක ෆික්ස් කිරීම (Timezone ගැටලුව)
   const [today, setToday] = useState('');
   useEffect(() => {
     setToday(new Date().toISOString().split('T')[0]);
@@ -34,32 +33,34 @@ export default function PhotoOrderPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setFileError('File is too large. Please upload an image under 5MB.');
-        e.target.value = ''; // Reset
+      // 500 Error එක ෆික්ස් කිරීම (Vercel limit එක නිසා 3MB වලට අඩු කළා)
+      if (file.size > 3 * 1024 * 1024) {
+        setFileError('File is too large. Please upload an image under 3MB.');
+        setFileName('');
+        e.target.value = ''; 
       } else {
         setFileError('');
+        setFileName(file.name);
       }
     }
   };
 
   const handleInstituteChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === 'Other') {
-      setIsOtherInstitute(true);
-    } else {
-      setIsOtherInstitute(false);
-    }
+    setIsOtherInstitute(e.target.value === 'Other');
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (!selectedPackage) {
+      alert("Please select a package.");
+      return;
+    }
 
+    setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     formData.append('selectedPackage', selectedPackage);
 
     try {
-      // 1. Send data to our secure Next.js API route
       const response = await fetch('/api/submit-photo-order', {
         method: 'POST',
         body: formData,
@@ -69,15 +70,17 @@ export default function PhotoOrderPage() {
         alert('Order submitted successfully!');
         window.location.reload();
       } else {
-        alert('Something went wrong. Please try again.');
+        alert('Something went wrong. Server might be busy.');
       }
     } catch (error) {
-      console.error(error);
       alert('Error submitting the form.');
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Hydration වැළැක්වීමට අද දිනය load වෙනකන් form එක පෙන්වන්නේ නෑ
+  if (!today) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -113,33 +116,31 @@ export default function PhotoOrderPage() {
               
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">Seat No</label>
-                <input type="text" name="seatNo" required placeholder="e.g. A-12" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" />
+                <input type="text" name="seatNo" required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">Institute / Campus Name</label>
-                <div className="relative">
-                  <select name="instituteDropdown" onChange={handleInstituteChange} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none bg-white" required>
-                    <option value="">Select Institute</option>
-                    <option value="ICBT Campus">ICBT Campus</option>
-                    <option value="NSBM Green University">NSBM Green University</option>
-                    <option value="SLIIT">SLIIT</option>
-                    <option value="Other">Other (Please Specify)</option>
-                  </select>
-                </div>
+                <select name="instituteDropdown" onChange={handleInstituteChange} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white" required>
+                  <option value="">Select Institute</option>
+                  <option value="ICBT Campus">ICBT Campus</option>
+                  <option value="NSBM Green University">NSBM Green University</option>
+                  <option value="SLIIT">SLIIT</option>
+                  <option value="Other">Other (Please Specify)</option>
+                </select>
                 {isOtherInstitute && (
-                  <input type="text" name="otherInstitute" required placeholder="Type your institute name" className="w-full px-4 py-3 mt-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 transition-all outline-none" />
+                  <input type="text" name="otherInstitute" required placeholder="Type your institute name" className="w-full px-4 py-3 mt-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
                 )}
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">Event Date</label>
-                <input type="date" name="eventDate" min={today} required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+                <input type="date" name="eventDate" min={today} required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">Session</label>
-                <select name="session" required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-white">
+                <select name="session" required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
                   <option value="">Select Session</option>
                   <option value="Session 1">Session 1</option>
                   <option value="Session 2">Session 2</option>
@@ -156,7 +157,7 @@ export default function PhotoOrderPage() {
                 <div 
                   key={pkg.id}
                   onClick={() => setSelectedPackage(pkg.name)}
-                  className={`relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:shadow-lg ${selectedPackage === pkg.name ? 'border-blue-600 bg-blue-50 scale-[1.02]' : 'border-gray-200 bg-white hover:border-blue-300'}`}
+                  className={`relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${selectedPackage === pkg.name ? 'border-blue-600 bg-blue-50 scale-[1.02]' : 'border-gray-200 bg-white hover:border-blue-300'}`}
                 >
                   {selectedPackage === pkg.name && (
                     <div className="absolute -top-3 -right-3 bg-white rounded-full">
@@ -165,11 +166,10 @@ export default function PhotoOrderPage() {
                   )}
                   <h3 className="font-bold text-gray-900 text-lg mb-1">{pkg.name}</h3>
                   <p className="text-blue-600 font-bold text-xl mb-3">{pkg.price}</p>
-                  <p className="text-sm text-gray-500 leading-relaxed">{pkg.details}</p>
+                  <p className="text-sm text-gray-500">{pkg.details}</p>
                 </div>
               ))}
             </div>
-            {/* Hidden input to ensure package validation on submit */}
             <input type="text" name="packageValidation" required value={selectedPackage} readOnly className="h-0 w-0 opacity-0 absolute" />
           </div>
 
@@ -179,78 +179,36 @@ export default function PhotoOrderPage() {
               <User className="w-5 h-5 text-blue-600" /> Personal Information
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">First Name</label>
-                <input type="text" name="firstName" required placeholder="John" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Last Name</label>
-                <input type="text" name="lastName" required placeholder="Doe" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
-              </div>
-
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-semibold text-gray-700">Courier Address</label>
-                <input type="text" name="address" required placeholder="123, Main Street, Town" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Nearest Main City</label>
-                <input type="text" name="city" required placeholder="e.g. Wattala" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">District</label>
-                <select name="district" required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-                  <option value="">Select District</option>
-                  {DISTRICTS.map(district => (
-                    <option key={district} value={district}>{district}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-gray-500" /> Mobile No 1 *
-                </label>
-                <input type="tel" name="mobile1" required pattern="[0-9]*" placeholder="07XXXXXXXX" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" onInput={(e) => e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, '')} />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-gray-500" /> Mobile No 2 (Optional)
-                </label>
-                <input type="tel" name="mobile2" pattern="[0-9]*" placeholder="07XXXXXXXX" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" onInput={(e) => e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, '')} />
-              </div>
-
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-gray-500" /> Email Address
-                </label>
-                <input type="email" name="email" required placeholder="student@example.com" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
-              </div>
+              <div className="space-y-2"><label className="text-sm font-semibold text-gray-700">First Name</label><input type="text" name="firstName" required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" /></div>
+              <div className="space-y-2"><label className="text-sm font-semibold text-gray-700">Last Name</label><input type="text" name="lastName" required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" /></div>
+              <div className="space-y-2 md:col-span-2"><label className="text-sm font-semibold text-gray-700">Courier Address</label><input type="text" name="address" required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" /></div>
+              <div className="space-y-2"><label className="text-sm font-semibold text-gray-700">Nearest Main City</label><input type="text" name="city" required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" /></div>
+              <div className="space-y-2"><label className="text-sm font-semibold text-gray-700">District</label><select name="district" required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white"><option value="">Select District</option>{DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}</select></div>
+              <div className="space-y-2"><label className="text-sm font-semibold text-gray-700 flex items-center gap-2"><Phone className="w-4 h-4 text-gray-500" /> Mobile No 1 *</label><input type="tel" name="mobile1" required pattern="[0-9]*" onInput={(e) => e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, '')} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" /></div>
+              <div className="space-y-2"><label className="text-sm font-semibold text-gray-700 flex items-center gap-2"><Phone className="w-4 h-4 text-gray-500" /> Mobile No 2 (Optional)</label><input type="tel" name="mobile2" pattern="[0-9]*" onInput={(e) => e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, '')} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" /></div>
+              <div className="space-y-2 md:col-span-2"><label className="text-sm font-semibold text-gray-700 flex items-center gap-2"><Mail className="w-4 h-4 text-gray-500" /> Email Address</label><input type="email" name="email" required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" /></div>
             </div>
           </div>
 
           {/* Section 4: File Upload */}
-          <div className="bg-gray-50 p-6 rounded-2xl border-2 border-dashed border-gray-300 text-center">
+          <div className="bg-gray-50 p-6 rounded-2xl border-2 border-dashed border-gray-300 text-center relative">
             <h2 className="text-lg font-bold text-gray-800 mb-2">Payment Slip Upload *</h2>
-            <p className="text-sm text-gray-500 mb-4">Max file size: 5MB. Must clearly show date, time, and reference ID.</p>
+            <p className="text-sm text-gray-500 mb-4">Max file size: 3MB.</p>
             
-            <div className="relative group cursor-pointer inline-block w-full max-w-sm mx-auto">
-              <input 
-                type="file" 
-                name="paymentSlip" 
-                accept="image/*,.pdf" 
-                required 
-                onChange={handleFileChange}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-              />
-              <div className="bg-white px-6 py-8 rounded-xl shadow-sm border border-gray-200 group-hover:border-blue-400 group-hover:bg-blue-50 transition-all flex flex-col items-center gap-3">
-                <UploadCloud className="w-10 h-10 text-blue-500" />
-                <span className="font-semibold text-blue-600">Click to upload or drag & drop</span>
-              </div>
+            <input 
+              type="file" 
+              name="paymentSlip" 
+              accept="image/*,.pdf" 
+              required 
+              onChange={handleFileChange}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+            />
+            
+            <div className="bg-white px-6 py-8 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center gap-3">
+              <UploadCloud className={`w-10 h-10 ${fileName ? 'text-green-500' : 'text-blue-500'}`} />
+              <span className={`font-semibold ${fileName ? 'text-green-600' : 'text-blue-600'}`}>
+                {fileName ? fileName : 'Click to upload or drag & drop'}
+              </span>
             </div>
             {fileError && <p className="text-red-500 text-sm mt-3 font-medium">{fileError}</p>}
           </div>
@@ -258,7 +216,7 @@ export default function PhotoOrderPage() {
           <button 
             type="submit" 
             disabled={isLoading || !!fileError || !selectedPackage}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 rounded-xl shadow-lg transition-all disabled:opacity-50"
           >
             {isLoading ? 'Processing Order...' : 'Submit Order Securely'}
           </button>

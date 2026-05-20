@@ -41,11 +41,12 @@ export async function POST(request: Request) {
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       body: JSON.stringify(payload),
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
-    // Crash නොවී උත්තරේ ගන්න මේ කොටස වෙනස් කළා
-    const textResponse = await response.text(); 
+    const textResponse = await response.text();
     
     try {
       const result = JSON.parse(textResponse);
@@ -55,14 +56,13 @@ export async function POST(request: Request) {
         console.error('Apps Script Error:', result.error);
         return NextResponse.json({ success: false, error: result.error }, { status: 500 });
       }
-    } catch (parseError) {
-      // JSON නැතුව HTML ආවොත් Crash වෙන්නේ නෑ!
-      console.error('Not a JSON Response from Google:', textResponse);
-      return NextResponse.json({ success: false, error: 'Google Script Configuration Error. Ensure access is set to ANYONE.' }, { status: 500 });
+    } catch (e) {
+      console.error('Google Server Error (Not JSON):', textResponse);
+      return NextResponse.json({ success: false, error: 'Google Server Error' }, { status: 500 });
     }
 
   } catch (error) {
     console.error('Submission Error:', error);
-    return NextResponse.json({ success: false, error: 'Failed to process request on Vercel' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Failed to process request' }, { status: 500 });
   }
 }
