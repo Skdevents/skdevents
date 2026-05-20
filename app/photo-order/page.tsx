@@ -24,16 +24,15 @@ export default function PhotoOrderForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [fileName, setFileName] = useState('');
 
-  // 418 Error එක ෆික්ස් කිරීම (Timezone ගැටලුව)
-  const [today, setToday] = useState('');
+  // 418 Hydration Error එක නොඑන්න Date එක හදන නිවැරදිම ක්‍රමය
+  const [minDate, setMinDate] = useState('');
   useEffect(() => {
-    setToday(new Date().toISOString().split('T')[0]);
+    setMinDate(new Date().toISOString().split('T')[0]);
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // 500 Error එක ෆික්ස් කිරීම (Vercel limit එක නිසා 3MB වලට අඩු කළා)
       if (file.size > 3 * 1024 * 1024) {
         setFileError('File is too large. Please upload an image under 3MB.');
         setFileName('');
@@ -70,7 +69,7 @@ export default function PhotoOrderForm() {
         alert('Order submitted successfully!');
         window.location.reload();
       } else {
-        alert('Something went wrong. Server might be busy.');
+        alert('Something went wrong. Please try again.');
       }
     } catch (error) {
       alert('Error submitting the form.');
@@ -79,14 +78,10 @@ export default function PhotoOrderForm() {
     }
   };
 
-  // Hydration වැළැක්වීමට අද දිනය load වෙනකන් form එක පෙන්වන්නේ නෑ
-  if (!today) return null;
-
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
         
-        {/* Header & Payment Details Section */}
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-8 text-white text-center">
           <h1 className="text-3xl font-bold mb-2">Request Photo Package</h1>
           <p className="text-gray-300 text-sm mb-6 max-w-2xl mx-auto">
@@ -104,10 +99,8 @@ export default function PhotoOrderForm() {
           </div>
         </div>
 
-        {/* Main Form */}
         <form onSubmit={handleSubmit} className="p-8 space-y-10">
           
-          {/* Section 1: Event Details */}
           <div>
             <h2 className="text-xl font-bold text-gray-800 border-b pb-2 mb-6 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-blue-600" /> Event Details
@@ -135,7 +128,8 @@ export default function PhotoOrderForm() {
 
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">Event Date</label>
-                <input type="date" name="eventDate" min={today} required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
+                {/* මෙතන suppressHydrationWarning එකතු කළා 418 Error එක නවත්වන්න */}
+                <input type="date" name="eventDate" min={minDate} suppressHydrationWarning required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
               </div>
 
               <div className="space-y-2">
@@ -149,7 +143,6 @@ export default function PhotoOrderForm() {
             </div>
           </div>
 
-          {/* Section 2: Photo Packages */}
           <div>
             <h2 className="text-xl font-bold text-gray-800 border-b pb-2 mb-6">Select Photo Package</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -173,7 +166,6 @@ export default function PhotoOrderForm() {
             <input type="text" name="packageValidation" required value={selectedPackage} readOnly className="h-0 w-0 opacity-0 absolute" />
           </div>
 
-          {/* Section 3: Personal Information */}
           <div>
             <h2 className="text-xl font-bold text-gray-800 border-b pb-2 mb-6 flex items-center gap-2">
               <User className="w-5 h-5 text-blue-600" /> Personal Information
@@ -190,7 +182,6 @@ export default function PhotoOrderForm() {
             </div>
           </div>
 
-          {/* Section 4: File Upload */}
           <div className="bg-gray-50 p-6 rounded-2xl border-2 border-dashed border-gray-300 text-center relative">
             <h2 className="text-lg font-bold text-gray-800 mb-2">Payment Slip Upload *</h2>
             <p className="text-sm text-gray-500 mb-4">Max file size: 3MB.</p>
