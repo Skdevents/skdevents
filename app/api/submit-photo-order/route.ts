@@ -1,37 +1,16 @@
 import { NextResponse } from 'next/server';
 
-// Oya Step 3 eken gaththa Google Apps Script Web App URL eka methana danna
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWtxlvXMjaRXeydVmWYjx3QEytV9dFyfAn4Wz1uNY87KiJFZjU8ouMrj3HZzoU9xjisw/exec'; 
+const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-    
-    // File eka base64 walata convert karanawa
+
     const file = formData.get('paymentSlip') as File;
-    let fileUrl = 'No File';
+    let fileInfo = 'No File Attached';
 
     if (file) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const base64Image = buffer.toString('base64');
-      
-      // Pro tip: Image hosting ekakata (ImgBB API / Cloudinary API) base64 eka yawala 
-      // return eken ena URL eka ganna eka thama hodama wede.
-      // Eka karanna simple ImgBB API key ekak free aran danna (Standard for production)
-      // Mema code block eken kare temporary ImgBB call ekak. (Oyage API Key eka danna).
-      
-      /* const imgBBResponse = await fetch(`https://api.imgbb.com/1/upload?key=YOUR_IMGBB_API_KEY`, {
-        method: 'POST',
-        body: new URLSearchParams({ image: base64Image }),
-      });
-      const imgBBData = await imgBBResponse.json();
-      fileUrl = imgBBData.data.url;
-      */
-      
-      // Danata api eka base64 widiyatama sheet ekata yawanna hadanne nam:
-      // (Note: Base64 string eka loku wadi unoth sheet eka lag wenna puluwan. ImgBB / Vercel Blob pawichi karanna).
-      fileUrl = "Image uploaded via backend"; // Replace with Cloudinary/ImgBB URL in production
+      fileInfo = `File: ${file.name} (Uploaded safely via UI)`;
     }
 
     const payload = {
@@ -48,11 +27,10 @@ export async function POST(request: Request) {
       mobile1: formData.get('mobile1'),
       mobile2: formData.get('mobile2'),
       email: formData.get('email'),
-      paymentSlipUrl: fileUrl 
+      paymentSlipUrl: fileInfo
     };
 
-    // Google Apps Script ekata POST request eka yawima
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
+    const response = await fetch(GOOGLE_SCRIPT_URL as string, {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: {
