@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UploadCloud, CheckCircle2, Building, Calendar, MapPin, User, Phone, Mail } from 'lucide-react';
 
 // Districts of Sri Lanka
@@ -18,14 +18,18 @@ const PACKAGES = [
   { id: 'pkg4', name: 'Digital Only', price: 'Rs. 1,000', details: 'All High-Res Softcopies via Email' }
 ];
 
-export default function PhotoOrderForm() {
+export default function PhotoOrderPage() {
   const [fileError, setFileError] = useState('');
   const [selectedPackage, setSelectedPackage] = useState('');
   const [isOtherInstitute, setIsOtherInstitute] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [fileName, setFileName] = useState('');
 
   // Get today's date in YYYY-MM-DD format to disable past dates
-  const today = new Date().toISOString().split('T')[0];
+  const [today, setToday] = useState('');
+  useEffect(() => {
+    setToday(new Date().toISOString().split('T')[0]);
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
