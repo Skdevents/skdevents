@@ -887,7 +887,7 @@ export async function POST(req: Request) {
               spacing: { after: 150 } 
             }),
             new Paragraph({ 
-              text: "The print prices listed for the Photo Booths are strictly on a 'Per Photo' basis. These prints are optional and can be provided upon the students' requests. The final cost for these prints will be calculated based on the total number of prints taken during the event. These costs are NOT included in the Net Total shown above and will be billed separately.", 
+              text: "Photo Booth print services are available on an optional per-photo basis. Prints will only be provided upon students’ request. The total printing cost will be calculated according to the actual number of prints taken during the event. The cost of photo printing shall be borne by either the students or the institution, depending on the prior mutual agreed selected option confirmed in advance.", 
               alignment: AlignmentType.JUSTIFIED,
               spacing: { before: 100, line: 300 } 
             }),
