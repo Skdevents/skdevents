@@ -54,15 +54,15 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true });
       } else {
         console.error('Apps Script Error:', result.error);
-        return NextResponse.json({ success: false, error: result.error }, { status: 500 });
+        return NextResponse.json({ success: false, error: result.error }, { status: 400 });
       }
     } catch (e) {
       console.error('Google Server Error (Not JSON):', textResponse);
-      return NextResponse.json({ success: false, error: 'Google Server Error' }, { status: 500 });
+      return NextResponse.json({ success: false, error: 'Google Server Error' }, { status: 502 });
     }
 
   } catch (error) {
     console.error('Submission Error:', error);
-    return NextResponse.json({ success: false, error: 'Failed to process request' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Server crashed processing data' }, { status: 500 });
   }
 }

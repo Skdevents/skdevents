@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { UploadCloud, CheckCircle2, Calendar, User, Phone, Mail } from 'lucide-react';
+import { UploadCloud, CheckCircle2, Calendar, User, Phone, Mail, Loader2 } from 'lucide-react';
 
 const DISTRICTS = [
   "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", 
@@ -18,15 +18,18 @@ const PACKAGES = [
 ];
 
 export default function PhotoOrderForm() {
+  const [isMounted, setIsMounted] = useState(false);
+  const [minDate, setMinDate] = useState('');
+  
   const [fileError, setFileError] = useState('');
   const [selectedPackage, setSelectedPackage] = useState('');
   const [isOtherInstitute, setIsOtherInstitute] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [fileName, setFileName] = useState('');
 
-  // 418 Hydration Error එක නොඑන්න Date එක හදන නිවැරදිම ක්‍රමය
-  const [minDate, setMinDate] = useState('');
+  // 418 Hydration Error එක සම්පූර්ණයෙන්ම වළක්වන ක්‍රමය
   useEffect(() => {
+    setIsMounted(true);
     setMinDate(new Date().toISOString().split('T')[0]);
   }, []);
 
@@ -78,6 +81,16 @@ export default function PhotoOrderForm() {
     }
   };
 
+  // UI එක හැප්පෙන්නේ නැති වෙන්න පේජ් එක ලෝඩ් වෙනකන් Loading එකක් පෙන්නනවා
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+        <p className="mt-4 text-gray-500 font-medium">Loading Secure Form...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
@@ -128,8 +141,7 @@ export default function PhotoOrderForm() {
 
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">Event Date</label>
-                {/* මෙතන suppressHydrationWarning එකතු කළා 418 Error එක නවත්වන්න */}
-                <input type="date" name="eventDate" min={minDate} suppressHydrationWarning required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
+                <input type="date" name="eventDate" min={minDate} required className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none" />
               </div>
 
               <div className="space-y-2">
