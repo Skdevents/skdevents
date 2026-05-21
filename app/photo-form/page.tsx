@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Camera, GraduationCap, Calendar, Clock, User, MapPin, 
   Phone, Mail, UploadCloud, CreditCard, CheckCircle2, ShieldCheck, Info,
-  Check, X, AlertCircle
+  Check, X, AlertCircle, ChevronDown, Search
 } from "lucide-react";
 
 // Sri Lanka Districts List
@@ -38,17 +38,110 @@ const packages = [
   }
 ];
 
+// Modern Custom Dropdown Component (Matched with WhatsAppModal style)
+const CustomSelect = ({ value, options, onChange, placeholder, searchable = false }: { value: string, options: string[], onChange: (val: string) => void, placeholder: string, searchable?: boolean }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+        setSearchTerm(""); 
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredOptions = options.filter(opt =>
+    opt.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="relative w-full" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-left outline-none transition-all flex items-center justify-between ${
+          isOpen ? 'ring-2 ring-[#a40049]/30 border-[#a40049]' : 'focus:ring-2 focus:ring-[#a40049]/30 focus:border-[#a40049]'
+        }`}
+      >
+        <span className={value ? "text-gray-900" : "text-gray-400"}>
+          {value || placeholder}
+        </span>
+        <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col"
+          >
+            {/* --- Search Input Bar --- */}
+            {searchable && (
+              <div className="p-2 border-b border-gray-100 bg-gray-50 sticky top-0 z-10">
+                <div className="relative">
+                  <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-xs font-medium focus:outline-none focus:border-[#a40049] focus:ring-1 focus:ring-[#a40049]/20"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* --- Filtered Options List --- */}
+            <div className="max-h-60 overflow-y-auto custom-scrollbar">
+              {filteredOptions.length > 0 ? (
+                filteredOptions.map((opt) => (
+                  <button
+                    key={opt}
+                    type="button"
+                    onClick={() => {
+                      onChange(opt);
+                      setIsOpen(false);
+                      setSearchTerm(""); // Select කරාම search එක clear වෙනවා
+                    }}
+                    className={`w-full text-left px-4 py-3 text-sm transition-colors ${
+                      value === opt 
+                        ? "bg-[#a40049]/10 text-[#a40049] font-bold" 
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                ))
+              ) : (
+                <div className="px-4 py-4 text-sm text-gray-400 text-center font-medium">
+                  No results found
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+
 export default function PhotoFormPage() {
   const [today, setToday] = useState("");
   const [selectedPackage, setSelectedPackage] = useState("");
   const [fileError, setFileError] = useState("");
   const [fileName, setFileName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Custom Popup & Validation States
   const [showPopup, setShowPopup] = useState(false);
   const [validationError, setValidationError] = useState("");
-  
   const [formData, setFormData] = useState({
     seatNo: "",
     campusName: "",
@@ -65,6 +158,38 @@ export default function PhotoFormPage() {
     mobile2: "",
     email: "",
   });
+
+  const [filePreview, setFilePreview] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const savedData = localStorage.getItem("skdFormDraft");
+    if (savedData) setFormData(JSON.parse(savedData));
+    
+    const savedPackage = localStorage.getItem("skdPackageDraft");
+    if (savedPackage) setSelectedPackage(savedPackage);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("skdFormDraft", JSON.stringify(formData));
+    localStorage.setItem("skdPackageDraft", selectedPackage);
+  }, [formData, selectedPackage]);
+
+
+  const handleResetForm = () => {
+    setFormData({
+      seatNo: "", campusName: "", diplomaName: "", eventDate: "", session: "Session 1",
+      firstName: "", lastName: "", surname: "", courierAddress: "", nearestCity: "",
+      district: "", mobile1: "", mobile2: "", email: "",
+    });
+    setSelectedPackage("");
+    setFileName("");
+    setFilePreview(null);
+    setFieldErrors({});
+    localStorage.removeItem("skdFormDraft");
+    localStorage.removeItem("skdPackageDraft");
+    setShowPopup(false);
+  };
 
   useEffect(() => {
     // Current date set madalu Android/iOS browser compatibility gagi
@@ -99,15 +224,22 @@ export default function PhotoFormPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFileError("");
     setFileName("");
+    setFilePreview(null); 
+
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      // 3MB size limit check (3 * 1024 * 1024 bytes)
+
       if (file.size > 3145728) {
         setFileError("File size exceeds the 3MB maximum limit.");
-        e.target.value = ""; // Reset file field
+        e.target.value = ""; 
         return;
       }
       setFileName(file.name);
+
+      if (file.type.startsWith("image/")) {
+        const previewUrl = URL.createObjectURL(file);
+        setFilePreview(previewUrl);
+      }
     }
   };
 
@@ -120,7 +252,33 @@ export default function PhotoFormPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError("");
+    setFieldErrors({});
 
+    let errors: Record<string, boolean> = {};
+
+    // --- 4. Smart Validation (Email & Phone) ---
+    if (formData.mobile1.length !== 10) errors.mobile1 = true;
+    if (formData.mobile2.length !== 10) errors.mobile2 = true;
+    if (!formData.email.includes("@") || !formData.email.includes(".com")) errors.email = true;
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setValidationError("Please check the fields highlighted in red. Phone numbers must be 10 digits and Email must be valid.");
+      // Scroll to personal info section
+      document.getElementById('personal-info-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    
+    if (!formData.campusName) {
+      setValidationError("Please select your Institute / Campus Name.");
+      return;
+    }
+    
+    if (!formData.district) {
+      setValidationError("Please select your District.");
+      return;
+    }
+    
     if (!selectedPackage) {
       setValidationError("Please select a Photo Package before submitting.");
       document.getElementById('package-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -131,48 +289,40 @@ export default function PhotoFormPage() {
       return;
     }
     
-    setIsSubmitting(true); // Loading එක පටන් ගන්නවා
+    setIsSubmitting(true);
 
     try {
-      // Data ටික API එකට යවන්න ලෑස්ති කිරීම
       const submitData = new FormData();
-      
-      // Text Data අතුලත් කිරීම
       Object.keys(formData).forEach(key => {
         submitData.append(key, formData[key as keyof typeof formData]);
       });
-      submitData.append("package", selectedPackage); // තෝරාගත් Package එක
+      submitData.append("package", selectedPackage);
       
-      // Photo/PDF File එක ඇතුලත් කිරීම
       const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
       if (fileInput && fileInput.files && fileInput.files[0]) {
         submitData.append("file", fileInput.files[0]);
       }
 
-      // API එකට යැවීම
       const response = await fetch('/api/submit-photo-form', {
         method: 'POST',
         body: submitData,
       });
 
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
+      if (!response.ok) throw new Error("Something went wrong");
 
-      // සාර්ථකව ගියා නම් Success Popup එක පෙන්නනවා
       setShowPopup(true);
       
     } catch (error) {
       console.error(error);
       setValidationError("An error occurred while submitting. Please try again.");
     } finally {
-      setIsSubmitting(false); // Loading එක ඉවර කරනවා
+      setIsSubmitting(false);
     }
   };
 
   return (
     // pt-32 md:pt-40 added for Navbar Spacing
-    <div className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans selection:bg-[#a40049]/20 selection:text-[#a40049] pt-32 md:pt-40 pb-20 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FAFAFA] text-gray-900 font-sans selection:bg-[#a40049]/20 selection:text-[#a40049] pt-28 md:pt-32 pb-20 relative overflow-hidden">
       
       {/* Background Smooth Lighting Effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-gradient-to-b from-[#a40049]/5 to-transparent rounded-full blur-[120px] pointer-events-none z-0" />
@@ -288,20 +438,12 @@ export default function PhotoFormPage() {
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Institute / Campus Name</label>
-                <div className="relative">
-                  <select 
-                    name="campusName" value={formData.campusName} onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#a40049] focus:bg-white transition-all duration-200 appearance-none"
-                  >
-                    <option value="SLIIT">SLIIT</option>
-                    <option value="NIBM">NIBM</option>
-                    <option value="IIT">IIT</option>
-                    <option value="Test">Test</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
-                    ▼
-                  </div>
-                </div>
+                <CustomSelect 
+                  value={formData.campusName}
+                  options={["SLIIT", "NIBM", "IIT"]}
+                  onChange={(val: string) => setFormData(prev => ({ ...prev, campusName: val }))}
+                  placeholder="Select Campus"
+                />
               </div>
 
               <div className="md:col-span-2">
@@ -327,18 +469,12 @@ export default function PhotoFormPage() {
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Session Sequence</label>
-                <div className="relative">
-                  <select 
-                    name="session" value={formData.session} onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#a40049] focus:bg-white transition-all duration-200 appearance-none"
-                  >
-                    <option value="Session 1">Session 1</option>
-                    <option value="Session 2">Session 2</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
-                    ▼
-                  </div>
-                </div>
+                <CustomSelect 
+                  value={formData.session}
+                  options={["Session 1", "Session 2"]}
+                  onChange={(val: string) => setFormData(prev => ({ ...prev, session: val }))}
+                  placeholder="Select Session"
+                />
               </div>
               
             </div>
@@ -455,30 +591,24 @@ export default function PhotoFormPage() {
       />
     </div>
 
-    <div>
-      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">District Selection</label>
-      <div className="relative">
-        <select 
-          required name="district" value={formData.district} onChange={handleInputChange}
-          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#a40049] focus:bg-white transition-all duration-200 appearance-none"
-        >
-          <option value="" disabled>Select Sri Lankan District</option>
-          {districts.map((d) => (
-            <option key={d} value={d}>{d}</option>
-          ))}
-        </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
-          ▼
-        </div>
-      </div>
-    </div>
-
+   <div>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">District Selection</label>
+              <CustomSelect 
+                value={formData.district}
+                options={districts}
+                onChange={(val: string) => setFormData(prev => ({ ...prev, district: val }))}
+                placeholder="Select District"
+                searchable={true} // <--- මෙන්න මේක විතරයි අලුතින් දැම්මේ
+              />
+            </div>
     <div>
       <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Primary Mobile No (Mobile 1)</label>
       <input 
         type="tel" required name="mobile1" value={formData.mobile1} onChange={handleInputChange}
         placeholder="Numbers only format"
-        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#a40049] focus:bg-white transition-all duration-200"
+        className={`w-full px-4 py-3 border rounded-xl text-sm font-medium focus:outline-none transition-all duration-200 ${
+          fieldErrors.mobile1 ? 'bg-red-50 border-red-500 ring-2 ring-red-200 focus:border-red-500' : 'bg-gray-50 border-gray-200 focus:border-[#a40049] focus:bg-white'
+        }`}
       />
     </div>
 
@@ -487,7 +617,9 @@ export default function PhotoFormPage() {
       <input 
         type="tel" required name="mobile2" value={formData.mobile2} onChange={handleInputChange}
         placeholder="Numbers only format"
-        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#a40049] focus:bg-white transition-all duration-200"
+        className={`w-full px-4 py-3 border rounded-xl text-sm font-medium focus:outline-none transition-all duration-200 ${
+          fieldErrors.mobile2 ? 'bg-red-50 border-red-500 ring-2 ring-red-200 focus:border-red-500' : 'bg-gray-50 border-gray-200 focus:border-[#a40049] focus:bg-white'
+        }`}
       />
     </div>
 
@@ -496,7 +628,9 @@ export default function PhotoFormPage() {
       <input 
         type="email" required name="email" value={formData.email} onChange={handleInputChange}
         placeholder="example@domain.com"
-        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#a40049] focus:bg-white transition-all duration-200"
+        className={`w-full px-4 py-3 border rounded-xl text-sm font-medium focus:outline-none transition-all duration-200 ${
+          fieldErrors.email ? 'bg-red-50 border-red-500 ring-2 ring-red-200 focus:border-red-500 text-red-900' : 'bg-gray-50 border-gray-200 focus:border-[#a40049] focus:bg-white'
+        }`}
       />
     </div>
   </div>
@@ -518,12 +652,26 @@ export default function PhotoFormPage() {
                 type="file" required accept="image/*,application/pdf" onChange={handleFileChange}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              <div className="space-y-2">
-                <div className="mx-auto w-10 h-10 rounded-full bg-[#a40049]/10 flex items-center justify-center text-[#a40049]">
-                  {fileName ? <CheckCircle2 className="w-5 h-5" /> : <UploadCloud className="w-5 h-5" />}
-                </div>
+              <div className="space-y-3">
+                {filePreview ? (
+                  <div className="mx-auto w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden border-2 border-[#a40049]/20 shadow-sm relative group">
+                    <img src={filePreview} alt="Slip Preview" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">Change Image</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mx-auto w-12 h-12 rounded-full bg-[#a40049]/10 flex items-center justify-center text-[#a40049]">
+                    <UploadCloud className="w-6 h-6" />
+                  </div>
+                )}
+                
                 <div className="text-sm font-semibold text-gray-700">
-                  {fileName ? <span className="text-[#a40049]">{fileName}</span> : "Click to select or drag verification slip"}
+                  {fileName ? (
+                    <span className="text-[#a40049] flex items-center justify-center gap-1.5"><CheckCircle2 className="w-4 h-4"/> {fileName}</span>
+                  ) : (
+                    "Click to select or drag verification slip"
+                  )}
                 </div>
                 <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wide">File Limit: Max 3MB (Image or PDF format only) *Required</p>
               </div>
@@ -538,21 +686,29 @@ export default function PhotoFormPage() {
 
           {/* Form Action Submit Button Trigger */}
           <motion.div 
-            whileHover={{ scale: 1.005 }}
-            whileTap={{ scale: 0.995 }}
-            className="pt-2"
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            className="pt-6 flex justify-center"
           >
             <button 
               type="submit"
               disabled={isSubmitting}
-              className={`w-full py-4 rounded-2xl font-bold text-white text-sm tracking-wider uppercase shadow-[0_15px_30px_-10px_rgba(164,0,73,0.3)] transition-all duration-300 flex items-center justify-center gap-2 ${
-                isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-[#a40049] to-[#ff4d94] hover:opacity-95'
+              className={`w-full sm:w-auto min-w-[300px] md:min-w-[400px] px-8 py-4 rounded-full font-bold text-white text-sm sm:text-base tracking-widest uppercase shadow-[0_15px_30px_-10px_rgba(164,0,73,0.3)] transition-all duration-300 flex items-center justify-center gap-3 ${
+                isSubmitting 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-gradient-to-r from-[#a40049] to-[#ff4d94] hover:opacity-95 hover:shadow-[0_20px_40px_-10px_rgba(164,0,73,0.4)]'
               }`}
             >
               {isSubmitting ? (
-                <>Loading...</>
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin shrink-0" />
+                  <span>Processing...</span>
+                </>
               ) : (
-                <><ShieldCheck className="w-5 h-5" /> Verify & Complete Registration Request</>
+                <>
+                  <ShieldCheck className="w-5 h-5 shrink-0" />
+                  <span>Verify & Complete Request</span>
+                </>
               )}
             </button>
           </motion.div>
@@ -564,45 +720,72 @@ export default function PhotoFormPage() {
       <AnimatePresence>
         {showPopup && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            {/* Backdrop */}
+            {/* Backdrop with elegant blur */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowPopup(false)}
-              className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-gray-900/60 backdrop-blur-md"
             />
             
             {/* Modal Content */}
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: "spring", bounce: 0.4 }}
-              className="relative bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border border-gray-100"
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="relative bg-white rounded-[2rem] p-8 sm:p-10 max-w-md w-full text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] border border-gray-50 overflow-hidden"
             >
+              {/* Top Decorative Gradient */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-gradient-to-b from-[#a40049]/5 to-transparent pointer-events-none" />
+
+              {/* Close Button */}
               <button 
                 onClick={() => setShowPopup(false)}
-                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-200 hover:text-gray-900 transition-colors z-10"
               >
                 <X className="w-4 h-4" />
               </button>
               
-              <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6 relative">
-                <div className="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-50" />
-                <CheckCircle2 className="w-10 h-10 text-green-500 relative z-10" />
+              {/* Multi-layered Animated Success Icon */}
+              <div className="mx-auto w-24 h-24 mb-6 relative flex items-center justify-center mt-2">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", delay: 0.1, bounce: 0.5 }}
+                  className="absolute inset-0 bg-[#a40049]/10 rounded-full"
+                />
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", delay: 0.2, bounce: 0.5 }}
+                  className="absolute inset-2 bg-[#a40049]/20 rounded-full"
+                />
+                <motion.div
+                  initial={{ scale: 0, rotate: -45 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: "spring", delay: 0.3, bounce: 0.5 }}
+                  className="relative bg-[#a40049] w-14 h-14 rounded-full flex items-center justify-center shadow-[0_10px_20px_-5px_rgba(164,0,73,0.4)] text-white"
+                >
+                  <Check className="w-7 h-7 stroke-[3]" />
+                </motion.div>
               </div>
               
-              <h3 className="text-2xl font-extrabold text-gray-900 mb-2">Success!</h3>
-              <p className="text-sm text-gray-500 font-medium mb-8 leading-relaxed">
-                Your details and payment slip have been submitted successfully. We will process your request shortly.
+              {/* Typography & Content */}
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3 tracking-tight relative z-10">
+                Thank You!
+              </h3>
+              <p className="text-sm text-gray-500 font-medium mb-8 leading-relaxed px-2 relative z-10">
+                Your order details and payment verification have been successfully submitted. Our team will review your request and process your premium photography package shortly.
               </p>
               
+              {/* Action Button */}
               <button 
-                onClick={() => setShowPopup(false)}
-                className="w-full py-3.5 rounded-xl font-bold bg-gray-900 text-white text-sm hover:bg-gray-800 transition-colors"
+                onClick={handleResetForm}
+                className="w-full py-4 rounded-xl font-bold tracking-wider uppercase bg-gradient-to-r from-[#a40049] to-[#ff4d94] text-white text-sm hover:shadow-[0_15px_30px_-10px_rgba(164,0,73,0.4)] transition-all duration-300 hover:opacity-95 relative z-10"
               >
-                Done
+                Close & Return
               </button>
             </motion.div>
           </div>
