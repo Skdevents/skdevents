@@ -72,8 +72,18 @@ const boothDetails: Record<string, any> = {
       "One-time fly display operation included", 
       "Professional technical and flight crew included"
     ]
+  },
+  "Mace bearer / Sergeant-at-Arms": {
+    desc: "Leads the official academic procession carrying the ceremonial mace representing the institutional authority and dignity as a symbol of academic tradition.",
+    features: [
+      "Professional Sergeant-at-Arms Costume", 
+      "Carrying of the Ceremonial Mace", 
+      "Dignified procession leadership", 
+      "Enhances traditional academic protocols"
+    ]
   }
 };
+
 const structuredServices = [
   {
     id: "C1", category: "Registration", icon: ClipboardCheck,
@@ -101,6 +111,10 @@ const structuredServices = [
           "Student Seating Arrangement", 
           "Guest & Parent Seating Arrangement"
         ] 
+      },
+      {
+        name: "Mace bearer | Sergeant-at-Arms",
+        items: ["Mace bearer | Sergeant-at-Arms (With Costume)"]
       }
     ]
   },
@@ -119,11 +133,11 @@ const structuredServices = [
           },
           {
             id: "P2", name: "Package 2",
-            features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x18”"]
+            features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x15”"]
           },
           {
             id: "P3", name: "Package 3",
-            features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x18”", "Group Photo - Soft Copy - 12”x18”"]
+            features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x15”", "Group Photo - Soft Copy - 12”x18”"]
           },
           {
             id: "P4", name: "Package 4",
@@ -131,6 +145,21 @@ const structuredServices = [
             isCustom: true
           }
         ],
+       nestedGroups: [
+          {
+            title: "Select Photo Options",
+            desc: "You got Package 4. Please select your preferred options below.",
+            dependsOn: "Package 4",
+            hideTitleInPill: true,
+            options: [
+              "Stage Photo - 12”x15”",
+              "Full Photo - 12”x18” | Bust Photo 12”x15”",
+              "Family Photo - 12”x15”",
+              "Couple Photo - 12”x15”",
+              "Group Photo - Soft Copy - 12”x18”"
+            ]
+          }
+        ]
        },
       { name: "Photo Backdrops", items: ["Custom Themed Photo Backdrop | Selfie Background"], desc: "8'x12' Flex matte print with red Carpet" }
     ]
@@ -219,11 +248,23 @@ const structuredServices = [
       { 
         name: "FLOWER DROPPING DRONES", 
         desc: "Choose your preferred drone package",
-        items: ["30KG Flower Dropping", "100KG Flower Dropping"],
+        items: ["30KG Flower Dropping Drone", "100KG Flower Dropping Drone"],
         nestedGroups: [
           {
-            title: "Flower Bag Sizes",
+            title: "Bags for 30KG Drone",
+            desc: "Select either 30KG or 20KG bag (Max 1)",
+            dependsOn: "30KG Flower Dropping Drone",
+            singleSelect: true,
             hideTitleInPill: true,
+            options: ["30KG Flower Bag", "20KG Flower Bag"]
+          },
+          {
+            title: "Bags for 100KG Drone",
+            desc: "Select up to 3x 30KG bags OR 5x 20KG bags",
+            dependsOn: "100KG Flower Dropping Drone",
+            hideTitleInPill: true,
+            hasCounters: true,
+            counterLimits: { "30KG Flower Bag": 3, "20KG Flower Bag": 5 }, // <-- Me limits walata hira wenawa
             options: ["30KG Flower Bag", "20KG Flower Bag"]
           }
         ],
@@ -311,8 +352,12 @@ const structuredServices = [
           { id: "K3", name: "Package 3", features: ["Dancers - 08", "Bera - 04", "Conch Blower - 01"] }
         ],
         nestedGroups: [
-          { title: "Sesath Bearers", options: ["02", "04"] },
-          { title: "Muthukuda Bearers", options: ["01"] }
+          { 
+            title: "Bearers", 
+            hideTitleInPill: true,
+            hasCounters: true,
+            options: ["Sesath Bearers", "Muthukuda Bearers"] 
+          }
         ]
       },
       {
@@ -547,7 +592,6 @@ export default function ServicesContent() {
         cleaned.push(itemFullString);
         return cleaned;
       }
-      
       // --- Standard Selection Logic ---
       if (prev.includes(itemFullString)) {
         return prev.filter(i => i !== itemFullString);
@@ -644,10 +688,11 @@ export default function ServicesContent() {
     }
   };
 
-  const SelectablePill = ({ label, categoryName, isSingleSelect = false, groupPrefix = "", disabled = false }: { label: string, categoryName: string, isSingleSelect?: boolean, groupPrefix?: string, disabled?: boolean }) => {
+  const SelectablePill = ({ label, displayLabel, categoryName, isSingleSelect = false, groupPrefix = "", disabled = false }: { label: string, displayLabel?: string, categoryName: string, isSingleSelect?: boolean, groupPrefix?: string, disabled?: boolean }) => {
     const fullString = `${categoryName}: ${label}`;
     const isSelected = cart.includes(fullString);
     const prefixToClear = groupPrefix ? `${categoryName}: ${groupPrefix}` : `${categoryName}:`;
+    const showText = displayLabel || label; // Display වෙන නම වෙනස් කරනවා 
 
     return (
       <motion.button
@@ -658,34 +703,48 @@ export default function ServicesContent() {
           isSelected 
             ? "bg-[#a40049] text-white border-[#a40049] shadow-md" 
             : disabled 
-              ? "bg-gray-100 text-gray-400 border-gray-200 opacity-60 cursor-not-allowed" // Disabled state
+              ? "bg-gray-100 text-gray-400 border-gray-200 opacity-60 cursor-not-allowed" 
               : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 hover:border-gray-300"
         }`}
       >
         <div className="shrink-0 mt-0.5 sm:mt-0">
           {isSelected ? <Check className="w-4 h-4 text-white" /> : <Plus className={`w-4 h-4 ${disabled ? "text-gray-300" : "text-gray-400"}`} />}
         </div>
-        <span className="leading-snug break-words">{label}</span>
+        <span className="leading-snug break-words">{showText}</span>
       </motion.button>
     );
   };
 
-  const CounterPill = ({ label, categoryName }: { label: string, categoryName: string }) => {
+  const CounterPill = ({ label, displayLabel, categoryName, maxLimit }: { label: string, displayLabel?: string, categoryName: string, maxLimit?: number }) => {
     const fullString = `${categoryName}: ${label}`;
     const qty = quantities[fullString] || 0;
+    const showText = displayLabel || label;
+
+    // --- 100KG Drone Weight Limit Logic Eka (Supiri wadak meka) ---
+    const is100KGDosage = categoryName.includes("FLOWER DROPPING DRONES") && fullString.includes("Bags for 100KG Drone");
+    let isMaxed = false;
+    
+    if (maxLimit && qty >= maxLimit) isMaxed = true;
+    
+    // 100KG eke bara ganan hadala limit karanawa (30KG da 20KG da kiyala balala)
+    if (is100KGDosage) {
+        const current30 = quantities[`${categoryName}: Bags for 100KG Drone - 30KG Flower Bag`] || 0;
+        const current20 = quantities[`${categoryName}: Bags for 100KG Drone - 20KG Flower Bag`] || 0;
+        const currentWeight = (current30 * 30) + (current20 * 20);
+        const thisWeight = fullString.includes("30KG") ? 30 : 20;
+        if (currentWeight + thisWeight > 100) isMaxed = true; // 100 Paninna ba
+    }
 
     const handleCount = (delta: number) => {
+      if (delta > 0 && isMaxed) return; // Limit panna nam + button wada na
+      
       setQuantities(prev => {
         const current = prev[fullString] || 0;
         const next = Math.max(0, current + delta);
         
         setCart(c => {
-          if (next > 0 && !c.includes(fullString)) {
-            return [...c, fullString];
-          }
-          if (next === 0 && c.includes(fullString)) {
-            return c.filter(i => i !== fullString);
-          }
+          if (next > 0 && !c.includes(fullString)) return [...c, fullString];
+          if (next === 0 && c.includes(fullString)) return c.filter(i => i !== fullString);
           return c;
         });
         
@@ -695,25 +754,29 @@ export default function ServicesContent() {
 
     return (
       <div className={`inline-flex w-full sm:w-auto items-center justify-between gap-3 sm:gap-4 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-full border transition-all duration-300 ${qty > 0 ? 'bg-[#a40049]/5 border-[#a40049] shadow-md' : 'bg-gray-50 border-gray-200 hover:bg-gray-100 hover:border-gray-300'}`}>
-         {/* Left Side: Text */}
-         <span className={`text-xs sm:text-sm font-bold leading-snug ${qty > 0 ? 'text-[#a40049]' : 'text-gray-700'}`}>
-           {label}
-         </span>
+         <div className="flex flex-col">
+           <span className={`text-xs sm:text-sm font-bold leading-snug ${qty > 0 ? 'text-[#a40049]' : 'text-gray-700'}`}>
+             {showText}
+           </span>
+         </div>
          
-         {/* Right Side: + - Counters */}
-         <div className="flex items-center gap-2 sm:gap-2.5 bg-white border border-gray-200 rounded-full p-1 shadow-sm shrink-0">
+         <div className="flex items-center gap-3 sm:gap-4 bg-white border border-gray-200 rounded-full p-1.5 px-2 sm:px-3 shadow-sm shrink-0">
             <button 
               onClick={() => handleCount(-1)} 
-              className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 font-extrabold transition-colors text-xs sm:text-sm active:scale-90"
+              className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 font-extrabold transition-colors text-sm sm:text-base active:scale-90"
             >
               -
             </button>
-            <span className="w-3 sm:w-4 text-center text-[11px] sm:text-xs font-extrabold text-gray-900">
+            <span className="w-6 sm:w-8 text-center text-xs sm:text-sm font-extrabold text-gray-900">
               {qty}
             </span>
             <button 
               onClick={() => handleCount(1)} 
-              className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full bg-[#a40049] text-white hover:bg-[#8a003d] font-extrabold transition-colors text-xs sm:text-sm active:scale-90 shadow-md"
+              className={`w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-full font-extrabold transition-colors text-sm sm:text-base active:scale-90 shadow-md ${
+                isMaxed 
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                  : 'bg-[#a40049] text-white hover:bg-[#8a003d]'
+              }`}
             >
               +
             </button>
@@ -908,7 +971,7 @@ export default function ServicesContent() {
                                       >
                                         <div className="flex items-center justify-between mb-2.5">
                                           <h6 className={`font-extrabold text-xs sm:text-sm ${isSelected ? 'text-[#a40049]' : 'text-gray-800'}`}>{pkg.name}</h6>
-                                          <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center border transition-colors ${isSelected ? 'bg-[#a40049] border-[#a40049]' : 'border-gray-300'}`}>
+                                          <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center border transition-colors ${isSelected ? 'bg-[#a40049] border-[#a40049]' : 'bg-white border-[#a40049]'}`}>
                                             {isSelected && <Check className="w-3 h-3 text-white" />}
                                           </div>
                                         </div>
@@ -953,7 +1016,7 @@ export default function ServicesContent() {
       let selectedCount = 0;
       if (nested.maxSelect) {
         selectedCount = nested.options.filter((opt: string) => {
-          const pillLabel = nested.hideTitleInPill ? opt : `${nested.title} - ${opt}`;
+          const pillLabel = `${nested.title} - ${opt}`; 
           return cart.includes(`${cat.category} - ${sub.name}: ${pillLabel}`);
         }).length;
       }
@@ -985,12 +1048,15 @@ export default function ServicesContent() {
         
      <div className={`flex mt-2 ${nested.hasCounters ? 'flex-col gap-3 w-full'   : 'flex-wrap gap-1.5 sm:gap-2'}`}>
           {nested.options.map((opt: string) => {
-            const pillLabel = nested.hideTitleInPill ? opt : `${nested.title} - ${opt}`;
-            const clearPrefix = nested.hideTitleInPill ? "" : `${nested.title} -`;
+            // මේකෙන් cart string එක හැමවෙලේම unique වෙනවා (Dancing bug fix)
+            const pillLabel = `${nested.title} - ${opt}`;
+            const displayLbl = nested.hideTitleInPill ? opt : pillLabel;
+            const clearPrefix = `${nested.title} -`; // 30KG Drone Hide Bug Fix
             
             // --- ALUTH COUNTER LOGIC EKA ---
             if (nested.hasCounters) {
-              return <CounterPill key={opt} label={pillLabel} categoryName={`${cat.category} - ${sub.name}`} />
+              const limit = nested.counterLimits ? nested.counterLimits[opt] : undefined;
+              return <CounterPill key={opt} label={pillLabel} displayLabel={displayLbl} categoryName={`${cat.category} - ${sub.name}`} maxLimit={limit} />
             }
 
             // Check if this pill should be disabled because max count is reached
@@ -1001,6 +1067,7 @@ export default function ServicesContent() {
               <SelectablePill 
                 key={opt} 
                 label={pillLabel} 
+                displayLabel={displayLbl}
                 categoryName={`${cat.category} - ${sub.name}`} 
                 isSingleSelect={nested.singleSelect} 
                 groupPrefix={clearPrefix} 
@@ -1010,19 +1077,25 @@ export default function ServicesContent() {
           })}
 
           {/* More Options / Custom Button / "More Sizes" Toggle */}
-          {nested.moreOptions && isExpanded && nested.moreOptions.map((opt: string) => (
-            <SelectablePill 
-              key={opt}
-              label={`${nested.title} - ${opt}`} 
-              categoryName={`${cat.category} - ${sub.name}`} 
-              isSingleSelect={nested.singleSelect} 
-              groupPrefix={`${nested.title} -`} 
-            />
-          ))}
+          {nested.moreOptions && isExpanded && nested.moreOptions.map((opt: string) => {
+            const pillLabel = `${nested.title} - ${opt}`;
+            const displayLbl = nested.hideTitleInPill ? opt : pillLabel;
+            return (
+              <SelectablePill 
+                key={opt}
+                label={pillLabel} 
+                displayLabel={displayLbl}
+                categoryName={`${cat.category} - ${sub.name}`} 
+                isSingleSelect={nested.singleSelect} 
+                groupPrefix={`${nested.title} -`} 
+              />
+            )
+          })}
 
           {nested.hasCustom && isExpanded && (
             <SelectablePill 
               label={`${nested.title} - Custom Size`} 
+              displayLabel={nested.hideTitleInPill ? "Custom Size" : `${nested.title} - Custom Size`}
               categoryName={`${cat.category} - ${sub.name}`} 
               isSingleSelect={nested.singleSelect} 
               groupPrefix={`${nested.title} -`} 
