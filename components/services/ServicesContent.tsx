@@ -167,7 +167,6 @@ const structuredServices = [
         nestedGroups: [
           {
             title: "Lighting Backdrop",
-            singleSelect: true,
             hideTitleInPill: true, 
             options: ["Include SLO-MO Video Booth", "With Lighting Backdrop"]
           }
@@ -261,12 +260,25 @@ const structuredServices = [
     subCategories: [
       { 
         name: "Stage Flower Decorations", 
-        items: ["Stage Edge Decoration - Flower Band", "Oil Lamp Decoration", "Podium Decoration", "Head Table Decoration", "Flower Garlands & Baskets", ],
+        packages: [
+          {
+            id: "SF1", name: "Package 1 - Fresh Flowers",
+            features: ["Stage Edge Deco", "Podium Deco", "Oil Lamp Deco", "Head Table Deco"]
+          },
+          {
+            id: "SF2", name: "Package 2 - Artificial Flowers",
+            features: ["Stage Edge Deco", "Podium Deco", "Head Table Deco", "Oil Lamp Deco"]
+          },
+            id: "SF3", name: "Package 3 - Mix Flowers",
+            features: ["Stage Edge Deco", "Podium Deco", "Head Table Deco", "Oil Lamp Deco"]
+          }
+        ],
         nestedGroups: [
           {
-            title: "Stage Decoration",
-            singleSelect: true,
-            options: ["Fresh Flowers", "Artificial Flowers"]
+            title: "Additional Selection",
+            hideTitleInPill: true,
+            hasCounters: true,
+            options: ["Flower Garland (Orchid)", "Flower Boutique", "Flower Basket"]
           }
         ]
       },
@@ -285,13 +297,64 @@ const structuredServices = [
       }
     ]
   },
-  {
+ {
     id: "C7", category: "Entertainment", icon: Music,
     desc: "Curated live performances adding elegance and cultural vibrancy to events.",
     hideSelectAll: true,
-    items: ["Traditional Welcome Dance (Wes Dance)", "Sesath Holders", "Puja Dance (Girls)", "Light Performance Dance", "Latin Dance", "Indian Dance Act", "Comedian Act", "Solo Dance", "Belly Dance", "Mask Dance Act"],
     subCategories: [
-      { name: "Instrumental Items", items: ["Drum Orchestra", "Indian Doll Act with Dancers"] }
+      {
+        name: "Kandyan (Wes) Dance",
+        packages: [
+          { id: "K1", name: "Package 1", features: ["Dancers - 04", "Bera - 02", "Conch Blower - 01"] },
+          { id: "K2", name: "Package 2", features: ["Dancers - 06", "Bera - 02", "Conch Blower - 01"] },
+          { id: "K3", name: "Package 3", features: ["Dancers - 08", "Bera - 04", "Conch Blower - 01"] }
+        ],
+        nestedGroups: [
+          { title: "Sesath Bearers", options: ["02", "04"] },
+          { title: "Muthukuda Bearers", options: ["01"] }
+        ]
+      },
+      {
+        name: "5 | 6 Girls Dancing Package",
+        packages: [
+          { id: "GD1", name: "Package 1", features: ["Puja Dance"] },
+          { id: "GD2", name: "Package 2", features: ["Puja Dance", "01 Additional Dance Act"] },
+          { id: "GD3", name: "Package 3", features: ["Puja Dance", "02 Additional Dance Acts"] },
+          { id: "GD4", name: "Package 4", features: ["Custom Selection (Build your own)"], isCustom: true }
+        ],
+        nestedGroups: [
+          {
+            title: "Select 01 Dance Act",
+            desc: "You got Package 2. Please select exactly 1 additional dance act from below.",
+            dependsOn: "Package 2",
+            hideTitleInPill: true,
+            maxSelect: 1, 
+            options: ["Light Performance Dance", "Latin Dance", "Indian Dance", "Solo Dance", "Belly Dance", "Mask Dance"]
+          },
+          {
+            title: "Select 02 Dance Acts",
+            desc: "You got Package 3. Please select exactly 2 additional dance acts from below.",
+            dependsOn: "Package 3",
+            hideTitleInPill: true,
+            maxSelect: 2, 
+            options: ["Light Performance Dance", "Latin Dance", "Indian Dance", "Solo Dance", "Belly Dance", "Mask Dance"]
+          },
+          {
+            title: "Custom Dance Acts",
+            dependsOn: "Package 4",
+            hideTitleInPill: true,
+            options: ["Light Performance Dance", "Latin Dance", "Indian Dance", "Solo Dance", "Belly Dance", "Mask Dance"]
+          }
+        ]
+      },
+      {
+        name: "Comedian Act",
+        items: ["Comedian Act"]
+      },
+      { 
+        name: "Instrumental Items", 
+        items: ["Drum Orchestra", "Drum Orchestra with Violin & Flute"] 
+      }
     ]
   },
   {
@@ -366,6 +429,7 @@ const structuredServices = [
 
 export default function ServicesContent() {
   const [cart, setCart] = useState<string[]>([]);
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
   const toggleGroupExpand = (title: string) => {
@@ -375,15 +439,20 @@ export default function ServicesContent() {
 
   useEffect(() => {
     const savedCart = localStorage.getItem("skd_services_cart");
+    const savedQty = localStorage.getItem("skd_services_qty"); // <--- Meka add karanna
     if (savedCart) {
       try { setCart(JSON.parse(savedCart)); } catch (e) { console.error("Error parsing cart"); }
+    }
+    if (savedQty) {
+      try { setQuantities(JSON.parse(savedQty)); } catch (e) { console.error("Error parsing qty"); }
     }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("skd_services_cart", JSON.stringify(cart));
-  }, [cart]);
-
+    localStorage.setItem("skd_services_qty", JSON.stringify(quantities)); // <--- Meka add karanna
+  }, [cart, quantities]);
+  
   const toggleCart = (itemFullString: string, isSingleSelect: boolean = false, categoryPrefix: string = "") => {
     setCart(prev => {
       let newCart = [...prev];
@@ -413,21 +482,6 @@ export default function ServicesContent() {
         const isSelected = seatingItems.every(i => prev.includes(i));
         if (isSelected) return prev.filter(i => !seatingItems.includes(i)); // Deselect all
         seatingItems.forEach(i => { if (!newCart.includes(i)) newCart.push(i); }); // Select all
-        return newCart;
-      }
-
-      // 2. Stage Flower Decorations Auto-Select (Except Fresh/Artificial button)
-      if (itemFullString.startsWith("Stage Arrangements - Stage Flower Decorations: ") && !itemFullString.includes("Stage Decoration -")) {
-        const flowerItems = [
-          "Stage Arrangements - Stage Flower Decorations: Oil Lamp Decoration",
-          "Stage Arrangements - Stage Flower Decorations: Podium Decoration",
-          "Stage Arrangements - Stage Flower Decorations: Head Table Decoration",
-          "Stage Arrangements - Stage Flower Decorations: Flower Garlands & Baskets",
-          "Stage Arrangements - Stage Flower Decorations: Stage Edge Decoration - Flower Band"
-        ];
-        const isSelected = flowerItems.every(i => prev.includes(i));
-        if (isSelected) return prev.filter(i => !flowerItems.includes(i));
-        flowerItems.forEach(i => { if (!newCart.includes(i)) newCart.push(i); });
         return newCart;
       }
 
@@ -589,27 +643,82 @@ export default function ServicesContent() {
     }
   };
 
-  const SelectablePill = ({ label, categoryName, isSingleSelect = false, groupPrefix = "" }: { label: string, categoryName: string, isSingleSelect?: boolean, groupPrefix?: string }) => {
+  const SelectablePill = ({ label, categoryName, isSingleSelect = false, groupPrefix = "", disabled = false }: { label: string, categoryName: string, isSingleSelect?: boolean, groupPrefix?: string, disabled?: boolean }) => {
     const fullString = `${categoryName}: ${label}`;
     const isSelected = cart.includes(fullString);
     const prefixToClear = groupPrefix ? `${categoryName}: ${groupPrefix}` : `${categoryName}:`;
 
     return (
       <motion.button
-        whileTap={{ scale: 0.95 }}
-        onClick={() => toggleCart(fullString, isSingleSelect, prefixToClear)}
+        whileTap={!disabled ? { scale: 0.95 } : {}}
+        onClick={() => !disabled && toggleCart(fullString, isSingleSelect, prefixToClear)}
+        disabled={disabled}
         className={`flex items-start sm:items-center gap-2.5 px-4 sm:px-5 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 border transform-gpu text-left w-full sm:w-auto h-auto ${
           isSelected 
             ? "bg-[#a40049] text-white border-[#a40049] shadow-md" 
-            : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 hover:border-gray-300"
+            : disabled 
+              ? "bg-gray-100 text-gray-400 border-gray-200 opacity-60 cursor-not-allowed" // Disabled state
+              : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 hover:border-gray-300"
         }`}
       >
         <div className="shrink-0 mt-0.5 sm:mt-0">
-          {isSelected ? <Check className="w-4 h-4 text-white" /> : <Plus className="w-4 h-4 text-gray-400" />}
+          {isSelected ? <Check className="w-4 h-4 text-white" /> : <Plus className={`w-4 h-4 ${disabled ? "text-gray-300" : "text-gray-400"}`} />}
         </div>
         <span className="leading-snug break-words">{label}</span>
       </motion.button>
     );
+  };
+
+  const CounterPill = ({ label, categoryName }: { label: string, categoryName: string }) => {
+    const fullString = `${categoryName}: ${label}`;
+    const qty = quantities[fullString] || 0;
+
+    const handleCount = (delta: number) => {
+      setQuantities(prev => {
+        const current = prev[fullString] || 0;
+        const next = Math.max(0, current + delta);
+        
+        setCart(c => {
+          if (next > 0 && !c.includes(fullString)) {
+            return [...c, fullString];
+          }
+          if (next === 0 && c.includes(fullString)) {
+            return c.filter(i => i !== fullString);
+          }
+          return c;
+        });
+        
+        return { ...prev, [fullString]: next };
+      });
+    };
+
+    return (
+      <div className={`inline-flex w-full sm:w-auto items-center justify-between gap-3 sm:gap-4 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-full border transition-all duration-300 ${qty > 0 ? 'bg-[#a40049]/5 border-[#a40049] shadow-md' : 'bg-gray-50 border-gray-200 hover:bg-gray-100 hover:border-gray-300'}`}>
+         {/* Left Side: Text */}
+         <span className={`text-xs sm:text-sm font-bold leading-snug ${qty > 0 ? 'text-[#a40049]' : 'text-gray-700'}`}>
+           {label}
+         </span>
+         
+         {/* Right Side: + - Counters */}
+         <div className="flex items-center gap-2 sm:gap-2.5 bg-white border border-gray-200 rounded-full p-1 shadow-sm shrink-0">
+            <button 
+              onClick={() => handleCount(-1)} 
+              className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 font-extrabold transition-colors text-xs sm:text-sm active:scale-90"
+            >
+              -
+            </button>
+            <span className="w-3 sm:w-4 text-center text-[11px] sm:text-xs font-extrabold text-gray-900">
+              {qty}
+            </span>
+            <button 
+              onClick={() => handleCount(1)} 
+              className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full bg-[#a40049] text-white hover:bg-[#8a003d] font-extrabold transition-colors text-xs sm:text-sm active:scale-90 shadow-md"
+            >
+              +
+            </button>
+         </div>
+      </div>
+    )
   };
 
   return (
@@ -834,34 +943,59 @@ export default function ServicesContent() {
   <div className="mt-4 space-y-3">
     {sub.nestedGroups.map((nested: any) => {
       // --- Mirror Booth Dependency Check ---
-      if (nested.dependsOn === "With Print" && !cart.includes(`${cat.category} - ${sub.name}: With Print`)) {
-        return null; // With Print තෝරලා නැත්තන් මේ කොටස පෙන්නන්නේ නෑ
+      if (nested.dependsOn && !cart.includes(`${cat.category} - ${sub.name}: ${nested.dependsOn}`)) {
+        return null; 
       }
 
       const isExpanded = expandedGroups.includes(nested.title);
+
+      let selectedCount = 0;
+      if (nested.maxSelect) {
+        selectedCount = nested.options.filter((opt: string) => {
+          const pillLabel = nested.hideTitleInPill ? opt : `${nested.title} - ${opt}`;
+          return cart.includes(`${cat.category} - ${sub.name}: ${pillLabel}`);
+        }).length;
+      }
+
       return (
       <div key={nested.title} className="bg-white border border-gray-100 p-3 sm:p-4 rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
         <h5 className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
-          Select {nested.title}
+          Select {nested.title} {nested.maxSelect && <span className="text-[#a40049] font-extrabold ml-1">(Max: {nested.maxSelect})</span>}
         </h5>
         
-        {/* LED Video Wall Description එක (Left-Middle-Right) */}
+        {/* LED Video Wall Description or Dynamic Package Message */}
         {nested.desc && (
-          <div className="flex items-center justify-between w-full text-[7.5px] min-[375px]:text-[8.5px] md:text-[10px] lg:text-[11px] text-[#a40049] font-semibold mb-3">
-            {nested.desc.split(' | ').reduce((acc: any[], part: string, i: number, arr: string[]) => {
-              acc.push(<span key={`text-${i}`} className="whitespace-nowrap truncate">{part.trim()}</span>);
-              if (i < arr.length - 1) {
-                acc.push(<span key={`dot-${i}`} className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#a40049]/50 shrink-0 mx-1 sm:mx-2"></span>);
-              }
-              return acc;
-            }, [])}
+          <div className="w-full mb-3">
+            {nested.desc.includes('|') ? (
+              <div className="flex items-center justify-between w-full text-[7.5px] min-[375px]:text-[8.5px] md:text-[10px] lg:text-[11px] text-[#a40049] font-semibold">
+                {nested.desc.split(' | ').reduce((acc: any[], part: string, i: number, arr: string[]) => {
+                  acc.push(<span key={`text-${i}`} className="whitespace-nowrap truncate">{part.trim()}</span>);
+                  if (i < arr.length - 1) {
+                    acc.push(<span key={`dot-${i}`} className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#a40049]/50 shrink-0 mx-1 sm:mx-2"></span>);
+                  }
+                  return acc;
+                }, [])}
+              </div>
+            ) : (
+              <p className="text-[10px] sm:text-xs text-[#a40049] font-bold bg-[#a40049]/10 px-3 py-1.5 rounded-md inline-block">{nested.desc}</p>
+            )}
           </div>
         )}
         
-       <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
+     <div className={`flex mt-2 ${nested.hasCounters ? 'flex-col gap-3 w-full'   : 'flex-wrap gap-1.5 sm:gap-2'}`}>
           {nested.options.map((opt: string) => {
             const pillLabel = nested.hideTitleInPill ? opt : `${nested.title} - ${opt}`;
             const clearPrefix = nested.hideTitleInPill ? "" : `${nested.title} -`;
+            
+            // --- ALUTH COUNTER LOGIC EKA ---
+            if (nested.hasCounters) {
+              return <CounterPill key={opt} label={pillLabel} categoryName={`${cat.category} - ${sub.name}`} />
+            }
+
+            // Check if this pill should be disabled because max count is reached
+            const isSelected = cart.includes(`${cat.category} - ${sub.name}: ${pillLabel}`);
+            const isDisabled = nested.maxSelect && selectedCount >= nested.maxSelect && !isSelected;
+
             return (
               <SelectablePill 
                 key={opt} 
@@ -869,6 +1003,7 @@ export default function ServicesContent() {
                 categoryName={`${cat.category} - ${sub.name}`} 
                 isSingleSelect={nested.singleSelect} 
                 groupPrefix={clearPrefix} 
+                disabled={isDisabled}
               />
             )
           })}
