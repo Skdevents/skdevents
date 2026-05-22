@@ -269,6 +269,7 @@ const structuredServices = [
             id: "SF2", name: "Package 2 - Artificial Flowers",
             features: ["Stage Edge Deco", "Podium Deco", "Head Table Deco", "Oil Lamp Deco"]
           },
+          {
             id: "SF3", name: "Package 3 - Mix Flowers",
             features: ["Stage Edge Deco", "Podium Deco", "Head Table Deco", "Oil Lamp Deco"]
           }
