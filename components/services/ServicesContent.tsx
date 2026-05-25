@@ -125,7 +125,7 @@ const structuredServices = [
     subCategories: [
       { name: "Event Coverage", items: ["Fully Edited Highlight Photos", "Group Photo - 16”x24”"] },
       { 
-        name: "Photobooth Coverage ( Photo Package)", 
+        name: "Student’s Photo Package", 
         packages: [
           {
             id: "P1", name: "Package 1",
@@ -163,7 +163,7 @@ const structuredServices = [
       },
       { name: "Photo Backdrops", items: ["Custom Themed Photo Backdrop | Selfie Background"], desc: "8'x12' Flex matte print with red Carpet" },
       
-      // ====== අලුතින් ගෙනාපු Photo Booths Duration සහ Photo Booths ටික ======
+      { isSectionHeader: true, title: "Photo Booths", iconName: "Camera" },
       {
         name: "Photo Booth Duration",
         nestedGroups: [
@@ -175,7 +175,6 @@ const structuredServices = [
           }
         ]
       },
-      { isSectionHeader: true, title: "Photo Booths", iconName: "Camera" },
       { 
         name: "Mirror Photo Booth", 
         isBoothItem: true, // මේකෙන් තමයි පහළ disable logic එක අල්ලන්නේ
@@ -222,20 +221,23 @@ const structuredServices = [
       "Fully Edited Guest Speeches", "Live Streaming on Facebook & YouTube", 
       "Review & Testimonial Video Clips"
     ],
-    // --- Video Booths වලට අදාළ Duration එක ---
-    nestedGroups: [
-      {
-        title: "Booth Duration",
-        singleSelect: true,
-        hideTitleInPill: true,
-        options: ["04-Hour Package", "Full-Day Package"]
-      }
-    ],
     subCategories: [
       // ==========================================
       // VIDEO BOOTHS SECTION
       // ==========================================
       { isSectionHeader: true, title: "Video Booths", iconName: "Video" },
+      // --- Duration එක Title එකට පස්සේ දැම්මා ---
+      {
+        name: "Video Booth Duration",
+        nestedGroups: [
+          {
+            title: "Booth Duration",
+            singleSelect: true,
+            hideTitleInPill: true,
+            options: ["04-Hour Package", "Full-Day Package"]
+          }
+        ]
+      },
       { 
         name: "360 Video Booth", 
         isBoothItem: true,
@@ -572,8 +574,8 @@ export default function ServicesContent() {
       }
 
       // 5. Booth Duration Single Select Logic
-      if (itemFullString === "Event Videography: Booth Duration - 04-Hour Package" || itemFullString === "Event Videography: Booth Duration - Full-Day Package") {
-        let cleaned = prev.filter(i => i !== "Event Videography: Booth Duration - 04-Hour Package" && i !== "Event Videography: Booth Duration - Full-Day Package");
+      if (itemFullString === "Event Videography - Video Booth Duration: Booth Duration - 04-Hour Package" || itemFullString === "Event Videography - Video Booth Duration: Booth Duration - Full-Day Package") {
+        let cleaned = prev.filter(i => i !== "Event Videography - Video Booth Duration: Booth Duration - 04-Hour Package" && i !== "Event Videography - Video Booth Duration: Booth Duration - Full-Day Package");
         if (prev.includes(itemFullString)) return cleaned;
         cleaned.push(itemFullString);
         return cleaned;
@@ -957,7 +959,7 @@ export default function ServicesContent() {
                             
                             // Event Videography (C4) - Video Booths Disable Logic
                             if (cat.id === "C4" && sub.isBoothItem) {
-                              const isVideoDurationSelected = cart.some(i => i.startsWith("Event Videography:"));
+                              const isVideoDurationSelected = cart.some(i => i.startsWith("Event Videography - Video Booth Duration:"));
                               disableBooths = !isVideoDurationSelected;
                             }
 
