@@ -146,67 +146,39 @@ const structuredServices = [
           }
         ],
        nestedGroups: [
-          {
-            title: "Select Photo Options",
-            desc: "You got Package 4. Please select your preferred options below.",
-            dependsOn: "Package 4",
-            hideTitleInPill: true,
-            options: [
-              "Stage Photo - 12”x15”",
-              "Full Photo - 12”x18” | Bust Photo 12”x15”",
-              "Family Photo - 12”x15”",
-              "Couple Photo - 12”x15”",
-              "Group Photo - Soft Copy - 12”x18”"
-            ]
-          }
-        ]
-       },
-      { name: "Photo Backdrops", items: ["Custom Themed Photo Backdrop | Selfie Background"], desc: "8'x12' Flex matte print with red Carpet" }
-    ]
-  },
-  {
-    id: "C4", category: "Event Videography", icon: Video,
-    desc: "Full ceremony videography delivered in sharp, cinematic high-definition quality.",
-    items: [
-      "Fully Edited Event Coverage Video", "Fully Edited Highlight Video", 
-      "Fully Edited Guest Speeches", "Live Streaming on Facebook & YouTube", 
-      "Review & Testimonial Video Clips"
-    ],
-    // --- පොදුවේ තෝරන Duration එක ---
-    nestedGroups: [
-      {
-        title: "Booth Duration",
-        singleSelect: true,
-        hideTitleInPill: true,
-        options: ["04-Hour Package", "Full-Day Package"]
-      }
-    ],
-    subCategories: [
-      // ==========================================
-      // VIDEO BOOTHS SECTION
-      // ==========================================
-      { isSectionHeader: true, title: "Video Booths", iconName: "Video" },
-      { 
-        name: "360 Video Booth", 
-        items: ["Standard Video Booth", "Advanced Video Booth", "7'x3' Matte Flex Print University & Campus Branding Boards"] 
+         {
+           title: "Select Photo Options",
+           desc: "You got Package 4. Please select your preferred options below.",
+           dependsOn: "Package 4",
+           hideTitleInPill: true,
+           options: [
+             "Stage Photo - 12”x15”",
+             "Full Photo - 12”x18” | Bust Photo 12”x15”",
+             "Family Photo - 12”x15”",
+             "Couple Photo - 12”x15”",
+             "Group Photo - Soft Copy - 12”x18”"
+           ]
+         }
+       ]
       },
-      { name: "Glam Bot Video Booth", items: ["Include Glam Bot Video Booth"] },
-      { 
-        name: "SLO-MO Video Booth", 
+      { name: "Photo Backdrops", items: ["Custom Themed Photo Backdrop | Selfie Background"], desc: "8'x12' Flex matte print with red Carpet" },
+      
+      // ====== අලුතින් ගෙනාපු Photo Booths Duration සහ Photo Booths ටික ======
+      {
+        name: "Photo Booth Duration",
         nestedGroups: [
           {
-            title: "Lighting Backdrop",
-            hideTitleInPill: true, 
-            options: ["Include SLO-MO Video Booth", "With Lighting Backdrop"]
+            title: "Booth Duration",
+            singleSelect: true,
+            hideTitleInPill: true,
+            options: ["04-Hour Package", "Full-Day Package"]
           }
         ]
       },
-      // ==========================================
-      // PHOTO BOOTHS SECTION
-      // ==========================================
       { isSectionHeader: true, title: "Photo Booths", iconName: "Camera" },
       { 
         name: "Mirror Photo Booth", 
+        isBoothItem: true, // මේකෙන් තමයි පහළ disable logic එක අල්ලන්නේ
         nestedGroups: [
           {
             title: "Print Option",
@@ -223,6 +195,7 @@ const structuredServices = [
       },
       { 
         name: "Instant Sharing DSLR Photo Booth", 
+        isBoothItem: true,
         nestedGroups: [
           {
             title: "Print Option",
@@ -232,13 +205,56 @@ const structuredServices = [
           },
           {
             title: "Print Size",
-            options: ["4R - ( 4\" x 6\" )", "6R - ( 6\" x 8\" )"], // <-- 4R saha 6R witharai
+            options: ["4R - ( 4\" x 6\" )", "6R - ( 6\" x 8\" )"],
             dependsOn: "With Print" 
           }
         ]
       },
-      { name: "Instant iPad Photo Booth", items: ["Include iPad Photo Booth"] },
-      { name: "AI Photo Booth", items: ["Include AI Photo Booth"] },
+      { name: "Instant iPad Photo Booth", isBoothItem: true, items: ["Include iPad Photo Booth"] },
+      { name: "AI Photo Booth", isBoothItem: true, items: ["Include AI Photo Booth"] }
+    ]
+  },
+  {
+    id: "C4", category: "Event Videography", icon: Video,
+    desc: "Full ceremony videography delivered in sharp, cinematic high-definition quality.",
+    items: [
+      "Fully Edited Event Coverage Video", "Fully Edited Highlight Video", 
+      "Fully Edited Guest Speeches", "Live Streaming on Facebook & YouTube", 
+      "Review & Testimonial Video Clips"
+    ],
+    // --- Video Booths වලට අදාළ Duration එක ---
+    nestedGroups: [
+      {
+        title: "Booth Duration",
+        singleSelect: true,
+        hideTitleInPill: true,
+        options: ["04-Hour Package", "Full-Day Package"]
+      }
+    ],
+    subCategories: [
+      // ==========================================
+      // VIDEO BOOTHS SECTION
+      // ==========================================
+      { isSectionHeader: true, title: "Video Booths", iconName: "Video" },
+      { 
+        name: "360 Video Booth", 
+        isBoothItem: true,
+        items: ["Standard Video Booth", "Advanced Video Booth", "7'x3' Matte Flex Print University & Campus Branding Boards"] 
+      },
+      { name: "Glam Bot Video Booth", isBoothItem: true, items: ["Include Glam Bot Video Booth"] },
+      { 
+        name: "SLO-MO Video Booth", 
+        isBoothItem: true,
+        nestedGroups: [
+          {
+            title: "Lighting Backdrop",
+            hideTitleInPill: true, 
+            options: ["Include SLO-MO Video Booth", "With Lighting Backdrop"]
+          }
+        ]
+      },
+      // (Photo Booths ටික C3 එකට ගෙනිච්ච නිසා මෙතනින් අයින් කළා)
+      
       { isSectionHeader: true, title: "DRONEGRAPHY VIDEO PACKAGE", iconName: "Video" },
       { 
         name: "Dronegraphy Video", 
@@ -264,7 +280,7 @@ const structuredServices = [
             dependsOn: "100KG Flower Dropping Drone",
             hideTitleInPill: true,
             hasCounters: true,
-            counterLimits: { "30KG Flower Bag": 3, "20KG Flower Bag": 5 }, // <-- Me limits walata hira wenawa
+            counterLimits: { "30KG Flower Bag": 3, "20KG Flower Bag": 5 },
             options: ["30KG Flower Bag", "20KG Flower Bag"]
           }
         ],
@@ -556,21 +572,28 @@ export default function ServicesContent() {
       }
 
       // 5. Booth Duration Single Select Logic
-      if (itemFullString === "Event Videography: 04-Hour Package" || itemFullString === "Event Videography: Full-Day Package") {
-        let cleaned = prev.filter(i => i !== "Event Videography: 04-Hour Package" && i !== "Event Videography: Full-Day Package");
+      if (itemFullString === "Event Videography: Booth Duration - 04-Hour Package" || itemFullString === "Event Videography: Booth Duration - Full-Day Package") {
+        let cleaned = prev.filter(i => i !== "Event Videography: Booth Duration - 04-Hour Package" && i !== "Event Videography: Booth Duration - Full-Day Package");
+        if (prev.includes(itemFullString)) return cleaned;
+        cleaned.push(itemFullString);
+        return cleaned;
+      }
+
+      if (itemFullString === "Event Photography - Photo Booth Duration: Booth Duration - 04-Hour Package" || itemFullString === "Event Photography - Photo Booth Duration: Booth Duration - Full-Day Package") {
+        let cleaned = prev.filter(i => i !== "Event Photography - Photo Booth Duration: Booth Duration - 04-Hour Package" && i !== "Event Photography - Photo Booth Duration: Booth Duration - Full-Day Package");
         if (prev.includes(itemFullString)) return cleaned;
         cleaned.push(itemFullString);
         return cleaned;
       }
 
       // 6. Mirror Photo Booth Print Options Logic
-      if (itemFullString === "Event Videography - Mirror Photo Booth: Without Print" || itemFullString === "Event Videography - Mirror Photo Booth: With Print") {
+      if (itemFullString.includes("Mirror Photo Booth: Print Option - Without Print") || itemFullString.includes("Mirror Photo Booth: Print Option - With Print")) {
         let cleaned = prev.filter(i => 
-          i !== "Event Videography - Mirror Photo Booth: Without Print" && 
-          i !== "Event Videography - Mirror Photo Booth: With Print"
+          !i.includes("Mirror Photo Booth: Print Option - Without Print") && 
+          !i.includes("Mirror Photo Booth: Print Option - With Print")
         );
-        // Without Print තේරුවොත් යටින් තෝරලා තියෙන Sizes Auto Clear වෙනවා (QTY අයින් කළා)
-        if (itemFullString === "Event Videography - Mirror Photo Booth: Without Print") {
+        // Without Print තේරුවොත් යටින් තෝරලා තියෙන Sizes Auto Clear වෙනවා
+        if (itemFullString.includes("Mirror Photo Booth: Print Option - Without Print")) {
           cleaned = cleaned.filter(i => !i.includes("Mirror Photo Booth: Print Size"));
         }
         if (prev.includes(itemFullString)) return cleaned;
@@ -579,19 +602,21 @@ export default function ServicesContent() {
       }
 
       // 7. DSLR Photo Booth Print Options Logic
-      if (itemFullString === "Event Videography - Instant Sharing DSLR Photo Booth: Without Print" || itemFullString === "Event Videography - Instant Sharing DSLR Photo Booth: With Print") {
+      if (itemFullString.includes("Instant Sharing DSLR Photo Booth: Print Option - Without Print") || itemFullString.includes("Instant Sharing DSLR Photo Booth: Print Option - With Print")) {
         let cleaned = prev.filter(i => 
-          i !== "Event Videography - Instant Sharing DSLR Photo Booth: Without Print" && 
-          i !== "Event Videography - Instant Sharing DSLR Photo Booth: With Print"
+          !i.includes("Instant Sharing DSLR Photo Booth: Print Option - Without Print") && 
+          !i.includes("Instant Sharing DSLR Photo Booth: Print Option - With Print")
         );
-        // Without Print theruwoth yatin thorala thiyena Sizes Auto Clear wenawa
-        if (itemFullString === "Event Videography - Instant Sharing DSLR Photo Booth: Without Print") {
+        // Without Print තේරුවොත් යටින් තෝරලා තියෙන Sizes Auto Clear වෙනවා
+        if (itemFullString.includes("Instant Sharing DSLR Photo Booth: Print Option - Without Print")) {
           cleaned = cleaned.filter(i => !i.includes("Instant Sharing DSLR Photo Booth: Print Size"));
         }
         if (prev.includes(itemFullString)) return cleaned;
         cleaned.push(itemFullString);
         return cleaned;
       }
+
+
       // --- Standard Selection Logic ---
       if (prev.includes(itemFullString)) {
         return prev.filter(i => i !== itemFullString);
@@ -921,10 +946,20 @@ export default function ServicesContent() {
                               );
                             }
 
-                            // --- C4 Disable Logic (Duration එක තෝරලාද බලනවා) ---
-                            const isC4Booths = cat.id === "C4";
-                            const isDurationSelected = cart.includes("Event Videography: 04-Hour Package") || cart.includes("Event Videography: Full-Day Package");
-                            const disableBooths = isC4Booths && !isDurationSelected && !sub.isDrone;
+                            // --- Booth Disable Logic (Photography & Videography සඳහා වෙන වෙනම) ---
+                            let disableBooths = false;
+                            
+                            // Event Photography (C3) - Photo Booths Disable Logic
+                            if (cat.id === "C3" && sub.isBoothItem) {
+                              const isPhotoDurationSelected = cart.some(i => i.startsWith("Event Photography - Photo Booth Duration:"));
+                              disableBooths = !isPhotoDurationSelected;
+                            }
+                            
+                            // Event Videography (C4) - Video Booths Disable Logic
+                            if (cat.id === "C4" && sub.isBoothItem) {
+                              const isVideoDurationSelected = cart.some(i => i.startsWith("Event Videography:"));
+                              disableBooths = !isVideoDurationSelected;
+                            }
 
                             return (
                             <div key={sub.name} className={`bg-[#FAFAFA] border border-gray-200/60 p-3.5 sm:p-4 rounded-2xl relative transition-all duration-300 ${disableBooths ? 'opacity-50 grayscale-[30%] pointer-events-none' : ''}`}>
@@ -1006,9 +1041,13 @@ export default function ServicesContent() {
 {sub.nestedGroups && sub.nestedGroups.length > 0 && (
   <div className="mt-4 space-y-3">
     {sub.nestedGroups.map((nested: any) => {
-      // --- Mirror Booth Dependency Check ---
-      if (nested.dependsOn && !cart.includes(`${cat.category} - ${sub.name}: ${nested.dependsOn}`)) {
-        return null; 
+      
+      // --- BUG FIX: Dependency Check එක Update කළා ---
+      if (nested.dependsOn) {
+        const hasDependency = cart.some(cartItem => 
+          cartItem.startsWith(`${cat.category} - ${sub.name}`) && cartItem.includes(nested.dependsOn)
+        );
+        if (!hasDependency) return null; 
       }
 
       const isExpanded = expandedGroups.includes(nested.title);
@@ -1021,11 +1060,21 @@ export default function ServicesContent() {
         }).length;
       }
 
+      // --- CUSTOMER REQUEST: Button එකක් එබුවම යටින් එන Box වලට ලා Pink Background එකක් දීම ---
+      const isDynamic = !!nested.dependsOn;
+
+      const displayTitle = nested.title.startsWith("Select") ? nested.title : `Select ${nested.title}`;
+
       return (
-      <div key={nested.title} className="bg-white border border-gray-100 p-3 sm:p-4 rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
-        <h5 className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
-          Select {nested.title} {nested.maxSelect && <span className="text-[#a40049] font-extrabold ml-1">(Max: {nested.maxSelect})</span>}
-        </h5>
+      <div key={nested.title} className={`${isDynamic ? 'bg-[#a40049]/[0.04] border-[#a40049]/20' : 'bg-white border-gray-100'} border p-3 sm:p-4 rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-colors duration-300`}>
+        
+        <div className="flex items-center gap-2.5 mb-2.5">
+          {isDynamic && <div className="w-1.5 h-3.5 bg-[#a40049] rounded-full shrink-0" />}
+          
+          <h5 className="text-[10px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider">
+            {displayTitle} {nested.maxSelect && <span className="text-[#a40049] font-extrabold ml-1">(Max: {nested.maxSelect})</span>}
+          </h5>
+        </div>
         
         {/* LED Video Wall Description or Dynamic Package Message */}
         {nested.desc && (
@@ -1048,11 +1097,10 @@ export default function ServicesContent() {
         
      <div className={`flex mt-2 ${nested.hasCounters ? 'flex-col gap-3 w-full'   : 'flex-wrap gap-1.5 sm:gap-2'}`}>
           {nested.options.map((opt: string) => {
-            // මේකෙන් cart string එක හැමවෙලේම unique වෙනවා (Dancing bug fix)
+            
             const pillLabel = `${nested.title} - ${opt}`;
             const displayLbl = nested.hideTitleInPill ? opt : pillLabel;
-            const clearPrefix = `${nested.title} -`; // 30KG Drone Hide Bug Fix
-            
+            const clearPrefix = `${nested.title} -`; 
             // --- ALUTH COUNTER LOGIC EKA ---
             if (nested.hasCounters) {
               const limit = nested.counterLimits ? nested.counterLimits[opt] : undefined;
