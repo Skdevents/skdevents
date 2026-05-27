@@ -132,8 +132,8 @@ const boothDetails: Record<string, any> = {
     desc: "Preparedness for medical situations, crowd surges, or disruptions with clear exit routes and response roles.",
     features: ["Medical situation readiness", "Crowd surge control", "Clear exit route management", "Rapid response protocols"]
   },
-  "Main Gate Security - Zone A": {
-    desc: "Responsible for controlling venue entry points and ensuring only authorized individuals access the premises.",
+  "Main Gate Security": {
+    desc: "Zone A: Responsible for controlling venue entry points and ensuring only authorized individuals access the premises.",
     features: [
       "Controls entry points of the venue",
       "Ticket / ID / QR verification support",
@@ -141,8 +141,8 @@ const boothDetails: Record<string, any> = {
       "Handles basic screening (bags, passes)"
     ]
   },
-  "Crowd Control Bouncers - Zone B": {
-    desc: "Focused on managing audience movement inside the hall and preventing any overcrowding or congestion.",
+  "Crowd Control Bouncers": {
+    desc: "Zone B: Focused on managing audience movement inside the hall and preventing any overcrowding or congestion.",
     features: [
       "Manage audience movement inside hall",
       "Prevent overcrowding and pushing",
@@ -150,8 +150,8 @@ const boothDetails: Record<string, any> = {
       "Support ushers during peak entry/exit times"
     ]
   },
-  "VIP & Protocol Security - Zone C": {
-    desc: "Dedicated to protecting dignitaries and managing VIP movement routes strictly according to protocol.",
+  "VIP & Protocol Security": {
+    desc: "Zone C: Dedicated to protecting dignitaries and managing VIP movement routes strictly according to protocol.",
     features: [
       "Protects Chancellor, Vice Chancellor, dignitaries",
       "Manages VIP movement routes",
@@ -159,8 +159,8 @@ const boothDetails: Record<string, any> = {
       "Prevents unauthorized access to VIP zones"
     ]
   },
-  "Stage Security | Front-of-Stage Guards - Zone D": {
-    desc: "Controls access to the stage and maintains strict order during the award presentation sequence.",
+  "Stage Security / Front-of-Stage Guards": {
+    desc: "Zone D: Controls access to the stage and maintains strict order during the award presentation sequence.",
     features: [
       "Controls access to stage stairs and wings",
       "Keeps order during award presentation",
@@ -168,8 +168,8 @@ const boothDetails: Record<string, any> = {
       "Stops unauthorized stage climbing or interruptions"
     ]
   },
-  "Backstage Security - Zone E": {
-    desc: "Secures the green room and holding areas, ensuring only authorized personnel and graduates are present.",
+  "Backstage Security": {
+    desc: "Zone E: Secures the green room and holding areas, ensuring only authorized personnel and graduates are present.",
     features: [
       "Controls green room and waiting area access",
       "Allows only authorized staff, graduates, and officials",
@@ -177,8 +177,8 @@ const boothDetails: Record<string, any> = {
       "Maintains discipline in holding areas"
     ]
   },
-  "Perimeter | External Security - Zone F": {
-    desc: "Guards the venue boundaries and assists with parking area safety and external traffic flow.",
+  "Perimeter / External Security": {
+    desc: "Zone F: Guards the venue boundaries and assists with parking area safety and external traffic flow.",
     features: [
       "Guards outside venue boundary",
       "Manages parking area safety and traffic flow support",
@@ -186,8 +186,8 @@ const boothDetails: Record<string, any> = {
       "Monitors surrounding environment"
     ]
   },
-  "Escort & Movement Security - Zone G": {
-    desc: "Provides safe escort for VIPs and awardees, guiding them flawlessly between assigned zones.",
+  "Escort & Movement Security": {
+    desc: "Zone G: Provides safe escort for VIPs and awardees, guiding them flawlessly between assigned zones.",
     features: [
       "Escorts VIPs, awardees, or important documents",
       "Guides safe movement between zones",
@@ -195,8 +195,8 @@ const boothDetails: Record<string, any> = {
       "Ensures no deviation from assigned routes"
     ]
   },
-  "Emergency Response Security - Zone H": {
-    desc: "Specially trained personnel ready to handle medical situations, disruptions, and coordinate evacuations.",
+  "Emergency Response Security": {
+    desc: "Zone H: Specially trained personnel ready to handle medical situations, disruptions, and coordinate evacuations.",
     features: [
       "Handles medical emergencies, fire alerts, or disturbances",
       "Coordinates evacuation routes",
@@ -646,16 +646,15 @@ const structuredServices = [
 {
     id: "C12", category: "Security & Access Control", icon: ClipboardCheck,
     desc: "Professional security personnel strategically divided into operational zones to ensure a safe, orderly, and controlled ceremony environment.",
-    // hideSelectAll දාලා නෑ, ඒ නිසා 'Select All' බට්න් එක auto පේන්න ගනියි!
     subCategories: [
-      { name: "Main Gate Security - Zone A", items: ["Include Main Gate Security"] },
-      { name: "Crowd Control Bouncers - Zone B", items: ["Include Crowd Control Bouncers"] },
-      { name: "VIP & Protocol Security - Zone C", items: ["Include VIP & Protocol Security"] },
-      { name: "Stage Security | Front-of-Stage Guards - Zone D", items: ["Include Stage Security"] },
-      { name: "Backstage Security - Zone E", items: ["Include Backstage Security"] },
-      { name: "Perimeter | External Security - Zone F", items: ["Include Perimeter Security"] },
-      { name: "Escort & Movement Security - Zone G", items: ["Include Escort & Movement Security"] },
-      { name: "Emergency Response Security - Zone H", items: ["Include Emergency Response Security"] }
+      { name: "Main Gate Security", items: ["Include Main Gate Security"] },
+      { name: "Crowd Control Bouncers", items: ["Include Crowd Control Bouncers"] },
+      { name: "VIP & Protocol Security", items: ["Include VIP & Protocol Security"] },
+      { name: "Stage Security / Front-of-Stage Guards", items: ["Include Stage Security"] },
+      { name: "Backstage Security", items: ["Include Backstage Security"] },
+      { name: "Perimeter / External Security", items: ["Include Perimeter Security"] },
+      { name: "Escort & Movement Security", items: ["Include Escort & Movement Security"] },
+      { name: "Emergency Response Security", items: ["Include Emergency Response Security"] }
     ]
   }
 ];
