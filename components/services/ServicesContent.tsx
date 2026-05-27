@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ClipboardCheck, Rows3, Camera, Video, Mic, LayoutTemplate, 
   Music, Speaker, Printer, GraduationCap, Plus, Check, ShoppingBag, Send, ExternalLink, Trash2, CheckCircle2,
-  ChevronDown, Info 
+  ChevronDown, Info, Shirt, UserCheck
 } from "lucide-react";
 import WhatsAppModal from "./WhatsAppModal"; 
 
@@ -202,6 +202,136 @@ const boothDetails: Record<string, any> = {
       "Coordinates evacuation routes",
       "Supports first-aid team and police if required",
       "Maintains calm during unexpected incidents"
+    ]
+  },
+  // --- Metanin pahalata aluth Ushering Data tika danna ---
+  "STAGE USHERS (FEMALE)": {
+    desc: "Responsible for high visibility, stage support, and movement coordination.",
+    dressOptions: [
+      {
+        name: "OPTION 1 - Formal Black Dress",
+        details: [
+          "Dress: Black knee-length formal dress (professional fit)",
+          "Style: Modest cut, structured design (not tight-fitting)",
+          "Length: At or just above knee level (controlled and professional)",
+          "Shoes: Black closed formal shoes (low heel recommended)"
+        ]
+      },
+      {
+        name: "OPTION 2 – Saree with Jacket",
+        details: [
+          "Saree: Light colour plain saree (white / beige / pastel tones)",
+          "Jacket: Formal matching or black structured jacket",
+          "Blouse: Full coverage formal blouse",
+          "Shoes: Black formal heels or closed shoes"
+        ]
+      },
+      {
+        name: "OPTION 3 – Customized Official Costume",
+        details: [
+          "Institution-approved branded costume only",
+          "Must maintain: Modesty, easy movement, and professional appearance",
+          "No casual fashion wear allowed"
+        ]
+      }
+    ],
+    appearance: [
+      "Hair: Neatly tied (bun / ponytail)",
+      "Makeup: Light and formal only",
+      "Accessories: Minimal (no flashy jewelry)",
+      "ID badge: Visible at all times",
+      "Posture: Confident and upright"
+    ]
+  },
+  "VIP USHERS (FEMALE)": {
+    desc: "Protocol Handling, VIP Escort, and high discipline zone management.",
+    dressOptions: [
+      {
+        name: "OPTION 1 - Saree Protocol Look",
+        details: [
+          "Saree: Light colour plain saree (white / cream / pastel)",
+          "Jacket: Formal structured jacket (black or matching tone)",
+          "Blouse: Full coverage formal blouse",
+          "Footwear: Closed black formal shoes or low heels"
+        ]
+      },
+      {
+        name: "OPTION 2 – Formal Western Protocol Suit",
+        details: [
+          "Top: White formal shirt or blouse",
+          "Bottom: Black formal trouser",
+          "Overcoat: Black formal blazer / coat",
+          "Shoes: Black closed formal shoes"
+        ]
+      },
+      {
+        name: "OPTION 3 – Customized VIP Costume",
+        details: [
+          "Official approved design only",
+          "Must reflect: Institutional dignity, formal protocol image, and high-level professionalism"
+        ]
+      }
+    ],
+    appearance: [
+      "Strict grooming (neat, elegant, minimal styling)",
+      "Hair tied neatly (no loose styling during duty)",
+      "No heavy makeup or bright colors",
+      "Minimal accessories only",
+      "ID card visible at chest level"
+    ]
+  },
+  "VIP Ushers (MALE)": {
+    desc: "Protocol Handling, VIP Escort, and high discipline zone management.",
+    dressOptions: [
+      {
+        name: "OPTION 1 - Protocol Look",
+        details: [
+          "Shirt: Crisp white formal dress shirt",
+          "Trouser: Well-tailored black formal trousers",
+          "Belt: Formal black leather belt",
+          "Shoes: Polished black formal shoes"
+        ]
+      },
+      {
+        name: "OPTION 2 – Formal Western Protocol Suit",
+        details: [
+          "Suit: Complete formal matching protocol suit",
+          "Top: White formal dress shirt",
+          "Tie: Official institutional or formal solid color tie",
+          "Shoes: Polished closed formal shoes"
+        ]
+      },
+      {
+        name: "OPTION 3 – Customized VIP Costume",
+        details: [
+          "Official approved design only",
+          "Must reflect: Institutional dignity, formal protocol image, and high-level professionalism"
+        ]
+      }
+    ],
+    appearance: [
+      "Strict grooming (neatly styled hair, clean-shaven or trimmed)",
+      "Confident, upright, and highly disciplined posture",
+      "Professional watch only (no flashy items)",
+      "ID card visible at chest level"
+    ]
+  },
+  "ENTRY | SEATING | AISLE | BACKSTAGE & EXIT USHERS": {
+    desc: "The core ushering team handling Gate Entry, Hall Seating, Flow Control along aisles, Backstage Support, and Exit flow management for all attendees.",
+    dressOptions: [
+      {
+        name: "Formal Corporate (Office) Attire",
+        details: [
+          "Top: Crisp White Shirt or Formal Blouse",
+          "Bottom: Formal Black Trousers / Pants",
+          "Footwear: Closed Black Shoes or Black Formal Heels"
+        ]
+      }
+    ],
+    appearance: [
+      "Professional grooming and neat styling",
+      "Highly approachable and active demeanor",
+      "Visible ID badge at all times"
     ]
   }
 };
@@ -629,7 +759,7 @@ const structuredServices = [
   },
   {
     id: "C11", category: "Floor Management Packages", icon: ClipboardCheck,
-    desc: "Seamless ceremony coordination ensuring smooth, delay-free movement for students, guests, and crew.",
+    desc: "Comprehensive ceremony coordination ensuring smooth movement for graduates, guests, and crew.",
     subCategories: [
       { name: "Stage Management & Ceremony Flow", items: ["Include Stage Management & Ceremony Flow"] },
       { name: "Seating Management", items: ["Include Seating Management"] },
@@ -645,7 +775,7 @@ const structuredServices = [
   },
 {
     id: "C12", category: "Security & Access Control", icon: ClipboardCheck,
-    desc: "Professional security personnel strategically divided into operational zones to ensure a safe, orderly, and controlled ceremony environment.",
+    desc: "Strategic security deployment across all zones for a safe, controlled ceremony.",
     hideSelectAll: true, 
     subCategories: [
       { name: "Main Gate Security", items: ["Required Personnel"] },
@@ -656,6 +786,58 @@ const structuredServices = [
       { name: "Perimeter / External Security", items: ["Required Personnel"] },
       { name: "Escort & Movement Security", items: ["Required Personnel"] },
       { name: "Emergency Response Security", items: ["Required Personnel"] }
+    ]
+  },
+  {
+    id: "C13", category: "Ushering System for Convocation", icon: ClipboardCheck,
+    desc: "Professional team guiding guests, managing seating, and supporting all ceremony proceedings.",
+    hideSelectAll: true,
+    subCategories: [
+      {
+        name: "STAGE USHERS (FEMALE)",
+        nestedGroups: [
+          {
+            title: "Dress Options",
+            hideTitleInPill: true,
+            hasCounters: true,
+            options: ["Formal Black Dress", "Saree with Jacket", "Customized Official Costume"]
+          }
+        ]
+      },
+      {
+        name: "VIP USHERS (FEMALE)",
+        nestedGroups: [
+          {
+            title: "Dress Options",
+            hideTitleInPill: true,
+            hasCounters: true,
+            options: ["Saree Protocol Look", "Formal Western Protocol Suit (Female)", "Customized VIP Costume (Female)"]
+          }
+        ]
+      },
+      {
+        name: "VIP Ushers (MALE)",
+        nestedGroups: [
+          {
+            title: "Dress Options",
+            hideTitleInPill: true,
+            hasCounters: true,
+            options: ["Protocol Look (White Shirt & Black Trouser)", "Formal Western Protocol Suit (Male)", "Customized VIP Costume (Male)"]
+          }
+        ]
+      },
+      {
+        name: "ENTRY | SEATING | AISLE | BACKSTAGE & EXIT USHERS",
+        desc: "(MALE & FEMALE)",
+        nestedGroups: [
+          {
+            title: "Dress Options",
+            hideTitleInPill: true,
+            hasCounters: true,
+            options: ["Formal Corporate (Office) Attire"]
+          }
+        ]
+      }
     ]
   }
 ];
@@ -1449,25 +1631,74 @@ export default function ServicesContent() {
               </div>
 
               {/* Content */}
-              <div className="p-6 sm:p-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
-                <p className="text-sm sm:text-[15px] text-gray-600 font-medium leading-relaxed mb-6">
+              <div className="p-6 sm:p-8 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-6">
+                <p className="text-sm sm:text-[15px] text-gray-600 font-medium leading-relaxed whitespace-pre-wrap">
                   {infoModalData.desc}
                 </p>
 
-                <h4 className="text-xs sm:text-sm font-extrabold text-gray-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#a40049]" /> Included Features
-                </h4>
-                
-                <ul className="space-y-3">
-                  {infoModalData.features.map((feature: string, idx: number) => (
-                    <li key={idx} className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full bg-[#a40049]/10 flex items-center justify-center shrink-0 mt-0.5">
-                        <Check className="w-3 h-3 text-[#a40049]" />
-                      </div>
-                      <span className="text-sm text-gray-700 font-medium leading-snug">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* --- Standard Features (Normal packages walata) --- */}
+                {infoModalData.features && infoModalData.features.length > 0 && (
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-extrabold text-gray-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-[#a40049]" /> Included Features
+                    </h4>
+                    
+                    <ul className="space-y-3">
+                      {infoModalData.features.map((feature: string, idx: number) => (
+                        <li key={idx} className="flex items-start gap-3">
+                          <div className="w-5 h-5 rounded-full bg-[#a40049]/10 flex items-center justify-center shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 text-[#a40049]" />
+                          </div>
+                          <span className="text-sm text-gray-700 font-medium leading-snug">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* --- NEW: Dress Options Cards (Ushering walata) --- */}
+                {infoModalData.dressOptions && infoModalData.dressOptions.length > 0 && (
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-extrabold text-gray-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                      <Shirt className="w-4 h-4 text-[#a40049]" /> Approved Dress Options
+                    </h4>
+                    <div className="space-y-4">
+                      {infoModalData.dressOptions.map((opt: any, idx: number) => (
+                        <div key={idx} className="bg-gray-50 border border-gray-100 rounded-xl p-4 shadow-sm">
+                          <h5 className="text-sm font-bold text-[#a40049] mb-3">{opt.name}</h5>
+                          <ul className="space-y-2.5">
+                            {opt.details.map((detail: string, dIdx: number) => (
+                              <li key={dIdx} className="flex items-start gap-2.5">
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#a40049]/50 mt-1.5 shrink-0" />
+                                <span className="text-[13px] text-gray-700 font-medium leading-snug">{detail}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* --- NEW: Appearance Standards (Ushering walata) --- */}
+                {infoModalData.appearance && infoModalData.appearance.length > 0 && (
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-extrabold text-gray-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                      <UserCheck className="w-4 h-4 text-[#a40049]" /> Appearance Standards
+                    </h4>
+                    <ul className="bg-[#a40049]/5 border border-[#a40049]/10 rounded-xl p-4 space-y-3">
+                      {infoModalData.appearance.map((req: string, idx: number) => (
+                        <li key={idx} className="flex items-start gap-3">
+                          <div className="w-4 h-4 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                            <Check className="w-2.5 h-2.5 text-[#a40049]" />
+                          </div>
+                          <span className="text-[13px] text-gray-700 font-medium leading-snug">{req}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
               </div>
               
               {/* Bottom Action */}
