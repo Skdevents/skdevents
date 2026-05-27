@@ -646,15 +646,16 @@ const structuredServices = [
 {
     id: "C12", category: "Security & Access Control", icon: ClipboardCheck,
     desc: "Professional security personnel strategically divided into operational zones to ensure a safe, orderly, and controlled ceremony environment.",
+    hideSelectAll: true, 
     subCategories: [
-      { name: "Main Gate Security", items: ["Include Main Gate Security"] },
-      { name: "Crowd Control Bouncers", items: ["Include Crowd Control Bouncers"] },
-      { name: "VIP & Protocol Security", items: ["Include VIP & Protocol Security"] },
-      { name: "Stage Security / Front-of-Stage Guards", items: ["Include Stage Security"] },
-      { name: "Backstage Security", items: ["Include Backstage Security"] },
-      { name: "Perimeter / External Security", items: ["Include Perimeter Security"] },
-      { name: "Escort & Movement Security", items: ["Include Escort & Movement Security"] },
-      { name: "Emergency Response Security", items: ["Include Emergency Response Security"] }
+      { name: "Main Gate Security", items: ["Required Personnel"] },
+      { name: "Crowd Control Bouncers", items: ["Required Personnel"] },
+      { name: "VIP & Protocol Security", items: ["Required Personnel"] },
+      { name: "Stage Security / Front-of-Stage Guards", items: ["Required Personnel"] },
+      { name: "Backstage Security", items: ["Required Personnel"] },
+      { name: "Perimeter / External Security", items: ["Required Personnel"] },
+      { name: "Escort & Movement Security", items: ["Required Personnel"] },
+      { name: "Emergency Response Security", items: ["Required Personnel"] }
     ]
   }
 ];
@@ -1160,7 +1161,8 @@ export default function ServicesContent() {
                                 </p>
                               )}
 
-                              {sub.desc && <p className="text-[10px] sm:text-xs text-gray-500 mb-3 -mt-2 font-medium leading-snug">{sub.desc}</p>}{/* Standard Sub-category Items */}
+                              {sub.desc && <p className="text-[10px] sm:text-xs text-gray-500 mb-3 -mt-2 font-medium leading-snug">{sub.desc}</p>}
+                              {/* Standard Sub-category Items */}
                               {sub.packages && (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                                   {sub.packages.map((pkg: any) => {
@@ -1199,11 +1201,31 @@ export default function ServicesContent() {
                                 <motion.div 
                                   initial={{ opacity: 0, y: -10 }} 
                                   animate={{ opacity: 1, y: 0 }} 
-                                  className="flex flex-wrap gap-1.5 sm:gap-2 mb-2 pt-1"
+                                  // --- C12 එකට විතරක් flex-col දාලා full width කරනවා ---
+                                  className={`flex ${cat.id === 'C12' ? 'flex-col gap-3 w-full' : 'flex-wrap gap-1.5 sm:gap-2'} mb-2 pt-1`}
                                 >
-                                  {sub.items.map((item: string) => (
-                                    <SelectablePill key={item} label={item} categoryName={`${cat.category} - ${sub.name}`} />
-                                  ))}
+                                  {sub.items.map((item: string) => {
+                                    
+                                    // --- C12 නම් CounterPill එකක් විදිහට render කරනවා ---
+                                    if (cat.id === "C12") {
+                                      return (
+                                        <CounterPill 
+                                          key={item} 
+                                          label={item} 
+                                          categoryName={`${cat.category} - ${sub.name}`} 
+                                        />
+                                      );
+                                    }
+
+                                    // --- අනිත් හැම එකකටම සාමාන්‍ය SelectablePill එක දානවා ---
+                                    return (
+                                      <SelectablePill 
+                                        key={item} 
+                                        label={item} 
+                                        categoryName={`${cat.category} - ${sub.name}`} 
+                                      />
+                                    );
+                                  })}
                                 </motion.div>
                               )}
 
