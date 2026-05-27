@@ -81,6 +81,128 @@ const boothDetails: Record<string, any> = {
       "Dignified procession leadership", 
       "Enhances traditional academic protocols"
     ]
+  },
+  "Student’s Photo Package": {
+    name: "Student Photography Packages", 
+    desc: "Capture your graduation memories with our professionally curated photography packages. From individual stage moments to family and group portraits, each package is designed to preserve your special achievement with high-quality prints and digital memories tailored to your preference.",
+    features: [
+      "Individual stage moments photography",
+      "Family and group portraits",
+      "High-quality print outputs",
+      "Digital copies of your memories"
+    ]
+  },
+  "Stage Management & Ceremony Flow": {
+    desc: "This covers the coordination of award presentation, graduand movement, announcements, and timing. It includes cue control, procession order, and ensuring the Chancellor/VIP sequence runs exactly as per script.",
+    features: ["Award presentation coordination", "Graduand movement control", "VIP sequence scripting", "Cue control & timing"]
+  },
+  "Seating Management": {
+    desc: "Proper allocation of seating blocks for graduates, faculty, parents, and dignitaries. This also includes reserved seating, row control, and late-entry handling.",
+    features: ["VIP & parent seating allocation", "Reserved seating management", "Row control", "Late-entry handling"]
+  },
+  "Procession & Line-Up Control": {
+    desc: "Managing the graduation procession from holding areas to the stage. This ensures students are lined up in correct order, properly briefed, and moved at the right cue.",
+    features: ["Holding area coordination", "Correct order line-up", "Student briefing", "Cue-based movement"]
+  },
+  "Ushering & Guidance Team": {
+    desc: "Ushers guide guests to seats, assist graduates, and maintain order. They also handle directional flow (entry/exit routes, stage access, restrooms).",
+    features: ["Guest seating assistance", "Directional flow control", "Stage access management", "Order maintenance"]
+  },
+  "Registration & Entry Control": {
+    desc: "Verification of graduates and guests at entry points, ticket checking, QR scanning (if used), and distribution of seat numbers or badges.",
+    features: ["Graduate & guest verification", "Ticket & QR scanning", "Badge distribution", "Entry point control"]
+  },
+  "Queue & Holding Area Management": {
+    desc: "Controlling waiting areas for graduates before stage entry. This prevents congestion and ensures smooth batching of students.",
+    features: ["Waiting area management", "Congestion prevention", "Smooth student batching", "Pre-stage grouping"]
+  },
+  "Security & Access Control": {
+    desc: "Ensuring only authorized persons enter restricted zones like stage backstage, VIP lounge, and procession corridors.",
+    features: ["Restricted zone monitoring", "Backstage & VIP security", "Procession corridor control", "Unauthorized entry prevention"]
+  },
+  "Backstage Coordination": {
+    desc: "Managing gowns, caps, certificate arrangement, name verification, and ensuring each graduate is ready before stepping onto stage.",
+    features: ["Gown & cap management", "Certificate arrangement", "Name verification", "Stage-readiness checks"]
+  },
+  "Communication System (Floor Control)": {
+    desc: "Use of walkie-talkies, cue sheets, and floor managers to coordinate timing between stage, ushers, and registration teams.",
+    features: ["Walkie-talkie coordination", "Cue sheet execution", "Cross-team synchronization", "Real-time floor management"]
+  },
+  "Emergency & Crowd Control": {
+    desc: "Preparedness for medical situations, crowd surges, or disruptions with clear exit routes and response roles.",
+    features: ["Medical situation readiness", "Crowd surge control", "Clear exit route management", "Rapid response protocols"]
+  },
+  "Main Gate Security - Zone A": {
+    desc: "Responsible for controlling venue entry points and ensuring only authorized individuals access the premises.",
+    features: [
+      "Controls entry points of the venue",
+      "Ticket / ID / QR verification support",
+      "Prevents unauthorized entry",
+      "Handles basic screening (bags, passes)"
+    ]
+  },
+  "Crowd Control Bouncers - Zone B": {
+    desc: "Focused on managing audience movement inside the hall and preventing any overcrowding or congestion.",
+    features: [
+      "Manage audience movement inside hall",
+      "Prevent overcrowding and pushing",
+      "Maintain aisle and emergency lane clearance",
+      "Support ushers during peak entry/exit times"
+    ]
+  },
+  "VIP & Protocol Security - Zone C": {
+    desc: "Dedicated to protecting dignitaries and managing VIP movement routes strictly according to protocol.",
+    features: [
+      "Protects Chancellor, Vice Chancellor, dignitaries",
+      "Manages VIP movement routes",
+      "Ensures protocol discipline around VIP seating area",
+      "Prevents unauthorized access to VIP zones"
+    ]
+  },
+  "Stage Security | Front-of-Stage Guards - Zone D": {
+    desc: "Controls access to the stage and maintains strict order during the award presentation sequence.",
+    features: [
+      "Controls access to stage stairs and wings",
+      "Keeps order during award presentation",
+      "Ensures graduates enter and exit in sequence",
+      "Stops unauthorized stage climbing or interruptions"
+    ]
+  },
+  "Backstage Security - Zone E": {
+    desc: "Secures the green room and holding areas, ensuring only authorized personnel and graduates are present.",
+    features: [
+      "Controls green room and waiting area access",
+      "Allows only authorized staff, graduates, and officials",
+      "Protects certificates, robes, and valuables",
+      "Maintains discipline in holding areas"
+    ]
+  },
+  "Perimeter | External Security - Zone F": {
+    desc: "Guards the venue boundaries and assists with parking area safety and external traffic flow.",
+    features: [
+      "Guards outside venue boundary",
+      "Manages parking area safety and traffic flow support",
+      "Prevents gate-crashing or external disturbances",
+      "Monitors surrounding environment"
+    ]
+  },
+  "Escort & Movement Security - Zone G": {
+    desc: "Provides safe escort for VIPs and awardees, guiding them flawlessly between assigned zones.",
+    features: [
+      "Escorts VIPs, awardees, or important documents",
+      "Guides safe movement between zones",
+      "Supports procession control with floor managers",
+      "Ensures no deviation from assigned routes"
+    ]
+  },
+  "Emergency Response Security - Zone H": {
+    desc: "Specially trained personnel ready to handle medical situations, disruptions, and coordinate evacuations.",
+    features: [
+      "Handles medical emergencies, fire alerts, or disturbances",
+      "Coordinates evacuation routes",
+      "Supports first-aid team and police if required",
+      "Maintains calm during unexpected incidents"
+    ]
   }
 };
 
@@ -90,10 +212,10 @@ const structuredServices = [
     desc: "Efficient check-in system ensuring smooth graduate and guest processing.",
     hideSelectAll: true,
     items: [
-      "Student Seat Number Allocation", 
-      "Distribution of Student Cloaks & Garlands", 
+      "Student Seat Number Allocation and Registration", 
       "Distribution of Guest & Parent Entrance Passes", 
-      "Distribution of Refreshment Tokens"
+      "Distribution of Refreshment Tokens", 
+      "Distribution of Student Cloaks & Garlands"
     ]
   },
   {
@@ -123,7 +245,7 @@ const structuredServices = [
     desc: "Expert photography capturing key moments with professional quality and emotion.",
     hideSelectAll: true,
     subCategories: [
-      { name: "Event Coverage", items: ["Fully Edited Highlight Photos", "Group Photo - 16”x24”"] },
+      { name: "Event Photography Coverage", items: ["Fully Edited Highlight Photos", "Group Photo - 16”x24”"] },
       { 
         name: "Student’s Photo Package", 
         packages: [
@@ -161,8 +283,19 @@ const structuredServices = [
          }
        ]
       },
-      { name: "Photo Backdrops", items: ["Custom Themed Photo Backdrop | Selfie Background"], desc: "8'x12' Flex matte print with red Carpet" },
-      
+      { 
+        name: "Photo Backdrops", 
+        desc: "8'x12' Flex matte print with red Carpet",
+        nestedGroups: [
+          {
+            title: "Quantity",
+            hideTitleInPill: true,
+            hasCounters: true,
+            counterLimits: { "Custom Themed Photo Backdrop | Selfie Background": 10 },
+            options: ["Custom Themed Photo Backdrop | Selfie Background"]
+          }
+        ]
+      },
       { isSectionHeader: true, title: "Photo Booths", iconName: "Camera" },
       {
         name: "Photo Booth Duration",
@@ -216,17 +349,22 @@ const structuredServices = [
   {
     id: "C4", category: "Event Videography", icon: Video,
     desc: "Full ceremony videography delivered in sharp, cinematic high-definition quality.",
-    items: [
-      "Fully Edited Event Coverage Video", "Fully Edited Highlight Video", 
-      "Fully Edited Guest Speeches", "Live Streaming on Facebook & YouTube", 
-      "Review & Testimonial Video Clips"
-    ],
+    hideSelectAll: true, // <--- Select All Button එක අයින් කළා
     subCategories: [
+      // --- අලුතින් කැඩූ කොටස් දෙක ---
+      { 
+        name: "Event Videography Coverage", 
+        items: ["Fully Edited Event Coverage Video", "Fully Edited Highlight Video"] 
+      },
+      { 
+        name: "Select Add-Ons", 
+        items: ["Fully Edited Guest Speeches", "Live Streaming on Facebook & YouTube", "Review & Testimonial Video Clips"] 
+      },
       // ==========================================
       // VIDEO BOOTHS SECTION
       // ==========================================
       { isSectionHeader: true, title: "Video Booths", iconName: "Video" },
-      // --- Duration එක Title එකට පස්සේ දැම්මා ---
+
       {
         name: "Video Booth Duration",
         nestedGroups: [
@@ -296,10 +434,10 @@ const structuredServices = [
     ]
   },
   {
-    id: "C5", category: "Master of Ceremony & Compere", icon: Mic,
+    id: "C5", category: "Master of Ceremony & Compere | Emcee", icon: Mic,
     desc: "Confident, engaging hosting to maintain flawless event timing.",
     hideSelectAll: true,
-    items: ["Sinhala Compere", "English Compere", "Tamil Compere"],
+    items: ["Sinhala Language", "English Language", "Tamil Language"],
     nestedGroups: [
       {
         title: "Compere",
@@ -335,7 +473,7 @@ const structuredServices = [
         ],
         nestedGroups: [
           {
-            title: "Additional Selection",
+            title: "Add-Ons",
             hideTitleInPill: true,
             hasCounters: true,
             options: ["Flower Garland (Orchid)", "Flower Boutique", "Flower Basket"]
@@ -489,6 +627,37 @@ const structuredServices = [
     desc: "Professional audio and lighting for clear, impactful presentations.",
     items: ["Professional Sound System Setup", "Dynamic Stage Lighting Setup"]
   },
+  {
+    id: "C11", category: "Floor Management Packages", icon: ClipboardCheck,
+    desc: "Seamless ceremony coordination ensuring smooth, delay-free movement for students, guests, and crew.",
+    subCategories: [
+      { name: "Stage Management & Ceremony Flow", items: ["Include Stage Management & Ceremony Flow"] },
+      { name: "Seating Management", items: ["Include Seating Management"] },
+      { name: "Procession & Line-Up Control", items: ["Include Procession & Line-Up Control"] },
+      { name: "Ushering & Guidance Team", items: ["Include Ushering & Guidance Team"] },
+      { name: "Registration & Entry Control", items: ["Include Registration & Entry Control"] },
+      { name: "Queue & Holding Area Management", items: ["Include Queue & Holding Area Management"] },
+      { name: "Security & Access Control", items: ["Include Security & Access Control"] },
+      { name: "Backstage Coordination", items: ["Include Backstage Coordination"] },
+      { name: "Communication System (Floor Control)", items: ["Include Communication System"] },
+      { name: "Emergency & Crowd Control", items: ["Include Emergency & Crowd Control"] }
+    ]
+  },
+{
+    id: "C12", category: "Security & Access Control", icon: ClipboardCheck,
+    desc: "Professional security personnel strategically divided into operational zones to ensure a safe, orderly, and controlled ceremony environment.",
+    // hideSelectAll දාලා නෑ, ඒ නිසා 'Select All' බට්න් එක auto පේන්න ගනියි!
+    subCategories: [
+      { name: "Main Gate Security - Zone A", items: ["Include Main Gate Security"] },
+      { name: "Crowd Control Bouncers - Zone B", items: ["Include Crowd Control Bouncers"] },
+      { name: "VIP & Protocol Security - Zone C", items: ["Include VIP & Protocol Security"] },
+      { name: "Stage Security | Front-of-Stage Guards - Zone D", items: ["Include Stage Security"] },
+      { name: "Backstage Security - Zone E", items: ["Include Backstage Security"] },
+      { name: "Perimeter | External Security - Zone F", items: ["Include Perimeter Security"] },
+      { name: "Escort & Movement Security - Zone G", items: ["Include Escort & Movement Security"] },
+      { name: "Emergency Response Security - Zone H", items: ["Include Emergency Response Security"] }
+    ]
+  }
 ];
 
 export default function ServicesContent() {
@@ -562,10 +731,10 @@ export default function ServicesContent() {
       }
 
       // 3. Event Videography (Coverage + Highlight) Auto-Select
-      if (itemFullString === "Event Videography: Fully Edited Event Coverage Video" || itemFullString === "Event Videography: Fully Edited Highlight Video") {
+      if (itemFullString === "Event Videography - Event Videography Coverage: Fully Edited Event Coverage Video" || itemFullString === "Event Videography - Event Videography Coverage: Fully Edited Highlight Video") {
         const videoItems = [
-          "Event Videography: Fully Edited Event Coverage Video",
-          "Event Videography: Fully Edited Highlight Video"
+          "Event Videography - Event Videography Coverage: Fully Edited Event Coverage Video",
+          "Event Videography - Event Videography Coverage: Fully Edited Highlight Video"
         ];
         const isSelected = videoItems.every(i => prev.includes(i));
         if (isSelected) return prev.filter(i => !videoItems.includes(i));
