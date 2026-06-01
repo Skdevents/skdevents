@@ -642,7 +642,7 @@ const structuredServices = [
             title: "Bearers", 
             hideTitleInPill: true,
             hasCounters: true,
-            options: ["Sesath Bearers", "Muthukuda Bearers"] 
+            options: ["Sesath Bearers", "Muthukuda Bearers", "Murayuda Bearers"] 
           }
         ]
       },
