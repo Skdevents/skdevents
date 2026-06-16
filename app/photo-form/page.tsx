@@ -41,9 +41,13 @@ const packages = [
 ];
 
 const campusPackageRules: Record<string, string[]> = {
-  // මෙතන තියෙන්නේ Campus Name එක සහ ඒකට අදාල Package IDs ටික
   "Institute of Social & Technical Studies": ["P3"], 
   // උදාහරණයක්: ඉස්සරහට වෙන එකක් ආවොත් මෙහෙම දාන්න පුළුවන් -> "ICBT Campus": ["P1", "P2"]
+};
+
+const campusDeadlines: Record<string, string> = {
+  "Institute of Social & Technical Studies": "24th at 12:00 Midnight",
+  // "ICBT Campus": "30th of November at 5:00 PM"
 };
 
 // Modern Custom Dropdown Component (Matched with WhatsAppModal style)
@@ -208,9 +212,8 @@ export default function PhotoFormPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
-    // 1. Mobile numbers validate - numbers පමණක් ඇතුලත් කිරීමට
     if (name === "mobile1" || name === "mobile2") {
-      const cleanValue = value.replace(/\D/g, "");
+      const cleanValue = value.replace(/\D/g, "").slice(0, 10); 
       setFormData(prev => ({ ...prev, [name]: cleanValue }));
       return;
     }
@@ -601,10 +604,29 @@ export default function PhotoFormPage() {
                   placeholder="Select Session"
                 />
               </div>
-              
+              <AnimatePresence>
+                {formData.campusName && campusDeadlines[formData.campusName] && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="md:col-span-2 overflow-hidden"
+                  >
+                    <div className="bg-red-50 border border-red-100 p-4 rounded-xl flex items-start gap-3 mt-2">
+                      <Clock className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-bold text-red-700">Registration Closing Soon!</h4>
+                        <p className="text-xs font-medium text-red-600 mt-0.5 leading-relaxed">
+                          For <strong>{formData.campusName}</strong>, the portal will officially close on the <strong>{campusDeadlines[formData.campusName]}</strong>. Please complete your submission before the deadline.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+             
             </div>
           </div>
-
           {/* Section 2: Photo Package Custom Cards Grid Selector */}
           <div id="package-section" className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.03)] space-y-4">
             <div>
@@ -751,6 +773,7 @@ export default function PhotoFormPage() {
       <input 
         type="tel" required name="mobile1" value={formData.mobile1} onChange={handleInputChange}
         placeholder="Numbers only format"
+        maxLength={10} 
         className={`w-full px-4 py-3 border rounded-xl text-sm font-medium focus:outline-none transition-all duration-200 ${
           fieldErrors.mobile1 ? 'bg-red-50 border-red-500 ring-2 ring-red-200 focus:border-red-500' : 'bg-gray-50 border-gray-200 focus:border-[#a40049] focus:bg-white'
         }`}
@@ -764,6 +787,7 @@ export default function PhotoFormPage() {
       <input 
         type="tel" required name="mobile2" value={formData.mobile2} onChange={handleInputChange}
         placeholder="Numbers only format"
+        maxLength={10} 
         className={`w-full px-4 py-3 border rounded-xl text-sm font-medium focus:outline-none transition-all duration-200 ${
           fieldErrors.mobile2 ? 'bg-red-50 border-red-500 ring-2 ring-red-200 focus:border-red-500' : 'bg-gray-50 border-gray-200 focus:border-[#a40049] focus:bg-white'
         }`}
