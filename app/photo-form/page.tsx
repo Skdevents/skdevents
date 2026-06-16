@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Camera, GraduationCap, Calendar, Clock, User, MapPin, 
@@ -37,6 +39,12 @@ const packages = [
     isCustom: true
   }
 ];
+
+const campusPackageRules: Record<string, string[]> = {
+  // මෙතන තියෙන්නේ Campus Name එක සහ ඒකට අදාල Package IDs ටික
+  "Institute of Social & Technical Studies": ["P3"], 
+  // උදාහරණයක්: ඉස්සරහට වෙන එකක් ආවොත් මෙහෙම දාන්න පුළුවන් -> "ICBT Campus": ["P1", "P2"]
+};
 
 // Modern Custom Dropdown Component (Matched with WhatsAppModal style)
 const CustomSelect = ({ value, options, onChange, placeholder, searchable = false }: { value: string, options: string[], onChange: (val: string) => void, placeholder: string, searchable?: boolean }) => {
@@ -270,7 +278,7 @@ export default function PhotoFormPage() {
     }
     
     if (!formData.campusName) {
-      setValidationError("Please select your Institute / Campus Name.");
+      setValidationError("Please select your Institute | Campus Name.");
       return;
     }
     
@@ -318,6 +326,98 @@ export default function PhotoFormPage() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const generatePDF = () => {
+    const doc = new jsPDF("p", "pt", "a4"); // Points, A4 size
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    // --- Brand Colors ---
+    const primaryColor: [number, number, number] = [164, 0, 73]; // #a40049
+    const textColor: [number, number, number] = [50, 50, 50];
+    
+    // --- Header Background ---
+    doc.setFillColor(...primaryColor);
+    doc.rect(0, 0, pageWidth, 110, "F");
+
+    // --- Header Text ---
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(24);
+    doc.setFont("helvetica", "bold");
+    doc.text("SKD EVENT MANAGEMENT", pageWidth / 2, 45, { align: "center" });
+    
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text("Official Premium Photography Order Receipt", pageWidth / 2, 65, { align: "center" });
+    
+    doc.setFontSize(10);
+    doc.text(`Generated On: ${new Date().toLocaleString()}`, pageWidth / 2, 85, { align: "center" });
+
+    // --- Document Details ---
+    doc.setTextColor(...textColor);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Student & Order Information", 40, 150);
+    
+    // --- Main Table ---
+    const pkgDetails = packages.find(p => p.id === selectedPackage);
+    const pkgName = pkgDetails ? pkgDetails.name : "Not Selected";
+
+    autoTable(doc, {
+      startY: 170,
+      theme: 'grid',
+      headStyles: { fillColor: primaryColor, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 11 },
+      bodyStyles: { fontSize: 10, textColor: textColor, cellPadding: 8 },
+      alternateRowStyles: { fillColor: [249, 250, 251] }, // Light gray
+      columnStyles: { 
+        0: { fontStyle: 'bold', cellWidth: 150, fillColor: [243, 244, 246] }, // Label column
+        1: { cellWidth: 'auto' } 
+      },
+      head: [["Description", "Details"]],
+      body: [
+        ["Student Name", `${formData.firstName} ${formData.lastName} ${formData.surname}`.trim().toUpperCase()],
+        ["Seat Number", formData.seatNo.toUpperCase()],
+        ["Institute / Campus", formData.campusName.toUpperCase()],
+        ["Diploma / Degree", formData.diplomaName.toUpperCase()],
+        ["Event Date", formData.eventDate],
+        ["Session Sequence", formData.session.toUpperCase()],
+        ["Selected Package", pkgName.toUpperCase()],
+        ["Primary Mobile", formData.mobile1],
+        ["Secondary Mobile", formData.mobile2],
+        ["Email Address", formData.email.toLowerCase()],
+        ["Delivery Address", formData.courierAddress.toUpperCase()],
+        ["Nearest Main City", formData.nearestCity.toUpperCase()],
+        ["District", formData.district.toUpperCase()],
+      ],
+    });
+
+    // --- Footer & Instructions ---
+    const finalY = (doc as any).lastAutoTable.finalY + 40;
+    
+    // Alert Box
+    doc.setFillColor(255, 240, 245); // Light pink bg
+    doc.setDrawColor(...primaryColor);
+    doc.setLineWidth(1);
+    doc.rect(40, finalY, pageWidth - 80, 70, "FD");
+
+    doc.setTextColor(...primaryColor);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("ACTION REQUIRED:", 50, finalY + 25);
+    
+    doc.setTextColor(...textColor);
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text("Please print this document and bring it with you on the day of the event.", 50, finalY + 45);
+
+    // Bottom Website/Contact
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(150, 150, 150);
+    doc.text("SKD Event Management (Pvt) Ltd. | www.skdevents.lk | +94 701 22 33 22", pageWidth / 2, doc.internal.pageSize.getHeight() - 30, { align: "center" });
+
+    // Save the PDF
+    doc.save(`SKD_Photo_Order_${formData.seatNo || formData.firstName}.pdf`);
   };
 
   return (
@@ -437,7 +537,7 @@ export default function PhotoFormPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Institute / Campus Name</label>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Institute | Campus Name</label>
                 <CustomSelect 
                   value={formData.campusName}
                   options={["Institute of Social & Technical Studies"]}
@@ -492,26 +592,36 @@ export default function PhotoFormPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               {packages.map((pkg) => {
                 const isSelected = selectedPackage === pkg.id;
+                
+                // Campus Rules Check කරන තැන
+                const allowedPackages = formData.campusName ? campusPackageRules[formData.campusName] : null;
+                // Allowed Packages ලැයිස්තුවක් දීලා තියෙනවා නම් සහ මේ පැකේජ් එක ඒකේ නැත්නම් මේක disable වෙනවා
+                const isNotAllowed = allowedPackages && !allowedPackages.includes(pkg.id);
+
                 return (
                   <motion.div 
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={!isNotAllowed ? { y: -2 } : {}}
+                    whileTap={!isNotAllowed ? { scale: 0.98 } : {}}
                     key={pkg.id}
-                    onClick={() => togglePackage(pkg.id)}
-                    className={`cursor-pointer relative p-5 rounded-2xl border-2 text-left transition-all duration-300 ${
-                      isSelected 
-                        ? "border-[#a40049] bg-gradient-to-br from-white to-[#a40049]/5 shadow-md" 
-                        : "border-gray-100 bg-white hover:border-gray-200 hover:shadow-sm"
+                    onClick={() => {
+                      if (!isNotAllowed) togglePackage(pkg.id);
+                    }}
+                    className={`relative p-5 rounded-2xl border-2 text-left transition-all duration-300 ${
+                      isNotAllowed 
+                        ? "opacity-50 cursor-not-allowed border-gray-100 bg-gray-50 grayscale" 
+                        : isSelected 
+                          ? "cursor-pointer border-[#a40049] bg-gradient-to-br from-white to-[#a40049]/5 shadow-md" 
+                          : "cursor-pointer border-gray-100 bg-white hover:border-gray-200 hover:shadow-sm"
                     }`}
                   >
-                    {isSelected && (
+                    {isSelected && !isNotAllowed && (
                       <div className="absolute -top-2 -right-2 w-7 h-7 bg-[#a40049] rounded-full flex items-center justify-center shadow-lg transform rotate-12">
                         <Check className="w-3.5 h-3.5 text-white" />
                       </div>
                     )}
                     
                     <h4 className={`text-sm font-bold mb-3 ${isSelected ? 'text-[#a40049]' : 'text-gray-900'}`}>
-                      {pkg.name}
+                      {pkg.name} {isNotAllowed && <span className="text-xs text-red-500 ml-2">(Not available for your campus)</span>}
                     </h4>
                     
                     <ul className="space-y-2.5">
@@ -543,7 +653,9 @@ export default function PhotoFormPage() {
     {/* --- Name Fields: 3 Columns in a single row --- */}
     <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
       <div>
-        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">First Name</label>
+        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+  First Name <span className="text-red-500 text-sm ml-1">*</span>
+</label>
         <input 
           type="text" required name="firstName" value={formData.firstName} onChange={handleInputChange}
           placeholder="Enter first name"
@@ -552,7 +664,9 @@ export default function PhotoFormPage() {
       </div>
 
       <div>
-        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Last Name</label>
+        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+  Last Name <span className="text-red-500 text-sm ml-1">*</span>
+</label>
         <input 
           type="text" required name="lastName" value={formData.lastName} onChange={handleInputChange}
           placeholder="Enter last name"
@@ -574,7 +688,9 @@ export default function PhotoFormPage() {
     {/* ---------------------------------------------- */}
 
     <div className="md:col-span-2">
-      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Courier Delivery Address</label>
+      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+        Courier Delivery Address <span className="text-red-500 text-sm ml-1">*</span>
+      </label>
       <input 
         type="text" required name="courierAddress" value={formData.courierAddress} onChange={handleInputChange}
         placeholder="Street address, apartment, building info"
@@ -583,7 +699,9 @@ export default function PhotoFormPage() {
     </div>
 
     <div>
-      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Nearest Main City</label>
+      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+        Nearest Main City <span className="text-red-500 text-sm ml-1">*</span>
+      </label>
       <input 
         type="text" required name="nearestCity" value={formData.nearestCity} onChange={handleInputChange}
         placeholder="City name"
@@ -592,7 +710,9 @@ export default function PhotoFormPage() {
     </div>
 
    <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">District Selection</label>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+                District Selection <span className="text-red-500 text-sm ml-1">*</span>
+              </label>
               <CustomSelect 
                 value={formData.district}
                 options={districts}
@@ -602,7 +722,9 @@ export default function PhotoFormPage() {
               />
             </div>
     <div>
-      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Primary Mobile No (Mobile 1)</label>
+      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+        Primary Mobile No (Mobile 1) <span className="text-red-500 text-sm ml-1">*</span>
+      </label>
       <input 
         type="tel" required name="mobile1" value={formData.mobile1} onChange={handleInputChange}
         placeholder="Numbers only format"
@@ -613,7 +735,9 @@ export default function PhotoFormPage() {
     </div>
 
     <div>
-      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Secondary Mobile No (Mobile 2)</label>
+      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+        Secondary Mobile No (Mobile 2) <span className="text-red-500 text-sm ml-1">*</span>
+      </label>
       <input 
         type="tel" required name="mobile2" value={formData.mobile2} onChange={handleInputChange}
         placeholder="Numbers only format"
@@ -624,7 +748,9 @@ export default function PhotoFormPage() {
     </div>
 
     <div className="md:col-span-2">
-      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Email Address</label>
+      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+        Email Address <span className="text-red-500 text-sm ml-1">*</span>
+      </label>
       <input 
         type="email" required name="email" value={formData.email} onChange={handleInputChange}
         placeholder="example@domain.com"
@@ -776,17 +902,31 @@ export default function PhotoFormPage() {
               <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3 tracking-tight relative z-10">
                 Thank You!
               </h3>
-              <p className="text-sm text-gray-500 font-medium mb-8 leading-relaxed px-2 relative z-10">
-                Your order details and payment verification have been successfully submitted. Our team will review your request and process your premium photography package shortly.
-              </p>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 relative z-10 text-left">
+                <p className="text-sm text-gray-700 font-bold mb-1 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-yellow-600" /> Action Required!
+                </p>
+                <p className="text-xs text-gray-600 font-medium">
+                  Please <strong className="text-[#a40049]">download and print</strong> your order summary document using the button below. You must bring this printed document with you on the event date.
+                </p>
+              </div>
               
-              {/* Action Button */}
-              <button 
-                onClick={handleResetForm}
-                className="w-full py-4 rounded-xl font-bold tracking-wider uppercase bg-gradient-to-r from-[#a40049] to-[#ff4d94] text-white text-sm hover:shadow-[0_15px_30px_-10px_rgba(164,0,73,0.4)] transition-all duration-300 hover:opacity-95 relative z-10"
-              >
-                Close & Return
-              </button>
+              {/* Action Buttons */}
+              <div className="space-y-3 relative z-10">
+                <button 
+                  onClick={generatePDF}
+                  className="w-full py-4 rounded-xl font-bold tracking-wider uppercase bg-[#1a1a1a] text-white text-sm hover:bg-black hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <UploadCloud className="w-4 h-4 rotate-180" /> Download PDF Receipt
+                </button>
+
+                <button 
+                  onClick={handleResetForm}
+                  className="w-full py-4 rounded-xl font-bold tracking-wider uppercase bg-gradient-to-r from-[#a40049] to-[#ff4d94] text-white text-sm hover:shadow-[0_15px_30px_-10px_rgba(164,0,73,0.4)] transition-all duration-300 hover:opacity-95"
+                >
+                  Close & Return
+                </button>
+              </div>
             </motion.div>
           </div>
         )}
