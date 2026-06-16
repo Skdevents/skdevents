@@ -397,15 +397,15 @@ export default function PhotoFormPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gray-50 rounded-2xl p-5 border border-gray-100">
             <div>
               <span className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Bank Name</span>
-              <p className="text-sm font-bold text-gray-800 mt-0.5">Luxury Trust Bank PLC</p>
+              <p className="text-sm font-bold text-gray-800 mt-0.5">Seylan Bank PLC</p>
             </div>
             <div>
               <span className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Account Branch</span>
-              <p className="text-sm font-bold text-gray-800 mt-0.5">Colombo Corporate Office</p>
+              <p className="text-sm font-bold text-gray-800 mt-0.5">Ja-Ela</p>
             </div>
             <div>
               <span className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Account Number</span>
-              <p className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#a40049] to-[#ff4d94] mt-0.5 tracking-wider">9874-5123-0012-4562</p>
+              <p className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#a40049] to-[#ff4d94] mt-0.5 tracking-wider">0270-13866848-001</p>
             </div>
           </div>
           <div className="flex items-start gap-2 mt-4 text-xs text-gray-500 font-medium">
@@ -440,7 +440,7 @@ export default function PhotoFormPage() {
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Institute / Campus Name</label>
                 <CustomSelect 
                   value={formData.campusName}
-                  options={["SLIIT", "NIBM", "IIT"]}
+                  options={["Institute of Social & Technical Studies"]}
                   onChange={(val: string) => setFormData(prev => ({ ...prev, campusName: val }))}
                   placeholder="Select Campus"
                 />
