@@ -264,6 +264,31 @@ export default function PhotoFormPage() {
 
     let errors: Record<string, boolean> = {};
 
+    // --- NEW: Explicit Mandatory Fields Validation ---
+    if (!formData.seatNo) {
+      setValidationError("Please enter your Seat Number.");
+      return;
+    }
+    if (!formData.campusName) {
+      setValidationError("Please select your Institute / Campus Name.");
+      return;
+    }
+    if (!formData.diplomaName) {
+      setValidationError("Please enter the Name of Diploma / Degree.");
+      return;
+    }
+    if (!formData.eventDate) {
+      setValidationError("Please select the Event Date.");
+      return;
+    }
+    
+    // Personal Info Validation
+    if (!formData.firstName || !formData.lastName || !formData.courierAddress || !formData.nearestCity) {
+      setValidationError("Please fill in all mandatory personal information fields.");
+      document.getElementById('personal-info-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
     // --- 4. Smart Validation (Email & Phone) ---
     if (formData.mobile1.length !== 10) errors.mobile1 = true;
     if (formData.mobile2.length !== 10) errors.mobile2 = true;
@@ -274,11 +299,6 @@ export default function PhotoFormPage() {
       setValidationError("Please check the fields highlighted in red. Phone numbers must be 10 digits and Email must be valid.");
       // Scroll to personal info section
       document.getElementById('personal-info-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    
-    if (!formData.campusName) {
-      setValidationError("Please select your Institute | Campus Name.");
       return;
     }
     
@@ -525,7 +545,8 @@ export default function PhotoFormPage() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Seat Number</label>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Seat NumberSeat Number <span className="text-red-500 text-sm ml-1">*</span>
+                </label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 text-xs font-bold">#</span>
                   <input 
@@ -537,12 +558,14 @@ export default function PhotoFormPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Institute | Campus Name</label>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Institute | Campus Name<span className="text-red-500 text-sm ml-1">*</span>
+                </label>
                 <CustomSelect 
                   value={formData.campusName}
                   options={["Institute of Social & Technical Studies"]}
                   onChange={(val: string) => setFormData(prev => ({ ...prev, campusName: val }))}
                   placeholder="Select Campus"
+                  
                 />
               </div>
 
@@ -558,7 +581,9 @@ export default function PhotoFormPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Event Date</label>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Event Date
+                  <span className="text-red-500 text-sm ml-1">*</span>
+                </label>
                 <div className="relative">
                   <input 
                     type="date" required name="eventDate" min={today} value={formData.eventDate} onChange={handleInputChange}
@@ -593,9 +618,7 @@ export default function PhotoFormPage() {
               {packages.map((pkg) => {
                 const isSelected = selectedPackage === pkg.id;
                 
-                // Campus Rules Check කරන තැන
                 const allowedPackages = formData.campusName ? campusPackageRules[formData.campusName] : null;
-                // Allowed Packages ලැයිස්තුවක් දීලා තියෙනවා නම් සහ මේ පැකේජ් එක ඒකේ නැත්නම් මේක disable වෙනවා
                 const isNotAllowed = allowedPackages && !allowedPackages.includes(pkg.id);
 
                 return (
@@ -643,8 +666,8 @@ export default function PhotoFormPage() {
           </div>
 
           {/* Section 3: Personal Information Input Controls */}
-<div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.03)] space-y-6">
-  <h3 className="text-md font-bold uppercase tracking-wider text-[#a40049] flex items-center gap-2 border-b border-gray-50 pb-3">
+<div id="personal-info-section" className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.03)] space-y-6">
+    <h3 className="text-md font-bold uppercase tracking-wider text-[#a40049] flex items-center gap-2 border-b border-gray-50 pb-3">
     <User className="w-4 h-4" /> 3. Personal Information
   </h3>
 
@@ -749,7 +772,7 @@ export default function PhotoFormPage() {
 
     <div className="md:col-span-2">
       <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
-        Email Address <span className="text-red-500 text-sm ml-1">*</span>
+        Email Address
       </label>
       <input 
         type="email" required name="email" value={formData.email} onChange={handleInputChange}
