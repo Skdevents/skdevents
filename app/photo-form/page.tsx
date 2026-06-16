@@ -548,13 +548,13 @@ export default function PhotoFormPage() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Seat NumberSeat Number <span className="text-red-500 text-sm ml-1">*</span>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Seat Number<span className="text-red-500 text-sm ml-1">*</span>
                 </label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 text-xs font-bold">#</span>
                   <input 
                     type="text" required name="seatNo" value={formData.seatNo} onChange={handleInputChange}
-                    placeholder="Enter assigned seat ID"
+                    placeholder="Enter assigned seat Number"
                     className="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#a40049] focus:bg-white transition-all duration-200"
                   />
                 </div>
