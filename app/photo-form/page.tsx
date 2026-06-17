@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Camera, GraduationCap, Calendar, Clock, User, MapPin, 
   Phone, Mail, UploadCloud, CreditCard, CheckCircle2, ShieldCheck, Info,
-  Check, X, AlertCircle, ChevronDown, Search
+  Check, X, AlertCircle, ChevronDown, Search, Copy
 } from "lucide-react";
 
 // Sri Lanka Districts List
@@ -153,6 +153,7 @@ export default function PhotoFormPage() {
   const [fileName, setFileName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const [validationError, setValidationError] = useState("");
   const [formData, setFormData] = useState({
     seatNo: "",
@@ -240,8 +241,8 @@ export default function PhotoFormPage() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
 
-      if (file.size > 3145728) {
-        setFileError("File size exceeds the 3MB maximum limit.");
+      if (file.size > 5242880) {
+        setFileError("File size exceeds the 5MB maximum limit.");
         e.target.value = ""; 
         return;
       }
@@ -292,15 +293,15 @@ export default function PhotoFormPage() {
       return;
     }
 
-    // --- 4. Smart Validation (Email & Phone) ---
     if (formData.mobile1.length !== 10) errors.mobile1 = true;
     if (formData.mobile2.length !== 10) errors.mobile2 = true;
-    if (!formData.email.includes("@") || !formData.email.includes(".com")) errors.email = true;
+    if (formData.email && (!formData.email.includes("@") || !formData.email.includes(".com"))) {
+      errors.email = true;
+    }
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
-      setValidationError("Please check the fields highlighted in red. Phone numbers must be 10 digits and Email must be valid.");
-      // Scroll to personal info section
+      setValidationError("Please check the fields highlighted in red. Phone numbers must be 10 digits and if an Email is provided, it must be valid.");
       document.getElementById('personal-info-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
@@ -517,7 +518,12 @@ export default function PhotoFormPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gray-50 rounded-2xl p-5 border border-gray-100">
+          {/* --- UPDATED: Grid layout to fit 4 items nicely --- */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 rounded-2xl p-5 border border-gray-100">
+            <div>
+              <span className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Account Name</span>
+              <p className="text-sm font-bold text-gray-800 mt-0.5">SKD Event Management (Pvt) Ltd</p>
+            </div>
             <div>
               <span className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Bank Name</span>
               <p className="text-sm font-bold text-gray-800 mt-0.5">Seylan Bank PLC</p>
@@ -528,9 +534,31 @@ export default function PhotoFormPage() {
             </div>
             <div>
               <span className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Account Number</span>
-              <p className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#a40049] to-[#ff4d94] mt-0.5 tracking-wider">0270-13866848-001</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <p className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#a40049] to-[#ff4d94] tracking-wider">
+                  0270-13866848-001
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText("0270-13866848-001");
+                    setIsCopied(true);
+                    setTimeout(() => setIsCopied(false), 2000);
+                  }}
+                  className="p-1.5 rounded-md bg-gray-100 hover:bg-[#a40049]/10 transition-colors group"
+                  title="Copy to clipboard"
+                >
+                  {isCopied ? (
+                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#a40049]" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
+          {/* --------------------------------------------------- */}
+
           <div className="flex items-start gap-2 mt-4 text-xs text-gray-500 font-medium">
             <Info className="w-4 h-4 text-[#a40049] shrink-0 mt-0.5" />
             <p>Ensure that the uploaded slip image is perfectly legible. Digital bank transactions or physical deposit slips are fully accepted.</p>
@@ -633,15 +661,31 @@ export default function PhotoFormPage() {
               <h3 className="text-md font-bold uppercase tracking-wider text-[#a40049] flex items-center gap-2">
                 <Camera className="w-4 h-4" /> 2. Select Photo Package
               </h3>
-              <p className="text-xs text-gray-400 mt-1 font-medium">Click a package to select. Click again to deselect.</p>
+              
+              {formData.campusName ? (
+                <p className="text-xs text-gray-400 mt-1 font-medium">Click a package to select. Click again to deselect.</p>
+              ) : (
+                <p className="text-xs text-red-500 mt-1 font-bold flex items-center gap-1.5 bg-red-50 inline-flex px-3 py-1.5 rounded-lg border border-red-100">
+                  <AlertCircle className="w-3.5 h-3.5" /> Please select your Institute | Campus Name in Step 1 to unlock packages.
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               {packages.map((pkg) => {
                 const isSelected = selectedPackage === pkg.id;
                 
-                const allowedPackages = formData.campusName ? campusPackageRules[formData.campusName] : null;
-                const isNotAllowed = allowedPackages && !allowedPackages.includes(pkg.id);
+                const isCampusSelected = formData.campusName !== "";
+                const allowedPackages = isCampusSelected ? campusPackageRules[formData.campusName] : null;
+                
+                const isNotAllowed = !isCampusSelected || (allowedPackages && !allowedPackages.includes(pkg.id));
+
+                let notAllowedMessage = "";
+                if (!isCampusSelected) {
+                  notAllowedMessage = "(Select campus first)";
+                } else if (isNotAllowed) {
+                  notAllowedMessage = "(Not available for your campus)";
+                }
 
                 return (
                   <motion.div 
@@ -666,7 +710,7 @@ export default function PhotoFormPage() {
                     )}
                     
                     <h4 className={`text-sm font-bold mb-3 ${isSelected ? 'text-[#a40049]' : 'text-gray-900'}`}>
-                      {pkg.name} {isNotAllowed && <span className="text-xs text-red-500 ml-2">(Not available for your campus)</span>}
+                      {pkg.name} {isNotAllowed && <span className="text-xs text-red-500 ml-2">{notAllowedMessage}</span>}
                     </h4>
                     
                     <ul className="space-y-2.5">
@@ -799,7 +843,7 @@ export default function PhotoFormPage() {
         Email Address
       </label>
       <input 
-        type="email" required name="email" value={formData.email} onChange={handleInputChange}
+        type="email" name="email" value={formData.email} onChange={handleInputChange}
         placeholder="example@domain.com"
         className={`w-full px-4 py-3 border rounded-xl text-sm font-medium focus:outline-none transition-all duration-200 ${
           fieldErrors.email ? 'bg-red-50 border-red-500 ring-2 ring-red-200 focus:border-red-500 text-red-900' : 'bg-gray-50 border-gray-200 focus:border-[#a40049] focus:bg-white'
@@ -846,7 +890,7 @@ export default function PhotoFormPage() {
                     "Click to select or drag verification slip"
                   )}
                 </div>
-                <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wide">File Limit: Max 3MB (Image or PDF format only) *Required</p>
+                <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wide">File Limit: Max 5MB (Image or PDF format only) *Required</p>
               </div>
             </div>
 
