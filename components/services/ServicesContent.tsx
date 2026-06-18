@@ -1,5 +1,5 @@
 "use client";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -385,7 +385,6 @@ const structuredServices = [
       { 
         name: "Floor Management", 
         desc: "Ensuring seamless coordination and operational excellence throughout the event.", 
-        // අලුත්: Buttons දිගටම ඇවිත් අයිනෙන් Info Icon එක එන්න isFloorItem true කළා
         isFloorItem: true, 
         items: [
           "Stage Management & Ceremony Flow", 
@@ -411,22 +410,10 @@ const structuredServices = [
         desc: "Strategic seating solutions designed for comfort, order, and protocol compliance.", 
         isStackedList: true, 
         items: [
-          "Student Procession (Perahara) Arrangement", 
+          "Student Seating Arrangement",
+          "Guest & Parent Seating Arrangement",
+          "Student Procession (Perahara) Arrangement",
           "Award Receiving Arrangements & Time Management"
-        ],
-        nestedGroups: [
-          {
-            title: "Auditorium",
-            hideTitleInPill: true,
-            isStackedList: true,
-            options: ["Student Seating Arrangement", "Guest & Parent Seating Arrangement"]
-          },
-          {
-            title: "Mace bearer | Sergeant-at-Arms",
-            hideTitleInPill: true,
-            isStackedList: true,
-            options: ["Mace bearer | Sergeant-at-Arms (With Costume)"]
-          }
         ]
       },
       { 
@@ -467,9 +454,7 @@ const structuredServices = [
           { id: "P1", name: "Photo Package 1", features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”"] },
           { id: "P2", name: "Photo Package 2", features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x15”"] },
           { id: "P3", name: "Photo Package 3", features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x15”", "Group Photo - Soft Copy - 12”x18”"] },
-          { id: "P4", name: "Photo Package 4", features: ["Customized Selection (Build your own)"], isCustom: true },
-          { id: "SP1", name: "Special Photo Package 1", features: ["Stage photo - 16”x19”", "Full | Bust Photo - 16”x19”", "Family Photo - 16”x19”", "Group Photo (Soft Copy)"] },
-          { id: "SP2", name: "Special Photo Package 2", features: ["Stage photo - 12”x15”", "Full | Bust Photo - 16”x19”", "Family Photo - 12”x15”", "Group Photo (Soft Copy)"] }
+          { id: "P4", name: "Photo Package 4", features: ["Customized Selection (Build your own)"], isCustom: true }
         ],
         nestedGroups: [
          { title: "Select Photo Options", desc: "You got Package 4. Please select your preferred options below.", dependsOn: "Photo Package 4", hideTitleInPill: true, options: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x15”", "Couple Photo - 12”x15”", "Group Photo - Soft Copy - 12”x18”"] }
@@ -477,9 +462,15 @@ const structuredServices = [
       },
       { 
         name: "Embossed Photo Mount Print", 
-        desc: "Enhance your graduation or event photographs with a premium Embossed Photo Mount Print.", 
-        isMountItem: true,
-        nestedGroups: [{ title: "Available Colors", hideTitleInPill: true, hasCounters: true, options: ["Black", "Silver", "White", "Gold"] }] 
+        desc: "Enhance your graduation or event photographs with a premium Embossed Photo Mount Print."
+      },
+      {
+        name: "Special Photo Packages",
+        desc: "Premium graduation memory packages tailored for special moments and family portraits.",
+        packages: [
+          { id: "SP1", name: "Special Photo Package 1", features: ["Stage photo - 16”x19”", "Full | Bust Photo - 16”x19”", "Family Photo - 16”x19”", "Group Photo (Soft Copy)"] },
+          { id: "SP2", name: "Special Photo Package 2", features: ["Stage photo - 12”x15”", "Full | Bust Photo - 16”x19”", "Family Photo - 12”x15”", "Group Photo (Soft Copy)"] }
+        ]
       },
       { 
         name: "Photo Backdrops", 
@@ -713,7 +704,9 @@ export default function ServicesContent() {
       try { setQuantities(JSON.parse(savedQty)); } catch (e) { console.error("Error parsing qty"); }
     }
     if (savedDims) { try { setPlatformDims(JSON.parse(savedDims)); } catch (e) { } }
-    if (savedLedDims) { try { setLedDims(JSON.parse(savedLedDims)); } catch (e) { } }
+    if (savedLedDims) { try { setLedDims(JSON.parse(savedLedDims)); } catch { } }
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -740,10 +733,31 @@ export default function ServicesContent() {
         return newCart;
       }
 
+      const floorItems = [
+        "Event Operations & Guest Management - Floor Management: Stage Management & Ceremony Flow", 
+        "Event Operations & Guest Management - Floor Management: Seating Management", 
+        "Event Operations & Guest Management - Floor Management: Procession & Line-Up Control", 
+        "Event Operations & Guest Management - Floor Management: Ushering & Guidance Team", 
+        "Event Operations & Guest Management - Floor Management: Registration & Entry Control", 
+        "Event Operations & Guest Management - Floor Management: Queue & Holding Area Management", 
+        "Event Operations & Guest Management - Floor Management: Security & Access Control", 
+        "Event Operations & Guest Management - Floor Management: Backstage Coordination", 
+        "Event Operations & Guest Management - Floor Management: Communication System (Floor Control)", 
+        "Event Operations & Guest Management - Floor Management: Emergency & Crowd Control"
+      ];
+      if (floorItems.includes(itemFullString)) {
+        const isSelected = floorItems.every(i => prev.includes(i));
+        if (isSelected) return prev.filter(i => !floorItems.includes(i));
+        floorItems.forEach(i => { if (!newCart.includes(i)) newCart.push(i); });
+        return newCart;
+      }
+
       // 2. Seating Arrangements Auto-Select (C1)
       const seatingItems = [
+        "Event Operations & Guest Management - Seat Arrangement: Student Seating Arrangement", 
+        "Event Operations & Guest Management - Seat Arrangement: Guest & Parent Seating Arrangement",
         "Event Operations & Guest Management - Seat Arrangement: Student Procession (Perahara) Arrangement", 
-        "Event Operations & Guest Management - Seat Arrangement: Award Receiving Arrangements & Time Management",
+        "Event Operations & Guest Management - Seat Arrangement: Award Receiving Arrangements & Time Management"
       ];
       if (seatingItems.includes(itemFullString)) {
         const isSelected = seatingItems.every(i => prev.includes(i));
@@ -830,7 +844,7 @@ export default function ServicesContent() {
 
   // Helper function to get ALL selectable strings for a given category
   const getAllItemsInCategory = (cat: any) => {
-    let allItems: string[] = [];
+    const allItems: string[] = [];
     
     // Direct items
     if (cat.items) {
@@ -838,7 +852,6 @@ export default function ServicesContent() {
         allItems.push(`${cat.category}: ${item}`);
       });
     }
-
     // --- (පියවර 3 මෙතන තියෙනවා) C2 එකේ තියෙන Items select all වෙන්න මේක ඕනේ ---
     if (cat.id === "C2") {
       return allItems; 
@@ -1154,21 +1167,10 @@ export default function ServicesContent() {
                               disableBooths = !isVideoDurationSelected;
                             }
 
-                            // --- NEW: Embossed Mount Disable Logic ---
-                            let disableMount = false;
-                            let isPackage2Selected = false;
-                            if (cat.id === "C2" && sub.isMountItem) {
-                              const isPackage1Selected = cart.includes("Photography, Videography & Digital Experiences - Student’s Photo Package: Special Photo Package 1");
-                              isPackage2Selected = cart.includes("Photography, Videography & Digital Experiences - Student’s Photo Package: Special Photo Package 2");
-                              
-                              disableMount = !(isPackage1Selected || isPackage2Selected);
-                            }
-
-                            const isDisabledContainer = disableBooths || disableMount;
+                            const isDisabledContainer = disableBooths;
 
                             return (
                             <div key={sub.name} className={`bg-gray-50/50 border border-gray-200/80 p-4 sm:p-5 rounded-2xl relative transition-all duration-300 hover:bg-white hover:shadow-md ${isDisabledContainer ? 'opacity-50 grayscale-[30%] pointer-events-none' : ''}`}>
-
                               <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-3">
                                   <div className="w-1.5 h-4 sm:h-5 bg-[#a40049] rounded-full shrink-0" />
@@ -1193,23 +1195,23 @@ export default function ServicesContent() {
                                 </p>
                               )}
 
-                              {disableMount && (
-                                <p className="text-[11px] sm:text-xs text-red-500 font-bold mb-3 -mt-2 bg-red-50 inline-block px-3 py-1 rounded-md border border-red-100">
-                                  Please Select Special Photo Package 1 or 2 First!
-                                </p>
-                              )}
-
-                              {/* Package 2 තේරුවොත් එන Note එක */}
-                              {!disableMount && sub.isMountItem && isPackage2Selected && (
-                                <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="mb-4 -mt-2">
-                                  <p className="text-[11px] sm:text-[12px] text-[#a40049] font-bold bg-[#a40049]/10 inline-block px-3.5 py-1.5 rounded-lg border border-[#a40049]/20 shadow-sm">
-                                    <span className="font-extrabold mr-1">Note:</span> For Special Photo Package 2, only the Full | Bust Photo will be mounted.
-                                  </p>
-                                </motion.div>
-                              )}
-
                               {sub.desc && <p className="text-[12px] sm:text-[13px] text-gray-500 mb-4 -mt-1 font-medium leading-relaxed">{sub.desc}</p>}
                               
+                              {/* Embossed Photo Mount Print - Colors Display */}
+                              {sub.name === "Embossed Photo Mount Print" && (
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-5 mt-2">
+                                  <span className="text-[11px] sm:text-[13px] font-extrabold text-gray-800 uppercase tracking-wide">
+                                    Available Colors:
+                                  </span>
+                                  <div className="flex flex-wrap gap-2 sm:gap-2.5">
+                                    {["Black", "Silver", "White", "Gold"].map((color) => (
+                                      <span key={color} className="px-4 sm:px-5 py-2 bg-white border border-gray-200 text-[#a40049] text-[11px] sm:text-[13px] font-bold rounded-xl shadow-sm text-center">
+                                        {color}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                               {/* Stage Platform Custom Inputs */}
                               {sub.hasDimensionsInput && (
                                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4 mb-2">
@@ -1246,36 +1248,49 @@ export default function ServicesContent() {
 
                               {/* Packages Cards */}
                               {sub.packages && (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                                  {sub.packages.map((pkg: any) => {
-                                    const fullString = `${cat.category} - ${sub.name}: ${pkg.name}`;
-                                    const isSelected = cart.includes(fullString);
-                                    
-                                    return (
-                                      <motion.div 
-                                        key={pkg.id}
-                                        whileTap={{ scale: 0.98 }}
-                                        onClick={() => toggleCart(fullString)}
-                                        className={`cursor-pointer p-5 rounded-2xl border transition-all duration-300 ${isSelected ? 'bg-[#a40049]/5 border-[#a40049] shadow-md scale-[1.02]' : 'bg-white border-gray-200 hover:border-[#a40049]/30 hover:shadow-sm'}`}
-                                      >
-                                        <div className="flex items-center justify-between mb-3">
-                                          <h6 className={`font-extrabold text-sm sm:text-[15px] ${isSelected ? 'text-[#a40049]' : 'text-gray-800'}`}>{pkg.name}</h6>
-                                          <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors ${isSelected ? 'bg-[#a40049] border-[#a40049]' : 'bg-white border-[#a40049]'}`}>
-                                            {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                                <>
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                                    {sub.packages.map((pkg: any) => {
+                                      const fullString = `${cat.category} - ${sub.name}: ${pkg.name}`;
+                                      const isSelected = cart.includes(fullString);
+                                      
+                                      return (
+                                        <motion.div 
+                                          key={pkg.id}
+                                          whileTap={{ scale: 0.98 }}
+                                          onClick={() => toggleCart(fullString)}
+                                          className={`cursor-pointer p-5 rounded-2xl border transition-all duration-300 h-full ${isSelected ? 'bg-[#a40049]/5 border-[#a40049] shadow-md scale-[1.02]' : 'bg-white border-gray-200 hover:border-[#a40049]/30 hover:shadow-sm'}`}
+                                        >
+                                          <div className="flex items-center justify-between mb-3">
+                                            <h6 className={`font-extrabold text-sm sm:text-[15px] ${isSelected ? 'text-[#a40049]' : 'text-gray-800'}`}>{pkg.name}</h6>
+                                            <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors ${isSelected ? 'bg-[#a40049] border-[#a40049]' : 'bg-white border-[#a40049]'}`}>
+                                              {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                                            </div>
                                           </div>
-                                        </div>
-                                        <ul className="space-y-2">
-                                          {pkg.features.map((f: string, i: number) => (
-                                            <li key={i} className="text-[11px] sm:text-[12px] text-gray-600 font-medium flex items-start gap-2 leading-snug">
-                                              <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 transition-colors ${isSelected ? 'bg-[#a40049]' : 'bg-gray-300'}`} />
-                                              <span>{f}</span>
-                                            </li>
-                                          ))}
-                                        </ul>
+                                          <ul className="space-y-2">
+                                            {pkg.features.map((f: string, i: number) => (
+                                              <li key={i} className="text-[11px] sm:text-[12px] text-gray-600 font-medium flex items-start gap-2 leading-snug">
+                                                <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 transition-colors ${isSelected ? 'bg-[#a40049]' : 'bg-gray-300'}`} />
+                                                <span>{f}</span>
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        </motion.div>
+                                      );
+                                    })}
+                                  </div>
+                                  
+                                  {sub.packages.some((p: any) => p.id === "SP2" && cart.includes(`${cat.category} - ${sub.name}: ${p.name}`)) && (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 -mt-2">
+                                      <div className="hidden sm:block"></div>
+                                      <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }}>
+                                        <p className="text-[11px] sm:text-[12px] text-[#a40049] font-bold bg-[#a40049]/10 block px-4 py-3 rounded-xl border border-[#a40049]/20 shadow-sm w-full">
+                                          <span className="font-extrabold mr-1">Note:</span> For Special Photo Package 2, only the Full | Bust Photo will be mounted.
+                                        </p>
                                       </motion.div>
-                                    );
-                                  })}
-                                </div>
+                                    </div>
+                                  )}
+                                </>
                               )}
 
                               {sub.items && sub.items.length > 0 && !sub.packages && (
