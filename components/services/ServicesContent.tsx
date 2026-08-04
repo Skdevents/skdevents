@@ -10,10 +10,6 @@ import {
 import WhatsAppModal from "./WhatsAppModal"; 
 
 const boothDetails: Record<string, any> = {
-  "Glam Bot Video Booth": {
-    desc: "Our Bot Video Booth captures studio-quality photos and trendy slow-motion videos with professional lighting, luxury filters, and instant sharing options — giving every guest a red-carpet experience.",
-    features: ["HD photo & video capture", "Luxury black & white glam effect", "Instant digital sharing", "Custom event branding", "Professional lighting setup", "Fun props & guest interaction", "Unlimited sessions during booking time"]
-  },
   "AI Photo Booth": {
     desc: "Our AI-powered booth transforms guests into creative, cinematic, and themed digital portraits instantly using advanced artificial intelligence effects. From luxury magazine covers to fantasy, superhero, graduation, royal, or movie-style transformations the possibilities are endless.",
     features: ["Instant AI-generated portraits", "Multiple creative themes & styles", "Custom event branding", "High-quality digital outputs", "Instant sharing via QR or email", "Interactive guest experience", "Fast processing with live preview"]
@@ -507,13 +503,18 @@ const structuredServices = [
       { isSectionHeader: true, title: "Video Booths", iconName: "Video" },
       { name: "Video Booth Duration", nestedGroups: [{ title: "Booth Duration", singleSelect: true, hideTitleInPill: true, options: ["04-Hour Package", "Full-Day Package"] }] },
       { name: "360 Video Booth", desc: "Immersive 360° video experiences that create unforgettable event memories.", isVideoBoothItem: true, items: ["Standard Video Booth", "Advanced Video Booth", "7'x3' Matte Flex Print Branding Boards"] },
-      { name: "Glam Bot Video Booth", desc: "Red-carpet-style robotic video experiences that add luxury and excitement to any event.", isVideoBoothItem: true, items: ["Include Glam Bot Video Booth"] },
       { name: "SLO-MO Video Booth", desc: "Capturing exciting moments in stunning cinematic slow motion.", isVideoBoothItem: true, nestedGroups: [{ title: "Lighting Backdrop", hideTitleInPill: true, options: ["Include SLO-MO Video Booth", "With Lighting Backdrop"] }] },
 
       { isSectionHeader: true, title: "Drone Videography", iconName: "Video" },
       { name: "Drone Video Coverage", desc: "Elevate your event coverage with spectacular aerial cinematography.", items: ["Fully Edited Highlight video"], isDrone: true, hasInfoIcon: true },
       { name: "FLOWER DROPPING DRONES", desc: "A spectacular aerial presentation that adds prestige and celebration to special occasions.", items: ["30KG Flower Dropping Drone", "100KG Flower Dropping Drone"], nestedGroups: [{ title: "Bags for 30KG Drone", dependsOn: "30KG Flower Dropping Drone", singleSelect: true, hideTitleInPill: true, options: ["30KG Flower Bag", "20KG Flower Bag"] }, { title: "Bags for 100KG Drone", dependsOn: "100KG Flower Dropping Drone", hideTitleInPill: true, hasCounters: true, counterLimits: { "30KG Flower Bag": 3, "20KG Flower Bag": 5 }, options: ["30KG Flower Bag", "20KG Flower Bag"] }], isDrone: true, hasInfoIcon: true },
       { name: "LED Screen Display Drone Coverage", desc: "Advanced drone technology creating dynamic aerial visual displays and brand messaging.", items: ["18FT LED Screen – 1 Time Fly", "30FT Large Sri Lankan LED Screen – 1 Time Fly"], isDrone: true, hasInfoIcon: true },
+      { 
+        name: "Color Smoke Effects", 
+        desc: "Add vibrant and cinematic color smoke effects to elevate your event atmosphere.", 
+        isCounterItems: true, 
+        items: ["Color Smoke"] 
+      },
       { name: "Drone Show", desc: "A breathtaking synchronized aerial performance that transforms the night sky into a memorable visual spectacle.", items: ["Include Drone Show"], isDrone: true }
     ]
   },
