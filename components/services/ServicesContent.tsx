@@ -449,11 +449,10 @@ const structuredServices = [
         packages: [
           { id: "P1", name: "Photo Package 1", features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”"] },
           { id: "P2", name: "Photo Package 2", features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x15”"] },
-          { id: "P3", name: "Photo Package 3", features: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x15”", "Group Photo - Soft Copy - 12”x18”"] },
-          { id: "P4", name: "Photo Package 4", features: ["Customized Selection (Build your own)"], isCustom: true }
+          { id: "P4", name: "Custom Photo Package", features: ["Build your own customized selection"], isCustom: true }
         ],
         nestedGroups: [
-         { title: "Select Photo Options", desc: "You got Package 4. Please select your preferred options below.", dependsOn: "Photo Package 4", hideTitleInPill: true, options: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x15”", "Couple Photo - 12”x15”", "Group Photo - Soft Copy - 12”x18”"] }
+         { title: "Select Photo Options", desc: "You selected the Custom Package. Please select your preferred options below.", dependsOn: "Custom Photo Package", hideTitleInPill: true, options: ["Stage Photo - 12”x15”", "Full Photo - 12”x18” | Bust Photo 12”x15”", "Family Photo - 12”x15”", "Couple Photo - 12”x15”", "Group Photo - Soft Copy - 12”x18”"] }
         ]
       },
       { 
@@ -533,12 +532,9 @@ const structuredServices = [
         desc: "Immersive visual technology that transforms venues into spectacular experiences.", 
         items: ["Single laser 3 machines"],
         packages: [
-          { id: "LM1", name: "Basic Stage Projection Mapping", features: ["Projection on stage backdrop or screen with simple animations"] },
-          { id: "LM2", name: "3D Stage Mapping", features: ["Custom 3D animations mapped onto stage structures"] },
-          { id: "LM3", name: "Building Facade Mapping", features: ["Projection on building exteriors with custom content"] },
-          { id: "LM4", name: "Logo & Brand Mapping", features: ["Corporate logo animations and product reveals"] },
-          { id: "LM5", name: "Laser Graphic Show", features: ["Laser beams creating logos, text, and effects in the air"] },
-          { id: "LM6", name: "Full Multimedia Mapping Show", features: ["Combination of projection mapping, lasers, lighting, and special effects"] }
+          { id: "LM_SILVER", name: "Silver Package", features: ["Basic projection mapping", "Opening animation", "University or company branding"] },
+          { id: "LM_GOLD", name: "Gold Package", features: ["Custom 3D content", "Multiple projection surfaces", "Synchronized audio effects"] },
+          { id: "LM_PLATINUM", name: "Platinum Package", features: ["Large-scale immersive experience", "Multiple high-brightness projectors", "Laser effects, lighting integration, and special effects"] }
         ]
       },
       { 
@@ -800,6 +796,7 @@ export default function ServicesContent() {
         return cleaned;
       }
 
+      // 5. Photo Booth Duration Single Select Logic (C2)
       if (itemFullString === "Photography, Videography & Digital Experiences - Photo Booth Duration: Booth Duration - 04-Hour Package" || itemFullString === "Photography, Videography & Digital Experiences - Photo Booth Duration: Booth Duration - Full-Day Package") {
         let cleaned = prev.filter(i => i !== "Photography, Videography & Digital Experiences - Photo Booth Duration: Booth Duration - 04-Hour Package" && i !== "Photography, Videography & Digital Experiences - Photo Booth Duration: Booth Duration - Full-Day Package");
         if (prev.includes(itemFullString)) return cleaned;
@@ -840,7 +837,13 @@ export default function ServicesContent() {
 
   const clearCart = () => {
     setCart([]);
+    setQuantities({});
+    setPlatformDims({ width: "", length: "", height: "" }); 
+    setLedDims({ width: "", height: "" }); 
     localStorage.removeItem("skd_services_cart");
+    localStorage.removeItem("skd_services_qty");
+    localStorage.removeItem("skd_services_dims");
+    localStorage.removeItem("skd_services_led_dims");
   };
 
   // Helper function to get ALL selectable strings for a given category
@@ -1250,7 +1253,7 @@ export default function ServicesContent() {
                               {/* Packages Cards */}
                               {sub.packages && (
                                 <>
-                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                                  <div className={`grid grid-cols-1 ${sub.name === "Laser Mapping" ? 'sm:grid-cols-1' : 'sm:grid-cols-2'} gap-4 mb-4`}>
                                     {sub.packages.map((pkg: any) => {
                                       const fullString = `${cat.category} - ${sub.name}: ${pkg.name}`;
                                       const isSelected = cart.includes(fullString);

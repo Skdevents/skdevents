@@ -3,8 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ShoppingBag, CheckCircle2, Trash2, ChevronDown, FileText, Loader2, CheckCircle } from "lucide-react";
-
+import { X, ShoppingBag, CheckCircle2, Trash2, ChevronDown, FileText, Loader2, CheckCircle, Check } from "lucide-react";
 interface WhatsAppModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -97,6 +96,7 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
 
   const [formData, setFormData] = useState({
     organizationName: "", 
@@ -154,6 +154,11 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
     if (isOpen) {
       document.body.style.overflow = "hidden";
       setSubmittedId(null); 
+      // --- NEW: Load quantities to display in the cart ---
+      const savedQty = localStorage.getItem("skd_services_qty");
+      if (savedQty) {
+        try { setQuantities(JSON.parse(savedQty)); } catch(e){}
+      }
     } else {
       document.body.style.overflow = "unset";
       setShowConfirmClear(false);
@@ -173,10 +178,10 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
 
   const executeClearCart = () => {
     clearCart(); 
+    setQuantities({});
     setShowConfirmClear(false);
     onClose(); 
   };
-
   const groupedCart = useMemo(() => {
     return cart.reduce((acc: MainCatGroup, originalString: string) => {
       const [catPart, itemPart] = originalString.split(": ");
@@ -235,6 +240,7 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
         },
         selectedPackage: groupedCart,
         rawCart: cart,
+        quantities: quantities,
         generatedId: generatedId
       };
 
@@ -292,7 +298,8 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
               </button>
             </div>
 
-            <div className="overflow-y-auto p-0 scroll-smooth flex-grow bg-white">
+            {/* --- NEXT-LEVEL PREMIUM LAYOUT: STICKY SIDEBAR --- */}
+            <div className="overflow-y-auto p-0 scroll-smooth flex-grow bg-white custom-scrollbar relative">
               {submittedId ? (
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
@@ -316,84 +323,113 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
                   </p>
                 </motion.div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-12 min-h-full">
-                  <div className="lg:col-span-5 order-1 bg-gray-50/50 p-6 sm:p-8 lg:p-10 border-b lg:border-b-0 lg:border-r border-gray-200 lg:border-gray-100">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#a40049]/10 flex items-center justify-center shrink-0">
-                          <ShoppingBag className="w-5 h-5 text-[#a40049]" /> 
+                <div className="grid grid-cols-1 lg:grid-cols-12 min-h-full items-start">
+                  
+                  {/* --- LEFT COLUMN: STICKY PACKAGE SUMMARY --- */}
+                  <div className="lg:col-span-5 order-1 bg-gray-50/50 border-b lg:border-b-0 lg:border-r border-gray-100 relative h-full">
+                    {/* මෙන්න මේ කොටස තමයි Scroll වෙද්දි හිරවෙලා තියෙන්නේ (Sticky) */}
+                    <div className="lg:sticky lg:top-0 p-6 sm:p-8 lg:p-10 lg:max-h-[85vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-[#a40049]/10 flex items-center justify-center shrink-0">
+                            <ShoppingBag className="w-5 h-5 text-[#a40049]" /> 
+                          </div>
+                          <h4 className="text-sm sm:text-base font-extrabold text-gray-900 uppercase tracking-wider">Your Package</h4>
                         </div>
-                        <h4 className="text-sm sm:text-base font-extrabold text-gray-900 uppercase tracking-wider">Your Package</h4>
+                        
+                        <div className="flex items-center gap-3">
+                          <span className="px-3 py-1 bg-white border border-gray-200 text-[#a40049] text-xs font-extrabold rounded-full shadow-sm whitespace-nowrap shrink-0">
+                            {cart.length} Items
+                          </span>
+                          {cart.length > 0 && (
+                            <button 
+                              type="button"
+                              onClick={() => setShowConfirmClear(true)} 
+                              className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-bold hover:bg-red-100 transition-colors whitespace-nowrap shrink-0"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" /> Clear All
+                            </button>
+                          )}
+                        </div>
                       </div>
                       
-                      <div className="flex items-center gap-3">
-                        <span className="px-3 py-1 bg-white border border-gray-200 text-[#a40049] text-xs font-extrabold rounded-full shadow-sm whitespace-nowrap shrink-0">
-                          {cart.length} Items
-                        </span>
-                        {cart.length > 0 && (
-                          <button 
-                            type="button"
-                            onClick={() => setShowConfirmClear(true)} 
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-bold hover:bg-red-100 transition-colors whitespace-nowrap shrink-0"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" /> Clear All
-                          </button>
+                      <div className="space-y-5 pb-8 lg:pb-0">
+                        {cart.length === 0 ? (
+                          <div className="flex flex-col items-center justify-center py-12 px-4 text-center bg-white rounded-3xl border border-gray-100 border-dashed">
+                            <ShoppingBag className="w-12 h-12 text-gray-200 mb-3" />
+                            <p className="text-sm text-gray-400 font-medium">No services selected yet.<br/>Please close this window and select items.</p>
+                          </div>
+                        ) : (
+                          Object.entries(groupedCart).map(([mainCat, subCats]) => (
+                            <div key={mainCat} className="bg-white rounded-2xl p-4 sm:p-5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 relative overflow-hidden group">
+                              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#a40049] to-[#ff4d94]" />
+                              <h5 className="font-extrabold text-[#a40049] text-sm sm:text-base mb-4 uppercase tracking-wide pl-2">{mainCat}</h5>
+                              
+                              <div className="space-y-4 pl-2">
+                                {Object.entries(subCats).map(([subCat, items]) => (
+                                  <div key={subCat}>
+                                    {subCat !== "General" && (
+                                      <h6 className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 border-b border-gray-50 pb-1 inline-block">
+                                        {subCat}
+                                      </h6>
+                                    )}
+                                    <ul className="space-y-3">
+                                      {items.map((i) => {
+                                        const qty = quantities[i.original];
+                                        
+                                        let displayName = i.item;
+                                        let prefix = "";
+                                        if (displayName.includes(" - ")) {
+                                          const splitIndex = displayName.indexOf(" - ");
+                                          prefix = displayName.substring(0, splitIndex);
+                                          displayName = displayName.substring(splitIndex + 3);
+                                        }
+
+                                        return (
+                                        <li key={i.original} className="flex items-start justify-between gap-3 group/item bg-gray-50/50 p-3 rounded-xl border border-gray-100/50 hover:bg-white hover:shadow-sm hover:border-gray-200 transition-all duration-300">
+                                          <div className="flex items-start gap-3">
+                                            <div className="w-5 h-5 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center shrink-0 mt-0.5">
+                                              <Check className="w-3 h-3 text-[#a40049]" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                              <span className="text-xs sm:text-sm font-bold text-gray-800 leading-snug">
+                                                {prefix ? <span className="text-gray-400 font-semibold mr-1">{prefix}:</span> : null}
+                                                {displayName}
+                                              </span>
+                                              {qty > 0 && (
+                                                <span className="text-[10px] font-extrabold text-[#a40049] bg-[#a40049]/10 border border-[#a40049]/20 px-2 py-0.5 rounded-md mt-1.5 w-max tracking-wide">
+                                                  Quantity: {qty}
+                                                </span>
+                                              )}
+                                            </div>
+                                          </div>
+                                          <button 
+                                            type="button"
+                                            onClick={() => toggleCart(i.original)} 
+                                            className="opacity-100 lg:opacity-0 lg:group-hover/item:opacity-100 transition-all p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg shrink-0"
+                                            title="Remove Item"
+                                          >
+                                            <X className="w-4 h-4" />
+                                          </button>
+                                        </li>
+                                        );
+                                      })}
+                                    </ul>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))
                         )}
                       </div>
                     </div>
-                    
-                    <div className="space-y-5">
-                      {cart.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-12 px-4 text-center bg-white rounded-3xl border border-gray-100 border-dashed">
-                          <ShoppingBag className="w-12 h-12 text-gray-200 mb-3" />
-                          <p className="text-sm text-gray-400 font-medium">No services selected yet.<br/>Please close this window and select items.</p>
-                        </div>
-                      ) : (
-                        Object.entries(groupedCart).map(([mainCat, subCats]) => (
-                          <div key={mainCat} className="bg-white rounded-2xl p-4 sm:p-5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 relative overflow-hidden group">
-                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#a40049] to-[#ff4d94]" />
-                            <h5 className="font-extrabold text-[#a40049] text-sm sm:text-base mb-4 uppercase tracking-wide pl-2">{mainCat}</h5>
-                            
-                            <div className="space-y-4 pl-2">
-                              {Object.entries(subCats).map(([subCat, items]) => (
-                                <div key={subCat}>
-                                  {subCat !== "General" && (
-                                    <h6 className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 border-b border-gray-50 pb-1 inline-block">
-                                      {subCat}
-                                    </h6>
-                                  )}
-                                  <ul className="space-y-2.5">
-                                    {items.map((i) => (
-                                      <li key={i.original} className="flex items-start justify-between gap-3 group/item">
-                                        <div className="flex items-start gap-2.5">
-                                          <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
-                                          <span className="text-xs sm:text-sm font-semibold text-gray-700 leading-snug">
-                                            {i.item}
-                                          </span>
-                                        </div>
-                                        <button 
-                                          type="button"
-                                          onClick={() => toggleCart(i.original)} 
-                                          className="opacity-100 lg:opacity-0 lg:group-hover/item:opacity-100 transition-opacity p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg shrink-0"
-                                          title="Remove Item"
-                                        >
-                                          <X className="w-3.5 h-3.5" />
-                                        </button>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
                   </div>
 
+                  {/* --- RIGHT COLUMN: SCROLLING FORM --- */}
                   <div className="lg:col-span-7 order-2 p-6 sm:p-8 lg:p-10 pt-8 sm:pt-10">
                     <form id="quoteForm" ref={formRef} className="space-y-6 sm:space-y-8 mx-auto">
                       
+                      {/* === Form Content Remains Unchanged === */}
                       <div>
                         <h4 className="text-lg sm:text-xl font-extrabold text-gray-900 flex items-center gap-2.5 mb-2">
                           <span className="w-7 h-7 rounded-full bg-[#a40049] flex items-center justify-center text-xs font-bold text-white shadow-sm">1</span>
@@ -402,7 +438,6 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
                         <p className="text-[11px] sm:text-xs text-gray-500 font-medium ml-10">We need this information to process your request.</p>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mt-5 ml-0 sm:ml-9">
-                          
                           {/* Organization Name (Full Width) */}
                           <div className="space-y-1.5 sm:col-span-2">
                             <label className="text-[11px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Organization Name <span className="text-red-500">*</span></label>
@@ -440,7 +475,6 @@ export default function WhatsAppModal({ isOpen, onClose, cart, toggleCart, clear
                             <label className="text-[11px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Office Contact Number <span className="text-gray-400 normal-case font-normal">(Optional)</span></label>
                             <input type="tel" pattern="[0-9+\-\s()]+" name="officeNumber" value={formData.officeNumber} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#a40049]/30 focus:border-[#a40049] outline-none transition-all placeholder:text-gray-300" placeholder="011 XXXXXXX"/>
                           </div>
-
                         </div>
                       </div>
                       
